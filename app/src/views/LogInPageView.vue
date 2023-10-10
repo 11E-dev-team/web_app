@@ -41,7 +41,7 @@ export default defineComponent({
   justify-content: center;
   overflow-y: auto;
   overscroll-behavior: contain;
-  max-height: calc(100vh - ($header-height + $common-padding * 2) * 2 - $common-padding * 2); /* Subtract the header and footer heights from the viewport height */
+  height: calc(100vh - ($header-height + $common-padding * 2) * 2 - $common-padding * 2); /* Subtract the header and footer heights from the viewport height */
 
   * {
     display: flex;
