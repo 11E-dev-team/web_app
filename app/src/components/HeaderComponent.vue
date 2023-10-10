@@ -1,6 +1,8 @@
 <template>
   <header class="header">
-    <h1>Welcome to the Home Screen</h1>
+    <h1>
+      <RouterLink to="/">{{ msg }}</RouterLink>
+    </h1>
     <button class="go-to-profile" @click="goToProfile">Go to Profile</button>
   </header>
 </template>
@@ -23,12 +25,14 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+@import '@/assets/scss/main.scss';
+
 .header {
-  height: 60px;
+  height: $header-height;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: $common-padding;
   background-color: #f2f2f2;
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <HeaderComponent />
+  <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
     <div class="scrollable-container">
       <p>This is the body of the home screen.</p>
@@ -24,13 +24,15 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/assets/scss/main.scss';
+
 .main-content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  max-height: calc(100vh - 100px - 100px - 40px); /* Subtract the header and footer heights from the viewport height */
+  max-height: calc(100vh - ($header-height + $common-padding * 2) * 2 - $common-padding * 2); /* Subtract the header and footer heights from the viewport height */
 }
 
 .scrollable-container {
@@ -47,7 +49,6 @@ footer {
 }
 
 .cta-button {
-  text-decoration: none;
   color: coral;
 }
 
