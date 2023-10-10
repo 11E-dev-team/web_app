@@ -2,9 +2,9 @@
   <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
     <p>Почта</p>
-    <input />
+    <input v-model="email" />
     <p>Пароль</p>
-    <input />
+    <input v-model="password" type="password" />
     <button>Войти</button>
     <RouterLink to="/register">У меня нет аккаунта</RouterLink>
   </main>
@@ -18,6 +18,12 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 export default defineComponent({
   components: {
     HeaderComponent,
+  },
+  data() {
+    return {
+      email: '',
+      password: '',
+    };
   },
 });
 </script>

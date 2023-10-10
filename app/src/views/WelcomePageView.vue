@@ -53,6 +53,6 @@ footer {
 }
 
 footer a + a {
-  margin-left: 20px;
+  margin-left: $common-padding;
 }
 </style>

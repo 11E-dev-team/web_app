@@ -1,12 +1,18 @@
 <template>
   <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
+    <div>
+      <input type="radio" v-model="role" value="student" id="student" checked />
+      <label for="student">Студент</label>
+      <input type="radio" v-model="role" value="teacher" id="teacher" />
+      <label for="teacher">Преподаватель</label>
+    </div>
     <p>Почта</p>
-    <input />
+    <input v-model="email" />
     <p>Пароль</p>
-    <input />
+    <input v-model="password" type="password" />
     <button>Зарегистрироваться</button>
-    <RouterLink to="/log_in">У меня есть аккаунт</RouterLink>
+    <RouterLink to="/log_in" class="to-bottom">У меня есть аккаунт</RouterLink>
   </main>
 </template>
 
@@ -18,6 +24,13 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 export default defineComponent({
   components: {
     HeaderComponent,
+  },
+  data() {
+    return {
+      role: 'student',
+      email: '',
+      password: '',
+    };
   },
 });
 </script>
@@ -35,10 +48,14 @@ export default defineComponent({
   justify-content: center;
   overflow-y: auto;
   overscroll-behavior: contain;
-  max-height: calc(100vh - ($header-height + $common-padding * 2) * 2 - $common-padding * 2); /* Subtract the header and footer heights from the viewport height */
+  max-height: calc(100vh - ($header-height + $common-padding * 2)); /* Subtract the header and footer heights from the viewport height */
 
   * {
     display: flex;
   }
+}
+
+input ~ input {
+  margin-left: $common-padding;
 }
 </style>
