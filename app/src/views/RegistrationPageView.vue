@@ -7,14 +7,18 @@
       <input type="radio" v-model="role" value="{{ UserRole.teacher }}" id="teacher" />
       <label for="teacher">Преподаватель</label>
     </div>
+
     <p>Почта</p>
     <input type="text" v-model="email" required />
     <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
     <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
+
     <p>Пароль</p>
     <input v-model="password" type="password" required />
     <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+
     <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Зарегистрироваться</button>
+
     <RouterLink to="/log_in" class="to-bottom">У меня есть аккаунт</RouterLink>
   </main>
 </template>
@@ -62,9 +66,13 @@ export default defineComponent({
         user.value = {
           email: this.email as string,
           role: this.role as UserRole,
-        }
+        };
         // TODO: connect to backend server
-        router.push('/');
+        switch (user.value.role) {
+          case UserRole.student: router.push('/student'); break;
+          case UserRole.teacher: router.push('/teacher'); break;
+          default: router.push('/');
+        };
       };
     },
   },

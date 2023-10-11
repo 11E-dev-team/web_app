@@ -5,10 +5,13 @@
     <input type="text" v-model="email" required />
     <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
     <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
+
     <p>Пароль</p>
     <input type="password" v-model="password" required />
     <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+
     <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Войти</button>
+
     <RouterLink to="/register">У меня нет аккаунта</RouterLink>
   </main>
 </template>
@@ -56,7 +59,11 @@ export default defineComponent({
           role: UserRole.none as UserRole,
         };
         // TODO: connect to backend server
-        router.push('/');
+        switch (user.value.role) {
+          case UserRole.student: router.push('/student'); break;
+          case UserRole.teacher: router.push('/teacher'); break;
+          default: router.push('/');
+        };
       };
     },
   },

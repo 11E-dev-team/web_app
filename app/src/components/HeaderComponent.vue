@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <h1>
-      <RouterLink to="/">{{ msg }}</RouterLink>
+      <RouterLink :to="homePage">{{ msg }}</RouterLink>
     </h1>
     <userInfo>{{ email }}</userInfo>
   </header>
@@ -11,7 +11,7 @@
 import { defineComponent } from 'vue';
 
 import { storeToRefs } from 'pinia';
-import { useUserStore } from '@/store';
+import { useUserStore, UserRole } from '@/store';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore)
 
@@ -20,15 +20,17 @@ export default defineComponent({
   props: {
     msg: String,
   },
-  methods: {
-    goToProfile() {
-      // Logic to navigate to the profile screen
-    },
-  },
   computed: {
-    email() {
+    email(): string {
       return user.value ? user.value.email : 'Not Logged In';
-    }
+    },
+    homePage(): string {
+      switch (user.value ? user.value.role : null) {
+        case UserRole.student: return '/student'; break;
+        case UserRole.teacher: return '/teacher'; break;
+        default: return '/';
+      };
+    },
   }
 });
 </script>
@@ -44,9 +46,5 @@ export default defineComponent({
   align-items: center;
   padding: $common-padding;
   background-color: #f2f2f2;
-}
-
-.go-to-profile {
-  /* Add styles for the "Go to Profile" button */
 }
 </style>
