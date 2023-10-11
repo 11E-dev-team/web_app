@@ -1,2 +1,7 @@
 $header-height: 60px;
 $common-padding: 20px;
+$error-color: red;
+
+.invalidDataError {
+  color: $error-color;
+}

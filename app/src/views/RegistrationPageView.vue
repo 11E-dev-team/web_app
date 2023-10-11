@@ -2,16 +2,19 @@
   <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
     <div>
-      <input type="radio" v-model="role" value="student" id="student" checked />
+      <input type="radio" v-model="role" value="{{ UserRole.student }}" id="student" checked />
       <label for="student">Студент</label>
-      <input type="radio" v-model="role" value="teacher" id="teacher" />
+      <input type="radio" v-model="role" value="{{ UserRole.teacher }}" id="teacher" />
       <label for="teacher">Преподаватель</label>
     </div>
     <p>Почта</p>
-    <input v-model="email" />
+    <input type="text" v-model="email" required />
+    <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
+    <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
     <p>Пароль</p>
-    <input v-model="password" type="password" />
-    <button @click="register()">Зарегистрироваться</button>
+    <input v-model="password" type="password" required />
+    <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+    <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Зарегистрироваться</button>
     <RouterLink to="/log_in" class="to-bottom">У меня есть аккаунт</RouterLink>
   </main>
 </template>
@@ -23,7 +26,7 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 import router from '@/router';
 
 import { storeToRefs } from 'pinia';
-import { useUserStore, UserRole } from '@/store';
+import { useUserStore, UserRole, User } from '@/store';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore)
 
@@ -33,26 +36,38 @@ export default defineComponent({
   },
   data() {
     return {
-      role: 'student',
-      email: '',
-      password: '',
-      user: user,
+      role: UserRole.student as UserRole,
+      email: '' as string,
+      password: '' as string,
+      user: user.value as User | null,
     };
+  },
+  computed: {
+    emailIsGiven(): boolean {
+      return this.email.length > 0;
+    },
+    passwordIsGiven(): boolean {
+      return this.password.length > 0;
+    },
+    emailIsValid(): boolean {
+      return this.email.match(/[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/) ? true : this.email === '';
+    },
+    allDataIsValid(): boolean {
+      return this.emailIsGiven && this.passwordIsGiven && this.emailIsValid;
+    },
   },
   methods: {
     register() {
-      switch(this.role) {
-        case 'student': var role: UserRole = UserRole.student; break;
-        case 'teacher': var role: UserRole = UserRole.teacher; break;
-        default: var role: UserRole = UserRole.none;
-      }
-      user.value = {
-        email: this.email,
-        role: role,
-      }
-      router.push('/');
-    }
-  }
+      if (this.allDataIsValid) {
+        user.value = {
+          email: this.email as string,
+          role: this.role as UserRole,
+        }
+        // TODO: connect to backend server
+        router.push('/');
+      };
+    },
+  },
 });
 </script>
 
@@ -73,6 +88,20 @@ export default defineComponent({
 
   * {
     display: flex;
+  }
+
+  p.invalidDataError {
+    font-size: small;
+    margin-top: 4px;
+  }
+
+  button {
+    margin-top: 16px;
+  }
+
+  .button-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 

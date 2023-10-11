@@ -18,7 +18,7 @@ export enum UserRole {
   none = 'none',
 }
 
-interface User {
+export interface User {
   id?: number | null,
   email: string,
   role: UserRole,
