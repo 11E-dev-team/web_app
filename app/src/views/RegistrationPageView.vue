@@ -18,17 +18,32 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 import HeaderComponent from '@/components/HeaderComponent.vue';
+
+import { storeToRefs } from 'pinia';
+import { useUserStore } from '@/store';
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore)
+
+if (!user.value) { user.value = { email: '' } };
 
 export default defineComponent({
   components: {
     HeaderComponent,
   },
+  computed: {
+    email: {
+      get() {
+        return user.value ? user.value.email : '';
+      },
+      set(value: string) {
+        if(user.value) { user.value.email = value };
+      }
+    }
+  },
   data() {
     return {
       role: 'student',
-      email: '',
       password: '',
     };
   },
