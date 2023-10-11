@@ -11,7 +11,7 @@
     <input v-model="email" />
     <p>Пароль</p>
     <input v-model="password" type="password" />
-    <button>Зарегистрироваться</button>
+    <button @click="register()">Зарегистрироваться</button>
     <RouterLink to="/log_in" class="to-bottom">У меня есть аккаунт</RouterLink>
   </main>
 </template>
@@ -20,33 +20,39 @@
 import { defineComponent } from 'vue';
 import HeaderComponent from '@/components/HeaderComponent.vue';
 
+import router from '@/router';
+
 import { storeToRefs } from 'pinia';
-import { useUserStore } from '@/store';
+import { useUserStore, UserRole } from '@/store';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore)
-
-if (!user.value) { user.value = { email: '' } };
 
 export default defineComponent({
   components: {
     HeaderComponent,
   },
-  computed: {
-    email: {
-      get() {
-        return user.value ? user.value.email : '';
-      },
-      set(value: string) {
-        if(user.value) { user.value.email = value };
-      }
-    }
-  },
   data() {
     return {
       role: 'student',
+      email: '',
       password: '',
+      user: user,
     };
   },
+  methods: {
+    register() {
+      switch(this.role) {
+        case 'student': var role: UserRole = UserRole.student; break;
+        case 'teacher': var role: UserRole = UserRole.teacher; break;
+        default: var role: UserRole = UserRole.none;
+      }
+      user.value = {
+        email: this.email,
+        role: role,
+      }
+      router.push('/');
+    }
+  }
 });
 </script>
 

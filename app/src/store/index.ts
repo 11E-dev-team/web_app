@@ -12,9 +12,16 @@ export const useCounterStore = defineStore('counter', {
   },
 })
 
+export enum UserRole {
+  teacher = 'teacher',
+  student = 'student',
+  none = 'none',
+}
+
 interface User {
   id?: number | null,
   email: string,
+  role: UserRole,
 }
 
 export const useUserStore = defineStore('user', {
