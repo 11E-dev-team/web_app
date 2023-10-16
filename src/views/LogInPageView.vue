@@ -23,7 +23,7 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 import router from '@/router';
 
 import { storeToRefs } from 'pinia';
-import { useUserStore, UserRole } from '@/store';
+import { useUserStore } from '@/store';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 
@@ -56,14 +56,9 @@ export default defineComponent({
       if (this.allDataIsValid) {
         user.value = {
           email: this.email as string,
-          role: UserRole.none as UserRole,
         };
         // TODO: connect to backend server
-        switch (user.value.role) {
-          case UserRole.student: router.push('/student'); break;
-          case UserRole.teacher: router.push('/teacher'); break;
-          default: router.push('/');
-        };
+        router.push('/home')
       };
     },
   },
@@ -83,7 +78,7 @@ export default defineComponent({
   justify-content: center;
   overflow-y: auto;
   overscroll-behavior: contain;
-  height: calc(100vh - ($header-height + $common-padding * 2) * 2 - $common-padding * 2); /* Subtract the header and footer heights from the viewport height */
+  height: calc(100vh - ($header-height + $common-padding * 2) * 2); /* Subtract the header and footer heights from the viewport height */
 
   * {
     display: flex;

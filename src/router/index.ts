@@ -17,28 +17,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/LogInPageView.vue')
   },
   {
-    path: '/teacher',
-    name: 'teacher',
-    component: () => import('../views/TeacherView.vue'),
-    children: [
-      {
-        path: '/teacher',
-        name: 'teacher_home',
-        component: () => import('../views/teacher/HomePageView.vue')
-      }
-    ]
-  },
-  {
-    path: '/student',
-    name: 'student',
-    component: () => import('../views/StudentView.vue'),
-    children: [
-      {
-        path: '/student',
-        name: 'student_home',
-        component: () => import('../views/student/HomePageView.vue')
-      }
-    ]
+    path: '/home',
+    name: 'home',
+    component: () => import('../views/HomePageView.vue')
   },
   {
     path: '/about',

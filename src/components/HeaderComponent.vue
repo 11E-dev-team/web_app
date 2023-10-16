@@ -11,7 +11,7 @@
 import { defineComponent } from 'vue';
 
 import { storeToRefs } from 'pinia';
-import { useUserStore, UserRole } from '@/store';
+import { useUserStore } from '@/store';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore)
 
@@ -25,11 +25,7 @@ export default defineComponent({
       return user.value ? user.value.email : 'Not Logged In';
     },
     homePage(): string {
-      switch (user.value ? user.value.role : null) {
-        case UserRole.student: return '/student'; break;
-        case UserRole.teacher: return '/teacher'; break;
-        default: return '/';
-      };
+      return user.value ? '/home' : '/';
     },
   }
 });
@@ -45,6 +41,7 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
   padding: $common-padding;
-  background-color: #f2f2f2;
+  border-bottom: 1px solid var(--accent, #464ab4);
+  background: var(--background, #e5e6f5);
 }
 </style>

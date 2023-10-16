@@ -2,24 +2,31 @@
   <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
     <div>
-      <input type="radio" v-model="role" value="{{ UserRole.student }}" id="student" checked />
-      <label for="student">Студент</label>
-      <input type="radio" v-model="role" value="{{ UserRole.teacher }}" id="teacher" />
-      <label for="teacher">Преподаватель</label>
+      <p class="title">Почта</p>
+      <input type="text" v-model="email" required />
+      <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
+      <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
     </div>
 
-    <p>Почта</p>
-    <input type="text" v-model="email" required />
-    <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
-    <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
+    <div>
+      <p class="title">Пароль</p>
+      <input v-model="password" type="password" required />
+      <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+    </div>
 
-    <p>Пароль</p>
-    <input v-model="password" type="password" required />
-    <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+    <div>
+      <p class="title">Повторите пароль</p>
+      <input v-model="password_repeat" type="password" required />
+      <p v-show="!passwordRepeated" class="invalidDataError">Пароли не совпадают</p>
+    </div>
 
-    <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Зарегистрироваться</button>
+    <div>
+      <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Зарегистрироваться</button>
+    </div>
 
-    <RouterLink to="/log_in" class="to-bottom">У меня есть аккаунт</RouterLink>
+    <div>
+      <RouterLink to="/log_in" class="to-bottom">У меня есть аккаунт</RouterLink>
+    </div>
   </main>
 </template>
 
@@ -30,7 +37,7 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 import router from '@/router';
 
 import { storeToRefs } from 'pinia';
-import { useUserStore, UserRole, User } from '@/store';
+import { useUserStore, User } from '@/store';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore)
 
@@ -40,9 +47,9 @@ export default defineComponent({
   },
   data() {
     return {
-      role: UserRole.student as UserRole,
       email: '' as string,
       password: '' as string,
+      password_repeat: '' as string,
       user: user.value as User | null,
     };
   },
@@ -52,6 +59,9 @@ export default defineComponent({
     },
     passwordIsGiven(): boolean {
       return this.password.length > 0;
+    },
+    passwordRepeated(): boolean {
+      return this.password_repeat == this.password;
     },
     emailIsValid(): boolean {
       return this.email.match(/[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/) ? true : this.email === '';
@@ -65,14 +75,9 @@ export default defineComponent({
       if (this.allDataIsValid) {
         user.value = {
           email: this.email as string,
-          role: this.role as UserRole,
         };
         // TODO: connect to backend server
-        switch (user.value.role) {
-          case UserRole.student: router.push('/student'); break;
-          case UserRole.teacher: router.push('/teacher'); break;
-          default: router.push('/');
-        };
+        router.push('/home')
       };
     },
   },
@@ -90,14 +95,62 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow-y: scroll;
   height: calc(100vh - ($header-height + $common-padding * 2)); /* Subtract the header and footer heights from the viewport height */
 
   * {
     display: flex;
   }
 
+  div {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    height: 128px;
+
+    * {
+      display: flex;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    p.title {
+      width: 414px;
+      height: 48px;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 36px;
+
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 414px;
+      height: 48px;
+
+      font-size: 36px;
+    }
+
+    button {
+      height: 64px;
+      width: 414px;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 16px;
+
+      font-size: 30px;
+
+      color: #ffffff;
+      background-color: var(--primary, #6c6fc6);
+
+      box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+  }
   p.invalidDataError {
     font-size: small;
     margin-top: 4px;
@@ -111,9 +164,5 @@ export default defineComponent({
     cursor: not-allowed;
     opacity: 0.5;
   }
-}
-
-input ~ input {
-  margin-left: $common-padding;
 }
 </style>

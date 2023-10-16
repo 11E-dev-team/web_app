@@ -1,0 +1,8 @@
+::root {
+  --text: #04050b;
+  --background: #e5e6f5;
+  --primary: #6c6fc6;
+  --secondary: #d7d7ef;
+  --accent: #464ab4;
+  --error: red
+}
