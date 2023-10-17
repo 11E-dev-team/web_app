@@ -1,18 +1,26 @@
 <template>
   <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
-    <p>Почта</p>
-    <input type="text" v-model="email" required />
-    <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
-    <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
+    <div>
+      <p class="title">Почта</p>
+      <input type="text" v-model="email" required />
+      <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
+      <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
+    </div>
 
-    <p>Пароль</p>
-    <input type="password" v-model="password" required />
-    <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+    <div>
+      <p class="title">Пароль</p>
+      <input v-model="password" type="password" required />
+      <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+    </div>
 
-    <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Войти</button>
+    <div>
+      <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Войти</button>
+    </div>
 
-    <RouterLink to="/register">У меня нет аккаунта</RouterLink>
+    <div>
+      <RouterLink to="/register">У меня нет аккаунта</RouterLink>
+    </div>
   </main>
 </template>
 
@@ -76,21 +84,69 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  height: calc(100vh - ($header-height + $common-padding * 2) * 2); /* Subtract the header and footer heights from the viewport height */
+  overflow-y: scroll;
+  height: calc(100vh - ($header-height + $common-padding * 2)); /* Subtract the header and footer heights from the viewport height */
 
   * {
     display: flex;
   }
 
-  p.invalidDataError {
-    font-size: small;
-    margin-top: 4px;
+  div {
+    flex-direction: column;
+    align-items: center;
+
+    height: 8em;
+
+    * {
+      display: flex;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    p.title {
+      width: 384px;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 1.5em;
+
+      margin-bottom: 8px;
+    }
+
+    p.invalidDataError {
+      font-size: small;
+      margin-top: 4px;
+    }
+
+    input {
+      width: 384px;
+
+      font-size: 1.5em;
+    }
+
+    button {
+      justify-self: center;
+      height: 2.5em;
+      width: 384px;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 16px;
+
+      font-size: 1.25em;
+
+      color: #ffffff;
+      background-color: var(--primary, #6c6fc6);
+
+      box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    }
   }
 
-  button {
-    margin-top: 16px;
+  .button-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 </style>

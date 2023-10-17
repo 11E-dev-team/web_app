@@ -25,7 +25,7 @@
     </div>
 
     <div>
-      <RouterLink to="/log_in" class="to-bottom">У меня есть аккаунт</RouterLink>
+      <RouterLink to="/log_in">У меня есть аккаунт</RouterLink>
     </div>
   </main>
 </template>
