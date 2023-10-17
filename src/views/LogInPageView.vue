@@ -14,11 +14,11 @@
       <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
     </div>
 
-    <div>
+    <div class="custom">
       <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Войти</button>
     </div>
 
-    <div>
+    <div class="custom">
       <RouterLink to="/register">У меня нет аккаунта</RouterLink>
     </div>
   </main>
@@ -141,6 +141,14 @@ export default defineComponent({
       background-color: var(--primary, #6c6fc6);
 
       box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  div.custom {
+    height: auto;
+
+    a {
+      margin-top: 2em;
     }
   }
 
