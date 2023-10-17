@@ -3,7 +3,7 @@
   <main class="main-content">
     <div>
       <p class="title">Почта</p>
-      <input type="text" v-model="email" @input="isInteractioned = true" required />
+      <input type="text" v-model="email" @input="isInteractioned = true" required autofocus />
       <p v-show="!emailIsGiven && isInteractioned" class="invalidDataError">Введите почту</p>
       <p v-show="!emailIsValid && isInteractioned" class="invalidDataError">Почта введена некорректно</p>
     </div>
