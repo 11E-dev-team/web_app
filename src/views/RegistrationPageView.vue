@@ -67,7 +67,7 @@ export default defineComponent({
       return this.email.match(/[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/) ? true : this.email === '';
     },
     allDataIsValid(): boolean {
-      return this.emailIsGiven && this.passwordIsGiven && this.emailIsValid;
+      return this.emailIsGiven && this.passwordIsGiven && this.passwordRepeated && this.emailIsValid;
     },
   },
   methods: {
@@ -105,9 +105,8 @@ export default defineComponent({
   div {
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 
-    height: 128px;
+    height: 8em;
 
     * {
       display: flex;
@@ -118,46 +117,42 @@ export default defineComponent({
     }
 
     p.title {
-      width: 414px;
-      height: 48px;
+      width: 384px;
       align-items: center;
       justify-content: center;
 
-      font-size: 36px;
+      font-size: 1.5em;
 
       margin-bottom: 8px;
     }
 
-    input {
-      width: 414px;
-      height: 48px;
+    p.invalidDataError {
+      font-size: small;
+      margin-top: 4px;
+    }
 
-      font-size: 36px;
+    input {
+      width: 384px;
+
+      font-size: 1.5em;
     }
 
     button {
-      height: 64px;
-      width: 414px;
+      justify-self: center;
+      height: 2.5em;
+      width: 384px;
       align-items: center;
       justify-content: center;
 
       border-radius: 16px;
 
-      font-size: 30px;
+      font-size: 1.25em;
 
       color: #ffffff;
       background-color: var(--primary, #6c6fc6);
 
       box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
     }
-  }
-  p.invalidDataError {
-    font-size: small;
-    margin-top: 4px;
-  }
-
-  button {
-    margin-top: 16px;
   }
 
   .button-disabled {
