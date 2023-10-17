@@ -3,21 +3,21 @@
   <main class="main-content">
     <div>
       <p class="title">Почта</p>
-      <input type="text" v-model="email" required />
-      <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
-      <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
+      <input type="text" v-model="email" @input="isInteractioned = true" required />
+      <p v-show="!emailIsGiven && isInteractioned" class="invalidDataError">Введите почту</p>
+      <p v-show="!emailIsValid && isInteractioned" class="invalidDataError">Почта введена некорректно</p>
     </div>
 
     <div>
       <p class="title">Пароль</p>
-      <input v-model="password" type="password" required />
-      <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+      <input v-model="password" type="password" @input="isInteractioned = true" required />
+      <p v-show="!passwordIsGiven && isInteractioned" class="invalidDataError">Введите пароль</p>
     </div>
 
     <div>
       <p class="title">Повторите пароль</p>
-      <input v-model="password_repeat" type="password" required />
-      <p v-show="!passwordRepeated" class="invalidDataError">Пароли не совпадают</p>
+      <input v-model="password_repeat" @input="isInteractioned = true" type="password" required />
+      <p v-show="!passwordRepeated && isInteractioned" class="invalidDataError">Пароли не совпадают</p>
     </div>
 
     <div class="custom">
@@ -50,6 +50,7 @@ export default defineComponent({
       email: '' as string,
       password: '' as string,
       password_repeat: '' as string,
+      isInteractioned: false as boolean,
       user: user.value as User | null,
     };
   },

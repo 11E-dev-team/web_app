@@ -30,4 +30,8 @@ input {
   border-bottom: 4px solid var(--buttons-secondary, #D7D7EF);
   opacity: 0.8;
 }
+
+button {
+  border: none;
+}
 </style>

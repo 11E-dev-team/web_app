@@ -3,15 +3,15 @@
   <main class="main-content">
     <div>
       <p class="title">Почта</p>
-      <input type="text" v-model="email" required />
-      <p v-show="!emailIsGiven" class="invalidDataError">Введите почту</p>
-      <p v-show="!emailIsValid" class="invalidDataError">Почта введена некорректно</p>
+      <input type="text" v-model="email" @input="isInteractioned = true" required />
+      <p v-show="!emailIsGiven && isInteractioned" class="invalidDataError">Введите почту</p>
+      <p v-show="!emailIsValid && isInteractioned" class="invalidDataError">Почта введена некорректно</p>
     </div>
 
     <div>
       <p class="title">Пароль</p>
-      <input v-model="password" type="password" required />
-      <p v-show="!passwordIsGiven" class="invalidDataError">Введите пароль</p>
+      <input v-model="password" type="password" @input="isInteractioned = true" required />
+      <p v-show="!passwordIsGiven && isInteractioned" class="invalidDataError">Введите пароль</p>
     </div>
 
     <div class="custom">
@@ -43,6 +43,7 @@ export default defineComponent({
     return {
       email: '' as string,
       password: '' as string,
+      isInteractioned: false as boolean,
     }
   },
   computed: {
