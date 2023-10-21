@@ -24,54 +24,87 @@
   </main>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref, computed } from 'vue';
+import type { Ref, WritableComputedRef } from 'vue';
 import HeaderComponent from '@/components/HeaderComponent.vue';
 
 import router from '@/router';
+
+import { ValueError, ValidationError } from '@/errors';
+import Email from '@/utils/email';
+import Password from '@/utils/password';
 
 import { storeToRefs } from 'pinia';
 import { useUserStore } from '@/store';
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 
-export default defineComponent({
-  components: {
-    HeaderComponent,
+let emailObj: Email | null = null;
+let emailStr: string = '';
+let passwordStr: Password | null = null;
+const isInteractioned: Ref<boolean> = ref(false);
+const emailIsGiven: Ref<boolean> = ref(false);
+const passwordIsGiven: Ref<boolean> = ref(false);
+const emailIsValid: Ref<boolean> = ref(false);
+
+const email: WritableComputedRef<string> = computed({
+  get(): string {
+    // FIXME: bad updates
+    return emailObj !== null ? emailObj.toString() : emailStr;
   },
-  data() {
-    return {
-      email: '' as string,
-      password: '' as string,
-      isInteractioned: false as boolean,
-    }
-  },
-  computed: {
-    emailIsGiven(): boolean {
-      return this.email.length > 0;
-    },
-    passwordIsGiven(): boolean {
-      return this.password.length > 0;
-    },
-    emailIsValid(): boolean {
-      return this.email.match(/[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/) ? true : this.email === '';
-    },
-    allDataIsValid(): boolean {
-      return this.emailIsGiven && this.passwordIsGiven && this.emailIsValid;
-    },
-  },
-  methods: {
-    register() {
-      if (this.allDataIsValid) {
-        user.value = {
-          email: this.email as string,
-        };
-        // TODO: connect to backend server
-        router.push('/home')
+  set(value: string) {
+    emailStr = value;
+    try {
+      emailObj = new Email(value);
+      emailIsGiven.value = true;
+      emailIsValid.value = true;
+    } catch (e) {
+      emailObj = null;
+      if (e instanceof ValueError) {
+        emailIsGiven.value = false;
+      } else if (e instanceof ValidationError) {
+        emailIsGiven.value = true;
+        emailIsValid.value = false;
+      } else {
+        throw e;
       };
-    },
+    };
   },
 });
+
+const password: WritableComputedRef<string> = computed({
+  get(): string {
+    return passwordStr !== null ? passwordStr.toString() : '';
+  },
+  set(value: string) {
+    try {
+      passwordStr = new Password(value);
+      passwordIsGiven.value = true;
+    } catch (e) {
+      passwordStr = null;
+      if (e instanceof ValueError) {
+        passwordIsGiven.value = false;
+      } else {
+        throw e;
+      };
+    };
+  },
+});
+
+const allDataIsValid: WritableComputedRef<boolean> = computed((): boolean => {
+  return emailIsGiven.value && passwordIsGiven.value && emailIsValid.value;
+});
+
+function register(): void {
+  if (allDataIsValid) {
+    user.value = {
+      email: email.value as string,
+    };
+    // TODO: connect to backend server
+    router.push('/home')
+  };
+};
 </script>
 
 
