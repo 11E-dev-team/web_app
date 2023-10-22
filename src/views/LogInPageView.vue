@@ -3,7 +3,7 @@
   <main class="main-content">
     <div>
       <p class="title">Почта</p>
-      <input type="text" v-model="email" @input="isInteractioned = true" required autofocus />
+      <input type="email" v-model="email" @input="isInteractioned = true" required autofocus />
       <p v-show="!emailIsGiven && isInteractioned" class="invalidDataError">Введите почту</p>
       <p v-show="!emailIsValid && isInteractioned" class="invalidDataError">Почта введена некорректно</p>
     </div>
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import type { Ref, WritableComputedRef } from 'vue';
 import HeaderComponent from '@/components/HeaderComponent.vue';
 
@@ -41,55 +41,44 @@ const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 
 let emailObj: Email | null = null;
-let emailStr: string = '';
-let passwordStr: Password | null = null;
+const email: Ref<string> = ref('');
+let passwordObj: Password | null = null;
+const password: Ref<string> = ref('');
 const isInteractioned: Ref<boolean> = ref(false);
 const emailIsGiven: Ref<boolean> = ref(false);
 const passwordIsGiven: Ref<boolean> = ref(false);
 const emailIsValid: Ref<boolean> = ref(false);
 
-const email: WritableComputedRef<string> = computed({
-  get(): string {
-    // FIXME: bad updates
-    return emailObj !== null ? emailObj.toString() : emailStr;
-  },
-  set(value: string) {
-    emailStr = value;
-    try {
-      emailObj = new Email(value);
+watch(email, ( newValue ) => {
+  try{
+    emailObj = new Email(newValue);
+    emailIsGiven.value = true;
+    emailIsValid.value = true;
+  } catch (e) {
+    emailObj = null;
+    if (e instanceof ValueError) {
+      emailIsGiven.value = false;
+    } else if (e instanceof ValidationError) {
       emailIsGiven.value = true;
-      emailIsValid.value = true;
-    } catch (e) {
-      emailObj = null;
-      if (e instanceof ValueError) {
-        emailIsGiven.value = false;
-      } else if (e instanceof ValidationError) {
-        emailIsGiven.value = true;
-        emailIsValid.value = false;
-      } else {
-        throw e;
-      };
+      emailIsValid.value = false;
+    } else {
+      throw e;
     };
-  },
+  };
 });
 
-const password: WritableComputedRef<string> = computed({
-  get(): string {
-    return passwordStr !== null ? passwordStr.toString() : '';
-  },
-  set(value: string) {
-    try {
-      passwordStr = new Password(value);
-      passwordIsGiven.value = true;
-    } catch (e) {
-      passwordStr = null;
-      if (e instanceof ValueError) {
-        passwordIsGiven.value = false;
-      } else {
-        throw e;
-      };
+watch(password, ( newValue ) => {
+  try{
+    passwordObj = new Password(newValue);
+    passwordIsGiven.value = true;
+  } catch (e) {
+    emailObj = null;
+    if (e instanceof ValueError) {
+      passwordIsGiven.value = false;
+    } else {
+      throw e;
     };
-  },
+  };
 });
 
 const allDataIsValid: WritableComputedRef<boolean> = computed((): boolean => {
@@ -99,7 +88,7 @@ const allDataIsValid: WritableComputedRef<boolean> = computed((): boolean => {
 function register(): void {
   if (allDataIsValid) {
     user.value = {
-      email: email.value as string,
+      email: emailObj !== null ? emailObj.toString() as string : '',
     };
     // TODO: connect to backend server
     router.push('/home')
