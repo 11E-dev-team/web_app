@@ -12,15 +12,29 @@ export const useCounterStore = defineStore('counter', {
   },
 })
 
+import Email from '@/utils/email'
+
 export interface User {
   id?: number | null,
-  email: string,
+  email: Email,
 }
 
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
       user: null as User | null,
+      newUser: null as User | null,
+    }
+  }
+})
+
+export const useFormStateStore = defineStore('form-state', {
+  state: () => {
+    return {
+      isInteracted: false as boolean,
+      emailIsGiven: false as boolean,
+      emailIsValid: false as boolean,
+      passwordIsGiven: false as boolean,
     }
   }
 })
