@@ -2,7 +2,7 @@
   <div>
     <label v-if="!props.repeat" class="title">Пароль</label>
     <label v-else class="title">Повторите пароль</label>
-    <input v-model="password" type="password" @input="isInteracted = true" required />
+    <input v-model="_password" type="password" @input="isInteracted = true" required />
     <span
       v-if="!props.repeat"
       v-show="!passwordIsGiven && isInteracted"
@@ -10,7 +10,7 @@
     >Введите пароль</span>
     <span
       v-if="props.repeat"
-      v-show="!passwordIsGiven && isInteracted"
+      v-show="!passwordIsRepeated && isInteracted"
       class="invalidDataError"
     >Введите пароль еще раз</span>
   </div>
@@ -29,24 +29,38 @@ import Password from '@/utils/password';
 
 import { storeToRefs } from 'pinia';
 
-import { useFormStateStore } from '@/store';
+import { useFormStateStore, useAuthorizationStore } from '@/store';
 const formStateStore = useFormStateStore();
+const authorizationStore = useAuthorizationStore();
 const {
   isInteracted,
-  passwordIsGiven
+  passwordIsGiven,
+  passwordIsRepeated,
 } = storeToRefs(formStateStore);
+const { password, passwordRepeat } = storeToRefs(authorizationStore)
 
-let passwordObj: Password | null = null;
-const password: Ref<string> = ref('');
+const _password: Ref<string> = ref('');
 
-watch(password, ( newValue ) => {
+watch(_password, ( newValue ) => {
   try{
-    passwordObj = new Password(newValue);
-    passwordIsGiven.value = true;
+    if (props.repeat) {
+      passwordRepeat.value = new Password(newValue);
+      passwordIsRepeated.value = password.value == newValue;
+    } else {
+      password.value = new Password(newValue);
+      passwordIsGiven.value = true;
+    }
   } catch (e) {
-    passwordObj = null;
+    if (props.repeat) {
+      passwordRepeat.value = null;
+    } else {
+      password.value = null;
+    }
     if (e instanceof ValueError) {
-      passwordIsGiven.value = false;
+      if (!props.repeat) {
+        passwordIsGiven.value = false;
+      }
+      passwordIsRepeated.value = false;
     } else {
       throw e;
     };

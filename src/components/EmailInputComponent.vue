@@ -3,7 +3,7 @@
     <label>Почта</label>
     <input type="email" v-model="email" @input="isInteracted = true" required autofocus />
     <span v-show="!emailIsGiven && isInteracted" class="invalidDataError">Введите почту</span>
-    <span v-show="!emailIsValid && isInteracted" class="invalidDataError">Почта введена некорректно</span>
+    <span v-show="!emailIsValid && isInteracted && emailIsGiven" class="invalidDataError">Почта введена некорректно</span>
   </div>
 </template>
 

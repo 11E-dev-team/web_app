@@ -36,15 +36,17 @@ const {
   isInteracted,
   emailIsGiven,
   emailIsValid,
-  passwordIsGiven
+  passwordIsGiven,
+  passwordIsRepeated,
 } = storeToRefs(formStateStore);
 isInteracted.value = false;
 emailIsGiven.value = false;
 emailIsValid.value = false;
 passwordIsGiven.value = false;
+passwordIsRepeated.value = false;
 
 const allDataIsValid: WritableComputedRef<boolean> = computed((): boolean => {
-  return emailIsGiven.value && passwordIsGiven.value && emailIsValid.value;
+  return emailIsGiven.value && passwordIsGiven.value && passwordIsRepeated.value && emailIsValid.value;
 });
 
 function register(): void {

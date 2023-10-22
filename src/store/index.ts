@@ -13,6 +13,7 @@ export const useCounterStore = defineStore('counter', {
 })
 
 import Email from '@/utils/email'
+import Password from '@/utils/password'
 
 export interface User {
   id?: number | null,
@@ -35,6 +36,16 @@ export const useFormStateStore = defineStore('form-state', {
       emailIsGiven: false as boolean,
       emailIsValid: false as boolean,
       passwordIsGiven: false as boolean,
+      passwordIsRepeated: false as boolean,
     }
   }
+})
+
+export const useAuthorizationStore = defineStore('authorization', {
+  state: () => {
+    return {
+      password: null as Password | null,
+      passwordRepeat: null as Password | null,
+    }
+  },
 })
