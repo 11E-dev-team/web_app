@@ -3,9 +3,7 @@
   <main class="main-content">
     <EmailInputComponent />
 
-    <PasswordComponent />
-
-    <PasswordComponent repeat />
+    <PasswordComponent withRepeat />
 
     <div class="custom">
       <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Войти</button>

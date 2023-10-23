@@ -1,15 +1,17 @@
 <template>
   <div>
-    <label v-if="!props.repeat" class="title">Пароль</label>
-    <label v-else class="title">Повторите пароль</label>
+    <label class="title">Пароль</label>
     <input v-model="_password" type="password" @input="isInteracted = true" required />
     <span
-      v-if="!props.repeat"
       v-show="!passwordIsGiven && isInteracted"
       class="invalidDataError"
     >Введите пароль</span>
+  </div>
+  <!-- Drawing an additional input for repeated password if needed -->
+  <div v-if="props.withRepeat">
+    <label class="title">Повторите пароль</label>
+    <input v-model="_passwordRepeat" type="password" @input="isInteracted = true" required />
     <span
-      v-if="props.repeat"
       v-show="!passwordIsRepeated && isInteracted"
       class="invalidDataError"
     >Введите пароль еще раз</span>
@@ -21,7 +23,7 @@ import { defineProps, ref, watch } from 'vue';
 import type { Ref } from 'vue';
 
 const props = defineProps({
-  repeat: Boolean,
+  withRepeat: Boolean,
 })
 
 import { ValueError } from '@/errors';
@@ -40,26 +42,30 @@ const {
 const { password, passwordRepeat } = storeToRefs(authorizationStore)
 
 const _password: Ref<string> = ref('');
+const _passwordRepeat: Ref<string> = ref('');
 
 watch(_password, ( newValue ) => {
   try{
-    if (props.repeat) {
-      passwordRepeat.value = new Password(newValue);
-      passwordIsRepeated.value = password.value == newValue;
-    } else {
-      password.value = new Password(newValue);
-      passwordIsGiven.value = true;
-    }
+    password.value = new Password(newValue);
+    passwordIsGiven.value = true;
   } catch (e) {
-    if (props.repeat) {
-      passwordRepeat.value = null;
-    } else {
-      password.value = null;
-    }
+    password.value = null;
     if (e instanceof ValueError) {
-      if (!props.repeat) {
-        passwordIsGiven.value = false;
-      }
+      passwordIsGiven.value = false;
+      passwordIsRepeated.value = false;
+    } else {
+      throw e;
+    };
+  };
+});
+
+watch(_passwordRepeat, ( newValue ) => {
+  try{
+    passwordRepeat.value = new Password(newValue);
+    passwordIsRepeated.value = password.value == newValue;
+  } catch (e) {
+    passwordRepeat.value = null;
+    if (e instanceof ValueError) {
       passwordIsRepeated.value = false;
     } else {
       throw e;
