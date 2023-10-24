@@ -1,7 +1,7 @@
 import Email from "@/utils/email";
 import { ValueError, ValidationError } from "@/errors";
 
-test("Email is requiring value", () => {
+test("Email requires value", () => {
   try {
     expect(new Email()).toThrow(ValueError);
   } catch (e) {

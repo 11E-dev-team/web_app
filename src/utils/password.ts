@@ -5,7 +5,7 @@ export default class Password {
 
   constructor(value: string | null = null) {
     if (value === null || value === '') {
-      throw new ValueError('Password must be non-empty string');
+      throw new ValueError('Password must be a non-empty string');
     };
     this.value = value;
   };
