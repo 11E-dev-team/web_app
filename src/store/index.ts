@@ -49,3 +49,12 @@ export const useAuthorizationStore = defineStore('authorization', {
     }
   },
 })
+
+export const useCanvasStore = defineStore('canvas', {
+  state: () => {
+    return {
+      canvas: null as HTMLCanvasElement | null,
+      dataURL: null as string | null,
+    }
+  },
+})

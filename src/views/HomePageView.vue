@@ -1,22 +1,18 @@
 <template>
   <HeaderComponent msg="КРОК ШИР 179dev" />
-  <main class="main-content">
-    <div class="groups"></div>
-    <div class="calendar"></div>
-    <div class="nearest-events"></div>
-    <div class="code"></div>
-    <div class="participate"></div>
-  </main>
+  <canvas-component />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
+import CanvasComponent from '@/components/CanvasComponent.vue';
 
 export default defineComponent({
   components: {
     HeaderComponent,
+    CanvasComponent,
   },
 });
 </script>
