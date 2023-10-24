@@ -22,7 +22,7 @@ export default defineComponent({
   },
   computed: {
     email(): string {
-      return user.value ? user.value.email : 'Not Logged In';
+      return user.value ? user.value.email.toString() : 'Not Logged In';
     },
     homePage(): string {
       return user.value ? '/home' : '/';

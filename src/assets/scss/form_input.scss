@@ -1,0 +1,39 @@
+@import '@/assets/scss/main.scss';
+
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: 8em;
+
+  * {
+    display: flex;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  label {
+    position: static;
+    width: 384px;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.5em;
+
+    margin-bottom: 8px;
+  }
+
+  span.invalidDataError {
+    font-size: small;
+    margin-top: 4px;
+  }
+
+  input {
+    width: 384px;
+
+    font-size: 1.5em;
+  }
+}
