@@ -1,180 +1,107 @@
 <template>
   <div class="canvas">
-    <div class="toolkit">
-      <button @click="tool = 'freepen'">Freepen</button>
-      <button @click="tool = 'eraser'">Eraser</button>
-      <button @click="tool = 'rectangle'">Rectangle</button>
-    </div>
-    <div class="canvas-container">
-      <canvas ref="canvasRef" @mousedown="startDrawing" @mousemove="draw" @mouseup="endDrawing"></canvas>
-    </div>
-    <div class="buttons">
-      <button @click="saveCanvas">Save</button>
-      <button @click="loadCanvas">Load</button>
-    </div>
+    <canvas ref="canvasRef"></canvas>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useCanvasStore } from '@/store';
-const canvasStore = useCanvasStore();
-const { dataURL } = storeToRefs(canvasStore);
+import { ref, onMounted } from 'vue';
+import paper, { Path, PointText, Rectangle } from 'paper';
 
-export default defineComponent({
-  name: 'Canvas',
+export default {
+  name: 'CanvasComponent',
   setup() {
     const canvasRef = ref<HTMLCanvasElement | null>(null);
-    const context = ref<CanvasRenderingContext2D | null>(null);
-    const tool = ref('freepen');
-    const isDrawing = ref(false);
-    const lastX = ref(0);
-    const lastY = ref(0);
+    let tool: paper.Tool;
+    let textToolPosition: { x: number; y: number } = { x: 0, y: 0 };
+    let isTextToolActive: boolean = false;
+    let text: string = '';
 
-    function startDrawing(event: MouseEvent | TouchEvent) {
-      isDrawing.value = true;
+    function handleCanvasClick(event: MouseEvent) {
       const { offsetX, offsetY } = getCoordinates(event);
-      lastX.value = offsetX;
-      lastY.value = offsetY;
+
+      textToolPosition = {
+        x: offsetX,
+        y: offsetY
+      };
     }
 
-    function draw(event: MouseEvent | TouchEvent) {
-      if (!isDrawing.value) return;
-      const { offsetX, offsetY } = getCoordinates(event);
-      const ctx = context.value;
-      if (!ctx) return;
-      ctx.strokeStyle = tool.value === 'eraser' ? 'white' : 'black';
-      ctx.lineWidth = 2;
-
-      if (tool.value === 'freepen' || tool.value === 'eraser') {
-        ctx.beginPath();
-        ctx.moveTo(lastX.value, lastY.value);
-        ctx.lineTo(offsetX, offsetY);
-        ctx.stroke();
-        lastX.value = offsetX;
-        lastY.value = offsetY;
-      }
+    function startDrawing(event: paper.ToolEvent) {
+      const path: paper.Path = new paper.Path();
+      path.strokeColor = new paper.Color('black');
+      path.add(event.point);
     }
 
-    function endDrawing(event: MouseEvent | TouchEvent) {
-      if (tool.value === 'rectangle') {
-        if (!isDrawing.value) return;
-        const { offsetX, offsetY } = getCoordinates(event);
-        const ctx = context.value;
-        if (!ctx) return;
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-
-        // Determine the starting position of the rectangle
-        const startX = Math.min(lastX.value, offsetX);
-        const startY = Math.min(lastY.value, offsetY);
-
-        // Determine the width and height of the rectangle
-        const width = Math.abs(lastX.value - offsetX);
-        const height = Math.abs(lastY.value - offsetY);
-
-        // Draw the rectangle
-        ctx.rect(startX, startY, width, height);
-        ctx.stroke();
-
-        lastX.value = offsetX;
-        lastY.value = offsetY;
-      }
-      isDrawing.value = false;
+    function draw(event: paper.ToolEvent) {
+      const path: paper.Path = paper.project.activeLayer.lastChild as paper.Path;
+      path.add(event.point);
     }
 
-    function getCoordinates(event: MouseEvent | TouchEvent) {
-      const canvas = canvasRef.value;
+    function endDrawing(event: paper.ToolEvent) {
+      const path: paper.Path = paper.project.activeLayer.lastChild as paper.Path;
+      path.simplify();
+    }
+
+    function getCoordinates(event: MouseEvent) {
+      const canvas: HTMLCanvasElement | null = canvasRef.value;
       if (!canvas) return { offsetX: 0, offsetY: 0 };
-    
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-    
-      const { clientX, clientY } = event instanceof MouseEvent ? event : event.touches[0];
-      const offsetX = (clientX - rect.left) * scaleX;
-      const offsetY = (clientY - rect.top) * scaleY;
-    
+      const rect: DOMRect = canvas.getBoundingClientRect();
+      const offsetX: number = event.clientX - rect.left;
+      const offsetY: number = event.clientY - rect.top;
+
       return { offsetX, offsetY };
     }
 
-    function saveCanvas() {
-      const canvas = canvasRef.value;
-      if (!canvas) return;
-      dataURL.value = canvas.toDataURL();
-      // Save the dataURL to your preferred storage mechanism
+    function addTextToCanvas() {
+      const textItem: paper.PointText = new PointText({
+        point: new paper.Point(textToolPosition.x, textToolPosition.y),
+        content: text,
+        fillColor: new paper.Color('black'), // Use a Color object instead of a string
+        fontWeight: 'bold',
+        fontSize: 16
+      });
+      textItem.justification = 'center';
+      textItem.position.x += textItem.bounds.width / 2;
     }
 
-    function loadCanvas() {
-      // Load the dataURL from your storage mechanism
-      const canvas = canvasRef.value;
+    onMounted(() => {
+      const canvas: HTMLCanvasElement | null = canvasRef.value;
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      const img = new Image();
-      img.onload = function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
-      };
-      img.src = dataURL.value ? dataURL.value : '';
-    }
+      paper.setup(canvas);
+
+      tool = new paper.Tool();
+
+      tool.onMouseDown = startDrawing;
+      tool.onMouseDrag = draw;
+      tool.onMouseUp = endDrawing;
+      canvas.addEventListener('click', handleCanvasClick);
+    });
 
     return {
       canvasRef,
-      context,
-      tool,
-      isDrawing,
+      textToolPosition,
+      isTextToolActive,
+      text,
+      handleCanvasClick,
       startDrawing,
       draw,
       endDrawing,
-      saveCanvas,
-      loadCanvas
+      addTextToCanvas
     };
   },
-  mounted() {
-    const canvas = this.canvasRef;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    this.context = ctx;
-  },
-});
+};
 </script>
 
-<style lang="scss">
+<style scoped>
 .canvas {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
   height: calc(100vh - 120px);
 }
 
-.toolkit {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.canvas-container {
-  position: relative;
-  width: 100%; // Adjust the width and height as needed
-  height: 100%;
-  border: 1px solid black;
-}
-
-.canvas-container canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
+canvas {
+  border: 1px solid #000;
   width: 100%;
   height: 100%;
-}
-
-.buttons {
-  display: flex;
-  gap: 10px;
 }
 </style>
