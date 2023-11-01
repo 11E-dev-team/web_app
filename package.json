@@ -9,9 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "paper": "^0.12.17",
+    "konva": "^9.2.2",
     "pinia": "^2.1.4",
     "vue": "^3.2.13",
+    "vue-konva": "^3.0.2",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {
