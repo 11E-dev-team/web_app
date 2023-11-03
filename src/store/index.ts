@@ -50,11 +50,39 @@ export const useAuthorizationStore = defineStore('authorization', {
   },
 })
 
+export interface Line {
+  points: number[];
+  color: string;
+  width: number;
+}
+
 export const useCanvasStore = defineStore('canvas', {
   state: () => {
     return {
-      canvas: null as HTMLCanvasElement | null,
-      dataURL: null as string | null,
+      lines: [] as Line[],
+      currentLine: {
+        points: [],
+        color: 'black',
+        width: 1,
+      } as Line,
+    }
+  },
+})
+
+enum shapes {
+  Rectangle = 'Rectangle',
+  Ellipse = 'Ellipse',
+  Arrow = 'Arrow',
+};
+
+export const Shapes: Readonly<typeof shapes> = Object.freeze(shapes);
+
+export const useCanvasStateStore = defineStore('canvas-state', {
+  state: () => {
+    return {
+      isDrawing: false as boolean,
+      isErasing: false as boolean,
+      selectedShape: Shapes.Rectangle as shapes,
     }
   },
 })

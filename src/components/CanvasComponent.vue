@@ -34,10 +34,16 @@
 import { ref, onMounted, reactive, watch } from 'vue';
 import { Ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useCanvasStore } from '@/store';
+import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { dataURL } = storeToRefs(canvasStore);
+const { lines, currentLine } = storeToRefs(canvasStore);
+const canvasStateStore = useCanvasStateStore();
+const { selectedShape } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
+
+import { startDraw, draw, endDraw } from '@/utils/canvasLogic/pen';
+import { startErase, erase, endErase } from '@/utils/canvasLogic/eraser';
+import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
 
 export default {
   name: 'CanvasComponent',
@@ -47,43 +53,18 @@ export default {
       height: window.innerHeight - 132,
     });
 
-    enum shapes {
-      Rectangle = 'Rectangle',
-      Ellipse = 'Ellipse',
-      Arrow = 'Arrow',
-    };
-
-    const Shapes: Readonly<typeof shapes> = Object.freeze(shapes);
-
     enum tools{
       Pen = 'Pen',
       Eraser = 'Eraser',
       Shapes = 'Shapes',
     };
 
-    const Tools: Readonly<typeof tools> = Object.freeze(tools);
+    const Tools: Readonly<typeof tools> = Object.freeze(tools); // Needs to be moved to stateStore?
 
-    const selectedShape: Ref<shapes> = ref<shapes>(Shapes.Rectangle);
     const selectedTool: Ref<tools> = ref<tools>(Tools.Pen);
 
-    interface Line {
-      points: number[];
-      color: string;
-      width: number;
-    }
-    const currentLine: Line = reactive({
-      points: [],
-      color: 'black',
-      width: 2,
-    })
-    const lines: Line[] = reactive([])
-    const text: Ref<string> = ref<string>('');
-
-    const isDrawing: Ref<boolean> = ref<boolean>(false);
-    const isErasing: Ref<boolean> = ref<boolean>(false)
-
     // Handle click event based on selected tool
-    function handleStart(evt: Konva.KonvaEventObject<MouseEvent>) {
+    function handleStart(evt: Konva.KonvaEventObject<MouseEvent>): void {
       switch (selectedTool.value) {
         case Tools.Pen:
           startDraw(evt);
@@ -97,25 +78,8 @@ export default {
       }
     }
 
-    // TODO: Move functions of business logic to separated file
-    function startDraw(evt: Konva.KonvaEventObject<MouseEvent>) {
-      isDrawing.value = true;
-      const { offsetX, offsetY } = evt.evt;
-      currentLine.points.push(offsetX, offsetY);
-    }
-
-    function startErase(evt: Konva.KonvaEventObject<MouseEvent>) {
-      isErasing.value = true;
-      if (!evt.target.parent) return;
-      evt.target.destroy();
-    }
-
-    function startShape(evt: Konva.KonvaEventObject<MouseEvent>) {
-      // Start setting the form
-    }
-
     // Handle move event based on selected tool
-    function handleMove(evt: Konva.KonvaEventObject<MouseEvent>) {
+    function handleMove(evt: Konva.KonvaEventObject<MouseEvent>): void {
       switch (selectedTool.value) {
         case Tools.Pen:
           draw(evt);
@@ -129,24 +93,7 @@ export default {
       }
     }
 
-    function draw(evt: Konva.KonvaEventObject<MouseEvent>) {
-      if (!isDrawing.value) return;
-      const { offsetX, offsetY } = evt.evt;
-      currentLine.points.push(offsetX, offsetY);
-      lines.push({ ...currentLine });
-    }
-
-    function erase(evt: Konva.KonvaEventObject<MouseEvent>) {
-      if (!isErasing.value) return;
-      if (!evt.target.parent) return;
-      evt.target.destroy();
-    }
-
-    function shape(evt: Konva.KonvaEventObject<MouseEvent>) {
-      // Handle shape event based on selected tool
-    }
-
-    function handleEnd(evt: Konva.KonvaEventObject<MouseEvent>) {
+    function handleEnd(evt: Konva.KonvaEventObject<MouseEvent>): void {
       switch (selectedTool.value) {
         case Tools.Pen:
           endDraw(evt);
@@ -160,24 +107,9 @@ export default {
       }
     }
 
-    function endDraw(evt: Konva.KonvaEventObject<MouseEvent>) {
-      isDrawing.value = false;
-      currentLine.points = [];
-    }
-
-    function endErase(evt: Konva.KonvaEventObject<MouseEvent>) {
-      isErasing.value = false;
-      if (!evt.target.parent) return;
-      evt.target.destroy();
-    }
-
-    function endShape(evt: Konva.KonvaEventObject<MouseEvent>) {
-      // End setting the form
-    }
-
     // Handle undo
-    function undo() {
-      // Undo the last action
+    function undo(): void {
+      // TODO: Undo the last action
     }
 
     return {
@@ -186,9 +118,9 @@ export default {
       Shapes,
       selectedTool,
       Tools,
-      text,
       undo,
       lines,
+      currentLine,
       handleStart,
       handleMove,
       handleEnd,
