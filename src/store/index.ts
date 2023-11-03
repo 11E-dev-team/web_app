@@ -71,6 +71,7 @@ export interface Rectangle {
   height: number;
   fill?: string;
   stroke?: string;
+  strokeWidth?: number;
   type: 'Rectangle';
 }
 
@@ -83,6 +84,7 @@ export interface Ellipse {
   };
   fill?: string;
   stroke?: string;
+  strokeWidth?: number;
   type: 'Ellipse';
 }
 

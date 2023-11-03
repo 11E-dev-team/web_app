@@ -34,6 +34,10 @@
         :width="rectangle.width"
         :height="rectangle.height"
         :stroke="rectangle.stroke ? rectangle.stroke : 'black'"
+        :strokeWidth="rectangle.strokeWidth ? rectangle.strokeWidth : 1"
+        @pointerdown="handleStart"
+        @pointermove="handleMove"
+        @pointerup="handleEnd"
       />
       <v-ellipse
         v-for="(ellipse, index) in ellipses"
@@ -43,6 +47,27 @@
         :radiusX="ellipse.radius.x"
         :radiusY="ellipse.radius.y"
         :stroke="ellipse.stroke ? ellipse.stroke : 'black'"
+        :strokeWidth="ellipse.strokeWidth ? ellipse.strokeWidth : 1"
+        @pointerdown="handleStart"
+        @pointermove="handleMove"
+        @pointerup="handleEnd"
+      />
+      <v-arrow
+        v-for="
+          (arrow, index) in [
+            ...arrows, {points: [], color: 'black', width: 0, name: 'crutch'}
+          ]
+        "
+        :key="index"
+        :points="arrow.points"
+        :fill="arrow.color"
+        :stroke="arrow.color"
+        :strokeWidth="arrow.width"
+        :pointerLength="8"
+        :pointerWidth="6"
+        @pointerdown="handleStart"
+        @pointermove="handleMove"
+        @pointerup="handleEnd"
       />
       <!-- pointer (for center of shape) -->
       <v-circle
@@ -51,6 +76,9 @@
         :radius="pointer.radius"
         :fill="pointer.fill ? pointer.fill : 'grey'"
         :stroke="pointer.stroke ? pointer.stroke : 'grey'"
+        @pointerdown="handleStart"
+        @pointermove="handleMove"
+        @pointerup="handleEnd"
       />
     </v-layer>
   </v-stage>
@@ -62,7 +90,7 @@ import { Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { lines, currentLine, rectangles, ellipses } = storeToRefs(canvasStore);
+const { lines, currentLine, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
 const { selectedShape, pointer } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
@@ -150,6 +178,7 @@ export default {
       currentLine,
       rectangles,
       ellipses,
+      arrows,
       handleStart,
       handleMove,
       handleEnd,

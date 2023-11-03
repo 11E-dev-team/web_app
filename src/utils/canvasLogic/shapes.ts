@@ -2,7 +2,7 @@ import { storeToRefs } from 'pinia';
 import { useCanvasStore, useCanvasStateStore, Shapes, Rectangle, Ellipse, Arrow } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
-const { currentShape, rectangles, ellipses } = storeToRefs(canvasStore);
+const { currentShape, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
 const { selectedShape, isDrawing, pointer } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
@@ -19,7 +19,7 @@ export function startShape(evt: Konva.KonvaEventObject<MouseEvent>): void {
       startEllipse(evt);
       break;
     case Shapes.Arrow:
-      // startArrow(evt);
+      startArrow(evt);
       break;
   }
 }
@@ -32,7 +32,7 @@ function startRectangle(evt: Konva.KonvaEventObject<MouseEvent>): void {
     width: 0,
     height: 0,
     type: 'Rectangle',
-  };
+  } as Rectangle;
   rectangles.value.push({ ...currentShape.value });
 }
 
@@ -46,11 +46,22 @@ function startEllipse(evt: Konva.KonvaEventObject<MouseEvent>): void {
       y: 0,
     },
     type: 'Ellipse',
-  };
+  } as Ellipse;
   pointer.value.x = evt.evt.offsetX;
   pointer.value.y = evt.evt.offsetY;
   pointer.value.radius = 1;
   ellipses.value.push({ ...currentShape.value });
+}
+
+function startArrow(evt: Konva.KonvaEventObject<MouseEvent>): void {
+  isDrawing.value = true;
+  currentShape.value = {
+    points: [evt.evt.offsetX, evt.evt.offsetY],
+    color: 'black',
+    width: 1,
+    type: 'Arrow',
+  } as Arrow;
+  arrows.value.push({ ...currentShape.value });
 }
 
 export function shape(evt: Konva.KonvaEventObject<MouseEvent>): void {
@@ -62,7 +73,7 @@ export function shape(evt: Konva.KonvaEventObject<MouseEvent>): void {
       ellipse(evt);
       break;
     case Shapes.Arrow:
-      // arrow(evt);
+      arrow(evt);
       break;
   }
 }
@@ -86,6 +97,15 @@ function ellipse(evt: Konva.KonvaEventObject<MouseEvent>): void {
   // TODO: Somehow display if radius.x === radius.y (if ellipse is a circle)
 }
 
+function arrow(evt: Konva.KonvaEventObject<MouseEvent>): void {
+  if (!isDrawing.value) return;
+  if (currentShape.value.type !== 'Arrow') return;
+  currentShape.value.points[2] = evt.evt.offsetX;
+  currentShape.value.points[3] = evt.evt.offsetY;
+  arrows.value.pop();
+  arrows.value.push({ ...currentShape.value });
+}
+
 export function endShape(evt: Konva.KonvaEventObject<MouseEvent>): void {
   switch (selectedShape.value) {
     case Shapes.Rectangle:
@@ -95,7 +115,7 @@ export function endShape(evt: Konva.KonvaEventObject<MouseEvent>): void {
       endEllipse(evt);
       break;
     case Shapes.Arrow:
-      // endArrow(evt);
+      endArrow(evt);
       break;
   }
 }
@@ -119,4 +139,14 @@ function endEllipse(evt: Konva.KonvaEventObject<MouseEvent>): void {
   pointer.value.x = 0;
   pointer.value.y = 0;
   pointer.value.radius = 0;
+}
+
+
+function endArrow(evt: Konva.KonvaEventObject<MouseEvent>): void {
+  if (!isDrawing.value) return;
+  isDrawing.value = false;
+  if (currentShape.value.type !== 'Arrow') return;
+  arrows.value.pop();
+  arrows.value.push({ ...currentShape.value });
+  currentShape.value = {} as Arrow;
 }
