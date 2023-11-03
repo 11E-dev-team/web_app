@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { Ref } from 'vue';
 
 export const useCounterStore = defineStore('counter', {
   state: () => ({ count: 0 }),
@@ -12,13 +13,17 @@ export const useCounterStore = defineStore('counter', {
   },
 })
 
-import Email from '@/utils/email'
 import Password from '@/utils/password'
 
-export interface User {
-  id?: number | null,
-  email: Email,
-}
+import {
+  User,
+  Line,
+  Rectangle,
+  Ellipse,
+  Circle,
+  Arrow,
+  Text,
+} from '@/store/public_interfaces'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -50,12 +55,6 @@ export const useAuthorizationStore = defineStore('authorization', {
   },
 })
 
-export interface Line {
-  points: number[];
-  color: string;
-  width: number;
-}
-
 enum shapes {
   Rectangle = 'Rectangle',
   Ellipse = 'Ellipse',
@@ -63,45 +62,6 @@ enum shapes {
 };
 
 export const Shapes: Readonly<typeof shapes> = Object.freeze(shapes);
-
-export interface Rectangle {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fill?: string;
-  stroke?: string;
-  strokeWidth?: number;
-  type: 'Rectangle';
-}
-
-export interface Ellipse {
-  x: number;
-  y: number;
-  radius: {
-    x: number;
-    y: number;
-  };
-  fill?: string;
-  stroke?: string;
-  strokeWidth?: number;
-  type: 'Ellipse';
-}
-
-export interface Circle {
-  x: number;
-  y: number;
-  radius: number;
-  fill?: string;
-  stroke?: string;
-}
-
-export interface Arrow {
-  points: number[];
-  color: string;
-  width: number;
-  type: 'Arrow';
-}
 
 export const useCanvasStore = defineStore('canvas', {
   state: () => {
@@ -115,6 +75,12 @@ export const useCanvasStore = defineStore('canvas', {
       rectangles: [] as Rectangle[],
       ellipses: [] as Ellipse[],
       arrows: [] as Arrow[],
+      texts: [] as Text[],
+      currentText: {
+        x: 0,
+        y: 0,
+        text: '',
+      } as Text,
       currentShape: {} as Rectangle | Ellipse | Arrow,
     }
   },
@@ -133,6 +99,7 @@ export const useCanvasStateStore = defineStore('canvas-state', {
         fill: 'grey',
         stroke: 'grey',
       } as Circle,
+      textInput: null as Ref | null,
     }
   },
 })

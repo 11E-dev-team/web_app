@@ -7,6 +7,7 @@
     <select v-model="selectedShape">
       <option v-for="[key, value] in Object.entries(Shapes)" :key="key" :value="key">{{ value }}</option>
     </select>
+    <input type="text" ref="textInput" @input="updateText" />
   </div>
   <v-stage
     :config="stageConfig"
@@ -69,6 +70,13 @@
         @pointermove="handleMove"
         @pointerup="handleEnd"
       />
+      <v-text
+        v-for="(text, index) in texts"
+        :key="index"
+        :x="text.x"
+        :y="text.y"
+        :text="text.text"
+      />
       <!-- pointer (for center of shape) -->
       <v-circle
         :x="pointer.x"
@@ -90,14 +98,15 @@ import { Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { lines, currentLine, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
+const { lines, currentLine, rectangles, ellipses, arrows, texts } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
-const { selectedShape, pointer } = storeToRefs(canvasStateStore);
+const { selectedShape, pointer, textInput } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
 import { startDraw, draw, endDraw } from '@/utils/canvasLogic/pen';
 import { startErase, erase, endErase } from '@/utils/canvasLogic/eraser';
 import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
+import { startText, updateText } from '@/utils/canvasLogic/text';
 
 export default {
   name: 'CanvasComponent',
@@ -112,6 +121,7 @@ export default {
       Pen = 'Pen',
       Eraser = 'Eraser',
       Shapes = 'Shapes',
+      Text = 'Text',
     };
 
     const Tools: Readonly<typeof tools> = Object.freeze(tools); // Needs to be moved to stateStore?
@@ -129,6 +139,9 @@ export default {
           break;
         case Tools.Shapes:
           startShape(evt);
+          break;
+        case Tools.Text:
+          startText(evt);
           break;
       }
     }
@@ -179,10 +192,13 @@ export default {
       rectangles,
       ellipses,
       arrows,
+      texts,
       handleStart,
       handleMove,
+      updateText,
       handleEnd,
       pointer,
+      textInput,
     };
   },
 };

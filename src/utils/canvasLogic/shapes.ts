@@ -1,5 +1,6 @@
 import { storeToRefs } from 'pinia';
-import { useCanvasStore, useCanvasStateStore, Shapes, Rectangle, Ellipse, Arrow } from '@/store';
+import { useCanvasStore, useCanvasStateStore, Shapes } from '@/store';
+import { Rectangle, Ellipse, Arrow } from '@/store/public_interfaces';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { currentShape, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
