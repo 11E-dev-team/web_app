@@ -27,6 +27,6 @@ export function endDraw(evt: Konva.KonvaEventObject<MouseEvent>): void {
   }
   lines.value.push({ ...currentLine.value });
   currentLine.value.color = 'black';
-  currentLine.value.width = 2;
+  currentLine.value.width = 1;
   currentLine.value.points = [];
 }

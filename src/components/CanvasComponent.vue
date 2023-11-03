@@ -26,6 +26,32 @@
         @pointermove="handleMove"
         @pointerup="handleEnd"
       />
+      <v-rect
+        v-for="(rectangle, index) in rectangles"
+        :key="index"
+        :x="rectangle.x"
+        :y="rectangle.y"
+        :width="rectangle.width"
+        :height="rectangle.height"
+        :stroke="rectangle.stroke ? rectangle.stroke : 'black'"
+      />
+      <v-ellipse
+        v-for="(ellipse, index) in ellipses"
+        :key="index"
+        :x="ellipse.x"
+        :y="ellipse.y"
+        :radiusX="ellipse.radius.x"
+        :radiusY="ellipse.radius.y"
+        :stroke="ellipse.stroke ? ellipse.stroke : 'black'"
+      />
+      <!-- pointer (for center of shape) -->
+      <v-circle
+        :x="pointer.x"
+        :y="pointer.y"
+        :radius="pointer.radius"
+        :fill="pointer.fill ? pointer.fill : 'grey'"
+        :stroke="pointer.stroke ? pointer.stroke : 'grey'"
+      />
     </v-layer>
   </v-stage>
 </template>
@@ -36,9 +62,9 @@ import { Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { lines, currentLine } = storeToRefs(canvasStore);
+const { lines, currentLine, rectangles, ellipses } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
-const { selectedShape } = storeToRefs(canvasStateStore);
+const { selectedShape, pointer } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
 import { startDraw, draw, endDraw } from '@/utils/canvasLogic/pen';
@@ -54,6 +80,7 @@ export default {
     });
 
     enum tools{
+      Cursor = 'Cursor',
       Pen = 'Pen',
       Eraser = 'Eraser',
       Shapes = 'Shapes',
@@ -61,7 +88,7 @@ export default {
 
     const Tools: Readonly<typeof tools> = Object.freeze(tools); // Needs to be moved to stateStore?
 
-    const selectedTool: Ref<tools> = ref<tools>(Tools.Pen);
+    const selectedTool: Ref<tools> = ref<tools>(Tools.Cursor);
 
     // Handle click event based on selected tool
     function handleStart(evt: Konva.KonvaEventObject<MouseEvent>): void {
@@ -121,9 +148,12 @@ export default {
       undo,
       lines,
       currentLine,
+      rectangles,
+      ellipses,
       handleStart,
       handleMove,
       handleEnd,
+      pointer,
     };
   },
 };

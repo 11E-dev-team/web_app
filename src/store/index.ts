@@ -56,6 +56,51 @@ export interface Line {
   width: number;
 }
 
+enum shapes {
+  Rectangle = 'Rectangle',
+  Ellipse = 'Ellipse',
+  Arrow = 'Arrow',
+};
+
+export const Shapes: Readonly<typeof shapes> = Object.freeze(shapes);
+
+export interface Rectangle {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fill?: string;
+  stroke?: string;
+  type: 'Rectangle';
+}
+
+export interface Ellipse {
+  x: number;
+  y: number;
+  radius: {
+    x: number;
+    y: number;
+  };
+  fill?: string;
+  stroke?: string;
+  type: 'Ellipse';
+}
+
+export interface Circle {
+  x: number;
+  y: number;
+  radius: number;
+  fill?: string;
+  stroke?: string;
+}
+
+export interface Arrow {
+  points: number[];
+  color: string;
+  width: number;
+  type: 'Arrow';
+}
+
 export const useCanvasStore = defineStore('canvas', {
   state: () => {
     return {
@@ -65,17 +110,13 @@ export const useCanvasStore = defineStore('canvas', {
         color: 'black',
         width: 1,
       } as Line,
+      rectangles: [] as Rectangle[],
+      ellipses: [] as Ellipse[],
+      arrows: [] as Arrow[],
+      currentShape: {} as Rectangle | Ellipse | Arrow,
     }
   },
 })
-
-enum shapes {
-  Rectangle = 'Rectangle',
-  Ellipse = 'Ellipse',
-  Arrow = 'Arrow',
-};
-
-export const Shapes: Readonly<typeof shapes> = Object.freeze(shapes);
 
 export const useCanvasStateStore = defineStore('canvas-state', {
   state: () => {
@@ -83,6 +124,13 @@ export const useCanvasStateStore = defineStore('canvas-state', {
       isDrawing: false as boolean,
       isErasing: false as boolean,
       selectedShape: Shapes.Rectangle as shapes,
+      pointer: {
+        x: 0,
+        y: 0,
+        radius: 0,
+        fill: 'grey',
+        stroke: 'grey',
+      } as Circle,
     }
   },
 })
