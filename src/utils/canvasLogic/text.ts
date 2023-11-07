@@ -3,7 +3,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { texts, currentText } = storeToRefs(canvasStore);
-const { textInput } = storeToRefs(canvasStateStore);
+const { textInput, isText } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
 export function startText(evt: Konva.KonvaEventObject<MouseEvent>): void {
@@ -14,7 +14,10 @@ export function startText(evt: Konva.KonvaEventObject<MouseEvent>): void {
     text: '',
   };
   if (!textInput.value) return;
-  textInput.value.focus(); // FIXME: not working focus on input field
+  const inputElement: HTMLInputElement = textInput.value;
+  inputElement.value = '';
+  inputElement.focus();
+  isText.value = true;
   texts.value.push({ ...currentText.value });
 }
 

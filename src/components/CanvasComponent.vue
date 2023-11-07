@@ -12,93 +12,99 @@
       <select v-model="selectedShape">
         <option v-for="[key, value] in Object.entries(Shapes)" :key="key" :value="key">{{ value }}</option>
       </select>
-    </div>
-    <!-- TODO: Fix focus and maake invisible -->
-    <div>
-      <input type="text" ref="textInput" @input="updateText" />
     </div>    
   </div>
-  <v-stage
-    :config="stageConfig"
-    :style="{ width: '100%', height: '100%', position: 'absolute', top: '60px', left: '0px' }"
-    @pointerdown="handleStart"
-    @pointermove="handleMove"
-    @pointerup="handleEnd"
-  >
-    <v-layer>
-      <v-line
-        v-for="(line, index) in lines"
-        :key="index"
-        :points="line.points"
-        :stroke="line.color"
-        :strokeWidth="line.width"
-        @pointerdown="handleStart"
-        @pointermove="handleMove"
-        @pointerup="handleEnd"
-      />
-      <v-rect
-        v-for="(rectangle, index) in rectangles"
-        :key="index"
-        :x="rectangle.x"
-        :y="rectangle.y"
-        :width="rectangle.width"
-        :height="rectangle.height"
-        :stroke="rectangle.stroke ? rectangle.stroke : 'black'"
-        :strokeWidth="rectangle.strokeWidth ? rectangle.strokeWidth : 1"
-        @pointerdown="handleStart"
-        @pointermove="handleMove"
-        @pointerup="handleEnd"
-      />
-      <v-ellipse
-        v-for="(ellipse, index) in ellipses"
-        :key="index"
-        :x="ellipse.x"
-        :y="ellipse.y"
-        :radiusX="ellipse.radius.x"
-        :radiusY="ellipse.radius.y"
-        :stroke="ellipse.stroke ? ellipse.stroke : 'black'"
-        :strokeWidth="ellipse.strokeWidth ? ellipse.strokeWidth : 1"
-        @pointerdown="handleStart"
-        @pointermove="handleMove"
-        @pointerup="handleEnd"
-      />
-      <v-arrow
-        v-for="
-          (arrow, index) in [
-            ...arrows, {points: [], color: 'black', width: 0, name: 'crutch'}
-          ]
-        "
-        :key="index"
-        :points="arrow.points"
-        :fill="arrow.color"
-        :stroke="arrow.color"
-        :strokeWidth="arrow.width"
-        :pointerLength="8"
-        :pointerWidth="6"
-        @pointerdown="handleStart"
-        @pointermove="handleMove"
-        @pointerup="handleEnd"
-      />
-      <v-text
-        v-for="(text, index) in texts"
-        :key="index"
-        :x="text.x"
-        :y="text.y"
-        :text="text.text"
-      />
-      <!-- pointer (for center of shape) -->
-      <v-circle
-        :x="pointer.x"
-        :y="pointer.y"
-        :radius="pointer.radius"
-        :fill="pointer.fill ? pointer.fill : 'grey'"
-        :stroke="pointer.stroke ? pointer.stroke : 'grey'"
-        @pointerdown="handleStart"
-        @pointermove="handleMove"
-        @pointerup="handleEnd"
-      />
-    </v-layer>
-  </v-stage>
+  <div class="canvas-container">
+    <v-stage
+      :config="stageConfig"
+      @pointerdown="handleStart"
+      @pointermove="handleMove"
+      @pointerup="handleEnd"
+    >
+      <v-layer>
+        <v-line
+          v-for="(line, index) in lines"
+          :key="index"
+          :points="line.points"
+          :stroke="line.color"
+          :strokeWidth="line.width"
+          @pointerdown="handleStart"
+          @pointermove="handleMove"
+          @pointerup="handleEnd"
+        />
+        <v-rect
+          v-for="(rectangle, index) in rectangles"
+          :key="index"
+          :x="rectangle.x"
+          :y="rectangle.y"
+          :width="rectangle.width"
+          :height="rectangle.height"
+          :stroke="rectangle.stroke ? rectangle.stroke : 'black'"
+          :strokeWidth="rectangle.strokeWidth ? rectangle.strokeWidth : 1"
+          @pointerdown="handleStart"
+          @pointermove="handleMove"
+          @pointerup="handleEnd"
+        />
+        <v-ellipse
+          v-for="(ellipse, index) in ellipses"
+          :key="index"
+          :x="ellipse.x"
+          :y="ellipse.y"
+          :radiusX="ellipse.radius.x"
+          :radiusY="ellipse.radius.y"
+          :stroke="ellipse.stroke ? ellipse.stroke : 'black'"
+          :strokeWidth="ellipse.strokeWidth ? ellipse.strokeWidth : 1"
+          @pointerdown="handleStart"
+          @pointermove="handleMove"
+          @pointerup="handleEnd"
+        />
+        <v-arrow
+          v-for="
+            (arrow, index) in [
+              ...arrows, {points: [], color: 'black', width: 0, name: 'crutch'}
+            ]
+          "
+          :key="index"
+          :points="arrow.points"
+          :fill="arrow.color"
+          :stroke="arrow.color"
+          :strokeWidth="arrow.width"
+          :pointerLength="8"
+          :pointerWidth="6"
+          @pointerdown="handleStart"
+          @pointermove="handleMove"
+          @pointerup="handleEnd"
+        />
+        <v-text
+          v-for="(text, index) in texts"
+          :key="index"
+          :x="text.x"
+          :y="text.y"
+          :text="text.text"
+        />
+        <!-- pointer (for center of shape) -->
+        <v-circle
+          :x="pointer.x"
+          :y="pointer.y"
+          :radius="pointer.radius"
+          :fill="pointer.fill ? pointer.fill : 'grey'"
+          :stroke="pointer.stroke ? pointer.stroke : 'grey'"
+          @pointerdown="handleStart"
+          @pointermove="handleMove"
+          @pointerup="handleEnd"
+        />
+      </v-layer>
+    </v-stage>
+  </div>
+  <!-- TODO: Automatically focus on text input -->
+  <input
+    v-show="isText"
+    type="text"
+    ref="textInput"
+    @input="updateText"
+    id="textInput"
+    @keyup="(event) => {if (event.key === 'Enter') {isText = false}}"
+  />
 </template>
 
 <script lang="ts">
@@ -109,7 +115,7 @@ import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const { lines, currentLine, rectangles, ellipses, arrows, texts } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
-const { selectedShape, pointer, textInput } = storeToRefs(canvasStateStore);
+const { selectedShape, pointer, textInput, isText } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
 import { startDraw, draw, endDraw } from '@/utils/canvasLogic/pen';
@@ -215,6 +221,7 @@ export default {
       handleEnd,
       pointer,
       textInput,
+      isText,
     };
   },
 };
@@ -252,5 +259,22 @@ canvas {
 
     background-color: var(--accent, #464ab4);
   }
+}
+
+.canvas-container {
+  position: absolute;
+  top: 101px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 101px);
+}
+
+#textInput {
+  position: absolute;
+  top: 101px;
+  left: 0;
+  width: calc(100vw - 4px);
+  height: calc(100vh - 103px);
+  border: none;
 }
 </style>

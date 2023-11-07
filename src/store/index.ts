@@ -99,6 +99,7 @@ export const useCanvasStateStore = defineStore('canvas-state', {
         fill: 'grey',
         stroke: 'grey',
       } as Circle,
+      isText: false as boolean,
       textInput: null as Ref | null,
     }
   },
