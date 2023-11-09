@@ -7,6 +7,7 @@ const { isTexting } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
 export function startText(evt: Konva.KonvaEventObject<MouseEvent>): void {
+  if (isTexting.value) endText();
   currentText.value = {
     x: evt.evt.offsetX,
     y: evt.evt.offsetY,
