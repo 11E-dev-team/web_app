@@ -62,6 +62,9 @@ enum shapes {
 
 export const Shapes: Readonly<typeof shapes> = Object.freeze(shapes);
 
+import { ref, Ref } from 'vue';
+import Konva from 'konva';
+
 export const useCanvasStore = defineStore('canvas', {
   state: () => {
     return {
@@ -83,6 +86,7 @@ export const useCanvasStore = defineStore('canvas', {
       } as Text,
       currentShape: {} as Rectangle | Ellipse | Arrow,
       currentId: 1 as number,
+      transformer: ref(null) as Ref<null | Konva.Transformer>,
     }
   },
 })
@@ -101,6 +105,7 @@ export const useCanvasStateStore = defineStore('canvas-state', {
         fill: 'grey',
         stroke: 'grey',
       } as Circle,
+      shapeIdToTransform: null as string | null,
     }
   },
 })

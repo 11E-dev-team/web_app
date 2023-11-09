@@ -110,6 +110,7 @@
           @pointermove="handleMove"
           @pointerup="handleEnd"
         />
+        <v-transform ref="transformer" />
       </v-layer>
     </v-stage>
   </div>
@@ -121,11 +122,12 @@ import { Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { lines, currentLine, rectangles, ellipses, arrows, texts, currentText } = storeToRefs(canvasStore);
+const { lines, currentLine, rectangles, ellipses, arrows, texts, currentText, transformer } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
 const { selectedShape, pointer } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
+import { startCursor, moveCursor, endCursor } from '@/utils/canvasLogic/cursor';
 import { startDraw, draw, endDraw } from '@/utils/canvasLogic/pen';
 import { startErase, erase, endErase } from '@/utils/canvasLogic/eraser';
 import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
@@ -165,6 +167,9 @@ export default {
           break;
         case Tools.Text:
           startText(evt);
+          break;
+        case Tools.Cursor:
+          startCursor(evt);
           break;
       }
     }
@@ -232,6 +237,7 @@ export default {
       handleMove,
       handleEnd,
       pointer,
+      transformer,
     };
   },
 };
