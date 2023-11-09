@@ -67,9 +67,10 @@ export const useCanvasStore = defineStore('canvas', {
     return {
       lines: [] as Line[],
       currentLine: {
+        id: '1',
         points: [],
         color: 'black',
-        width: 1,
+        width: 0,
       } as Line,
       rectangles: [] as Rectangle[],
       ellipses: [] as Ellipse[],
@@ -81,6 +82,7 @@ export const useCanvasStore = defineStore('canvas', {
         text: '',
       } as Text,
       currentShape: {} as Rectangle | Ellipse | Arrow,
+      currentId: 1 as number,
     }
   },
 })

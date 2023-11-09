@@ -6,12 +6,14 @@ export interface User {
 }
 
 export interface Line {
+  id: string;
   points: number[];
   color: string;
   width: number;
 }
 
 export interface Rectangle {
+  id: string;
   x: number;
   y: number;
   width: number;
@@ -23,6 +25,7 @@ export interface Rectangle {
 }
 
 export interface Ellipse {
+  id: string;
   x: number;
   y: number;
   radius: {
@@ -36,6 +39,7 @@ export interface Ellipse {
 }
 
 export interface Circle {
+  id: string;
   x: number;
   y: number;
   radius: number;
@@ -44,6 +48,7 @@ export interface Circle {
 }
 
 export interface Arrow {
+  id: string;
   points: number[];
   color: string;
   width: number;
@@ -51,6 +56,7 @@ export interface Arrow {
 }
 
 export interface Text {
+  id: string;
   x: number;
   y: number;
   text: string;

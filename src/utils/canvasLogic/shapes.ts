@@ -3,7 +3,7 @@ import { useCanvasStore, useCanvasStateStore, Shapes } from '@/store';
 import { Rectangle, Ellipse, Arrow } from '@/store/public_interfaces';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
-const { currentShape, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
+const { currentId, currentShape, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
 const { selectedShape, isDrawing, pointer } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
@@ -27,7 +27,9 @@ export function startShape(evt: Konva.KonvaEventObject<MouseEvent>): void {
 
 function startRectangle(evt: Konva.KonvaEventObject<MouseEvent>): void {
   isDrawing.value = true;
+  currentId.value += 1;
   currentShape.value = {
+    id: currentId.value.toString(),
     x: evt.evt.offsetX,
     y: evt.evt.offsetY,
     width: 0,
@@ -39,7 +41,9 @@ function startRectangle(evt: Konva.KonvaEventObject<MouseEvent>): void {
 
 function startEllipse(evt: Konva.KonvaEventObject<MouseEvent>): void {
   isDrawing.value = true;
+  currentId.value += 1;
   currentShape.value = {
+    id: currentId.value.toString(),
     x: evt.evt.offsetX,
     y: evt.evt.offsetY,
     radius: {
@@ -56,7 +60,9 @@ function startEllipse(evt: Konva.KonvaEventObject<MouseEvent>): void {
 
 function startArrow(evt: Konva.KonvaEventObject<MouseEvent>): void {
   isDrawing.value = true;
+  currentId.value += 1;
   currentShape.value = {
+    id: currentId.value.toString(),
     points: [evt.evt.offsetX, evt.evt.offsetY],
     color: 'black',
     width: 1,

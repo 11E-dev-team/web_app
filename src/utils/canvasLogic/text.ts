@@ -2,13 +2,15 @@ import { storeToRefs } from 'pinia';
 import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
-const { texts, currentText } = storeToRefs(canvasStore);
+const { currentId, texts, currentText } = storeToRefs(canvasStore);
 const { isTexting } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
 export function startText(evt: Konva.KonvaEventObject<MouseEvent>): void {
   if (isTexting.value) endText();
+  currentId.value += 1;
   currentText.value = {
+    id: currentId.value.toString(),
     x: evt.evt.offsetX,
     y: evt.evt.offsetY,
     text: '',
@@ -37,7 +39,9 @@ function endText(): void {
   isTexting.value = false;
   texts.value.pop();
   texts.value.push({ ...currentText.value });
+  currentId.value += 1;
   currentText.value = {
+    id: currentId.value.toString(),
     x: 0,
     y: 0,
     text: '',

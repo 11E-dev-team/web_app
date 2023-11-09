@@ -25,6 +25,7 @@
         <v-line
           v-for="(line, index) in lines"
           :key="index"
+          :id="line.id"
           :points="line.points"
           :stroke="line.color"
           :strokeWidth="line.width"
@@ -35,6 +36,7 @@
         <v-rect
           v-for="(rectangle, index) in rectangles"
           :key="index"
+          :id="rectangle.id"
           :x="rectangle.x"
           :y="rectangle.y"
           :width="rectangle.width"
@@ -48,6 +50,7 @@
         <v-ellipse
           v-for="(ellipse, index) in ellipses"
           :key="index"
+          :id="ellipse.id"
           :x="ellipse.x"
           :y="ellipse.y"
           :radiusX="ellipse.radius.x"
@@ -61,10 +64,11 @@
         <v-arrow
           v-for="
             (arrow, index) in [
-              ...arrows, {points: [], color: 'black', width: 0, name: 'crutch'}
+              ...arrows, {id: 'crutch', points: [], color: 'black', width: 0, name: 'crutch'}
             ]
           "
           :key="index"
+          :id="arrow.id"
           :points="arrow.points"
           :fill="arrow.color"
           :stroke="arrow.color"
@@ -78,6 +82,7 @@
         <v-text
           v-for="(text, index) in texts"
           :key="index"
+          :id="text.id"
           :x="text.x"
           :y="text.y"
           :text="text.text"

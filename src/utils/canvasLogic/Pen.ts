@@ -2,7 +2,7 @@ import { storeToRefs } from 'pinia';
 import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
-const { lines, currentLine } = storeToRefs(canvasStore);
+const { currentId, lines, currentLine } = storeToRefs(canvasStore);
 const { isDrawing } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
@@ -26,6 +26,8 @@ export function endDraw(evt: Konva.KonvaEventObject<MouseEvent>): void {
     lines.value.pop();
   }
   lines.value.push({ ...currentLine.value });
+  currentId.value += 1;
+  currentLine.value.id = currentId.value.toString();
   currentLine.value.color = 'black';
   currentLine.value.width = 1;
   currentLine.value.points = [];
