@@ -81,6 +81,18 @@
           :x="text.x"
           :y="text.y"
           :text="text.text"
+          @pointerdown="handleStart"
+          @pointermove="handleMove"
+          @pointerup="handleEnd"
+        />
+        <!-- TODO: Add cursor for text -->
+        <v-text
+          :x="currentText.x"
+          :y="currentText.y"
+          :text="currentText.text"
+          @pointerdown="handleStart"
+          @pointermove="handleMove"
+          @pointerup="handleEnd"
         />
         <!-- pointer (for center of shape) -->
         <v-circle
@@ -96,15 +108,6 @@
       </v-layer>
     </v-stage>
   </div>
-  <!-- TODO: Automatically focus on text input -->
-  <input
-    v-show="isText"
-    type="text"
-    ref="textInput"
-    @input="updateText"
-    id="textInput"
-    @keyup="(event) => {if (event.key === 'Enter') {isText = false}}"
-  />
 </template>
 
 <script lang="ts">
@@ -113,9 +116,9 @@ import { Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { lines, currentLine, rectangles, ellipses, arrows, texts } = storeToRefs(canvasStore);
+const { lines, currentLine, rectangles, ellipses, arrows, texts, currentText } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
-const { selectedShape, pointer, textInput, isText } = storeToRefs(canvasStateStore);
+const { selectedShape, pointer } = storeToRefs(canvasStateStore);
 import Konva from 'konva';
 
 import { startDraw, draw, endDraw } from '@/utils/canvasLogic/pen';
@@ -200,6 +203,10 @@ export default {
         stageConfig.width = window.innerWidth;
         stageConfig.height = window.innerHeight - 101;
       });
+
+      window.addEventListener('keydown', (evt: KeyboardEvent) => {
+        updateText(evt);
+      })
     });
 
     return {
@@ -215,13 +222,11 @@ export default {
       ellipses,
       arrows,
       texts,
+      currentText,
       handleStart,
       handleMove,
-      updateText,
       handleEnd,
       pointer,
-      textInput,
-      isText,
     };
   },
 };

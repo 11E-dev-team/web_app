@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { Ref } from 'vue';
 
 export const useCounterStore = defineStore('counter', {
   state: () => ({ count: 0 }),
@@ -91,6 +90,7 @@ export const useCanvasStateStore = defineStore('canvas-state', {
     return {
       isDrawing: false as boolean,
       isErasing: false as boolean,
+      isTexting: false as boolean,
       selectedShape: Shapes.Rectangle as shapes,
       pointer: {
         x: 0,
@@ -99,8 +99,6 @@ export const useCanvasStateStore = defineStore('canvas-state', {
         fill: 'grey',
         stroke: 'grey',
       } as Circle,
-      isText: false as boolean,
-      textInput: null as Ref | null,
     }
   },
 })
