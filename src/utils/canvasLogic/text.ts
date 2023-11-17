@@ -4,15 +4,17 @@ const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { currentId, texts, currentText } = storeToRefs(canvasStore);
 const { isTexting } = storeToRefs(canvasStateStore);
-import Konva from 'konva';
+import { fabric } from 'fabric';
 
-export function startText(evt: Konva.KonvaEventObject<MouseEvent>): void {
+export function startText(evt: fabric.IEvent): void {
+  if (!evt.pointer) return;
+  const { x, y } = evt.pointer;
   if (isTexting.value) endText();
   currentId.value += 1;
   currentText.value = {
     id: currentId.value.toString(),
-    x: evt.evt.offsetX,
-    y: evt.evt.offsetY,
+    x: x,
+    y: y,
     text: '',
   };
   isTexting.value = true;

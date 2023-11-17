@@ -4,7 +4,7 @@ const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { lines, rectangles, ellipses, arrows, texts } = storeToRefs(canvasStore);
 const { isErasing } = storeToRefs(canvasStateStore);
-import Konva from 'konva';
+import { fabric } from 'fabric';
 
 function deleteShape(id: string): void {
   const lineIndex = lines.value.findIndex((line) => line.id === id);
@@ -38,30 +38,18 @@ function deleteShape(id: string): void {
   }
 }
 
-function eraseAtPoint(evt: Konva.KonvaEventObject<MouseEvent>): void {
-  const stage = evt.target.parent;
-  const toDestroy = stage?.getAllIntersections(stage.getRelativePointerPosition());
-  if (!toDestroy) return;
-  for (const shape of toDestroy) {
-    shape.destroy();
-    deleteShape(shape.id());
-  }
-}
-
-export function startErase(evt: Konva.KonvaEventObject<MouseEvent>): void {
+export function startErase(evt: fabric.IEvent): void {
   isErasing.value = true;
-  if (evt.target._id === 1) return;
-  eraseAtPoint(evt);
+  // if (evt.target._id === 1) return;
 }
 
-export function erase(evt: Konva.KonvaEventObject<MouseEvent>): void {
+export function erase(evt: fabric.IEvent): void {
   if (!isErasing.value) return;
-  if (evt.target._id === 1) return;
-  eraseAtPoint(evt);
+  // if (evt.target._id === 1) return;
 }
 
-export function endErase(evt: Konva.KonvaEventObject<MouseEvent>): void {
+export function endErase(evt: fabric.IEvent): void {
   isErasing.value = false;
-  if (evt.target._id === 1) return;
-  evt.target.destroy();
+  // if (evt.target._id === 1) return;
+  // evt.target.destroy();
 }

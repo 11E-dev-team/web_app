@@ -1,18 +1,28 @@
 import Email from '@/utils/email'
 
-export interface User {
+export enum Tools_ {
+  Cursor = 'Cursor',
+  Pen = 'Pen',
+  Eraser = 'Eraser',
+  Shapes = 'Shapes',
+  Text = 'Text',
+}
+
+export const Tools: Readonly<typeof Tools_> = Object.freeze(Tools_);
+
+export interface IUser {
   id?: number | null,
   email: Email,
 }
 
-export interface Line {
+export interface ILine {
   id: string;
   points: number[];
   color: string;
   width: number;
 }
 
-export interface Rectangle {
+export interface IRectangle {
   id: string;
   x: number;
   y: number;
@@ -24,7 +34,7 @@ export interface Rectangle {
   type: 'Rectangle';
 }
 
-export interface Ellipse {
+export interface IEllipse {
   id: string;
   x: number;
   y: number;
@@ -38,7 +48,7 @@ export interface Ellipse {
   type: 'Ellipse';
 }
 
-export interface Circle {
+export interface ICircle {
   id: string;
   x: number;
   y: number;
@@ -47,7 +57,7 @@ export interface Circle {
   stroke?: string;
 }
 
-export interface Arrow {
+export interface IArrow {
   id: string;
   points: number[];
   color: string;
@@ -55,7 +65,7 @@ export interface Arrow {
   type: 'Arrow';
 }
 
-export interface Text {
+export interface IText {
   id: string;
   x: number;
   y: number;

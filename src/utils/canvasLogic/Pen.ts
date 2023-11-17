@@ -4,23 +4,26 @@ const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { currentId, lines, currentLine } = storeToRefs(canvasStore);
 const { isDrawing } = storeToRefs(canvasStateStore);
-import Konva from 'konva';
+import { fabric } from 'fabric';
 
-export function startDraw(evt: Konva.KonvaEventObject<MouseEvent>): void {
+export function startDraw(evt: fabric.IEvent): void {
+  console.log(evt);
   isDrawing.value = true;
-  const { offsetX, offsetY } = evt.evt;
-  currentLine.value.points.push(offsetX, offsetY);
+  if (!evt.pointer) return;
+  const { x, y } = evt.pointer;
+  currentLine.value.points.push(x, y);
   lines.value.push({ ...currentLine.value });
 }
 
-export function draw(evt: Konva.KonvaEventObject<MouseEvent>): void {
+export function draw(evt: fabric.IEvent): void {
   if (!isDrawing.value) return;
-  const { offsetX, offsetY } = evt.evt;
-  currentLine.value.points.push(offsetX, offsetY);
+  if (!evt.pointer) return;
+  const { x, y } = evt.pointer;
+  currentLine.value.points.push(x, y);
   lines.value.push({ ...currentLine.value });
 }
 
-export function endDraw(evt: Konva.KonvaEventObject<MouseEvent>): void {
+export function endDraw(evt: fabric.IEvent): void {
   isDrawing.value = false;
   for (var i: number = 0; i < currentLine.value.points.length; i += 2) {
     lines.value.pop();

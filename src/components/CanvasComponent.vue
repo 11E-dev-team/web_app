@@ -12,122 +12,26 @@
       <select v-model="selectedShape">
         <option v-for="[key, value] in Object.entries(Shapes)" :key="key" :value="key">{{ value }}</option>
       </select>
-    </div>    
+    </div>
   </div>
-  <div class="canvas-container">
-    <v-stage
-      :config="stageConfig"
-      @pointerdown="handleStart"
-      @pointermove="handleMove"
-      @pointerup="handleEnd"
-    >
-      <v-layer>
-        <v-line
-          v-for="(line, index) in lines"
-          :key="index"
-          :id="line.id"
-          :points="line.points"
-          :stroke="line.color"
-          :strokeWidth="line.width"
-          @pointerdown="handleStart"
-          @pointermove="handleMove"
-          @pointerup="handleEnd"
-        />
-        <v-rect
-          v-for="(rectangle, index) in rectangles"
-          :key="index"
-          :id="rectangle.id"
-          :x="rectangle.x"
-          :y="rectangle.y"
-          :width="rectangle.width"
-          :height="rectangle.height"
-          :stroke="rectangle.stroke ? rectangle.stroke : 'black'"
-          :strokeWidth="rectangle.strokeWidth ? rectangle.strokeWidth : 1"
-          @pointerdown="handleStart"
-          @pointermove="handleMove"
-          @pointerup="handleEnd"
-        />
-        <v-ellipse
-          v-for="(ellipse, index) in ellipses"
-          :key="index"
-          :id="ellipse.id"
-          :x="ellipse.x"
-          :y="ellipse.y"
-          :radiusX="ellipse.radius.x"
-          :radiusY="ellipse.radius.y"
-          :stroke="ellipse.stroke ? ellipse.stroke : 'black'"
-          :strokeWidth="ellipse.strokeWidth ? ellipse.strokeWidth : 1"
-          @pointerdown="handleStart"
-          @pointermove="handleMove"
-          @pointerup="handleEnd"
-        />
-        <v-arrow
-          v-for="
-            (arrow, index) in [
-              ...arrows, {id: 'crutch', points: [], color: 'black', width: 0, name: 'crutch'}
-            ]
-          "
-          :key="index"
-          :id="arrow.id"
-          :points="arrow.points"
-          :fill="arrow.color"
-          :stroke="arrow.color"
-          :strokeWidth="arrow.width"
-          :pointerLength="8"
-          :pointerWidth="6"
-          @pointerdown="handleStart"
-          @pointermove="handleMove"
-          @pointerup="handleEnd"
-        />
-        <v-text
-          v-for="(text, index) in texts"
-          :key="index"
-          :id="text.id"
-          :x="text.x"
-          :y="text.y"
-          :text="text.text"
-          @pointerdown="handleStart"
-          @pointermove="handleMove"
-          @pointerup="handleEnd"
-        />
-        <!-- TODO: Add cursor for text -->
-        <v-text
-          :x="currentText.x"
-          :y="currentText.y"
-          :text="currentText.text"
-          @pointerdown="handleStart"
-          @pointermove="handleMove"
-          @pointerup="handleEnd"
-        />
-        <!-- pointer (for center of shape) -->
-        <v-circle
-          :x="pointer.x"
-          :y="pointer.y"
-          :radius="pointer.radius"
-          :fill="pointer.fill ? pointer.fill : 'grey'"
-          :stroke="pointer.stroke ? pointer.stroke : 'grey'"
-          @pointerdown="handleStart"
-          @pointermove="handleMove"
-          @pointerup="handleEnd"
-        />
-        <v-transform ref="transformer" />
-      </v-layer>
-    </v-stage>
+  <div class="container">
+    <canvas id="canvas" ref="canvas"></canvas>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, onMounted, reactive, watch } from 'vue';
+import { ref, onMounted, reactive, watch, onBeforeUnmount, computed } from 'vue';
 import { Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { lines, currentLine, rectangles, ellipses, arrows, texts, currentText, transformer } = storeToRefs(canvasStore);
+const { canvas, canvas_json, lines, currentLine, rectangles, ellipses, arrows, texts, currentText } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
-const { selectedShape, pointer } = storeToRefs(canvasStateStore);
-import Konva from 'konva';
+const { selectedTool, selectedShape, pointer } = storeToRefs(canvasStateStore);
+import { fabric } from 'fabric';
 
-import { startCursor, moveCursor, endCursor } from '@/utils/canvasLogic/cursor';
+import { Tools, Tools_ } from '@/store/public_interfaces';
+
 import { startDraw, draw, endDraw } from '@/utils/canvasLogic/pen';
 import { startErase, erase, endErase } from '@/utils/canvasLogic/eraser';
 import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
@@ -138,23 +42,16 @@ export default {
   setup() {
     const stageConfig = reactive({
       width: window.innerWidth,
-      height: window.innerHeight - 101,
+      height: window.innerHeight - 105,
     });
 
-    enum tools{
-      Cursor = 'Cursor',
-      Pen = 'Pen',
-      Eraser = 'Eraser',
-      Shapes = 'Shapes',
-      Text = 'Text',
-    };
-
-    const Tools: Readonly<typeof tools> = Object.freeze(tools); // Needs to be moved to stateStore?
-
-    const selectedTool: Ref<tools> = ref<tools>(Tools.Cursor);
+    const isDrawingMode = computed(() => selectedTool.value === Tools.Pen || selectedTool.value === Tools.Eraser);
+    const freeDrawingBrushInverted = computed(() => selectedTool.value === Tools.Eraser);
 
     // Handle click event based on selected tool
-    function handleStart(evt: Konva.KonvaEventObject<MouseEvent>): void {
+    function handleStart(evt: fabric.IEvent): void {
+      console.log("handler");
+      console.log(evt);
       switch (selectedTool.value) {
         case Tools.Pen:
           startDraw(evt);
@@ -168,14 +65,11 @@ export default {
         case Tools.Text:
           startText(evt);
           break;
-        case Tools.Cursor:
-          startCursor(evt);
-          break;
       }
     }
 
     // Handle move event based on selected tool
-    function handleMove(evt: Konva.KonvaEventObject<MouseEvent>): void {
+    function handleMove(evt: fabric.IEvent): void {
       switch (selectedTool.value) {
         case Tools.Pen:
           draw(evt);
@@ -189,7 +83,7 @@ export default {
       }
     }
 
-    function handleEnd(evt: Konva.KonvaEventObject<MouseEvent>): void {
+    function handleEnd(evt: fabric.IEvent): void {
       switch (selectedTool.value) {
         case Tools.Pen:
           endDraw(evt);
@@ -212,11 +106,50 @@ export default {
       window.addEventListener('resize', () => {
         stageConfig.width = window.innerWidth;
         stageConfig.height = window.innerHeight - 101;
+        if (canvas.value instanceof fabric.Canvas) {
+          canvas.value.setDimensions({ width: stageConfig.width, height: stageConfig.height });
+        };
       });
 
-      window.addEventListener('keydown', (evt: KeyboardEvent) => {
-        updateText(evt);
+      // window.addEventListener('keydown', (evt: KeyboardEvent) => {
+      //   updateText(evt);
+      // });
+
+      if (typeof canvas.value !== 'undefined') {
+        if (!(canvas.value instanceof fabric.Canvas)) {
+          canvas.value = new fabric.Canvas('canvas', {
+            width: stageConfig.width,
+            height: stageConfig.height,
+          });
+          if (canvas_json.value) {
+            canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
+          }
+        };
+
+        // canvas.on('after:render', () =>{ if (!canvas) return; canvas.calcOffset(); });
+        // canvas.value.on('mouse:move', handleMove);
+        // canvas.value.on('mouse:down', handleStart);
+        // canvas.value.on('mouse:up', handleEnd);
+        // canvas.value.freeDrawingBrush = new fabric.EraserBrush(canvas);
+        canvas.value.isDrawingMode = isDrawingMode.value;
+        // canvas.value.freeDrawingBrush = freeDrawingBrushInverted.value;
+      };
+
+      watch(isDrawingMode, (newValue) => {
+        if (canvas.value instanceof fabric.Canvas) {
+          canvas.value.isDrawingMode = newValue;
+        }
       })
+    });
+
+    onBeforeUnmount(() => {
+      // canvas.value.off('mouse:move', handleMove);
+      // canvas.value.off('mouse:down', handleStart);
+      // canvas.value.off('mouse:up', handleEnd);
+
+      if (canvas.value instanceof fabric.Canvas) {
+        canvas_json.value = JSON.stringify(canvas.value.toDatalessJSON());
+      }
     });
 
     return {
@@ -226,18 +159,7 @@ export default {
       selectedTool,
       Tools,
       undo,
-      lines,
-      currentLine,
-      rectangles,
-      ellipses,
-      arrows,
-      texts,
-      currentText,
-      handleStart,
-      handleMove,
-      handleEnd,
-      pointer,
-      transformer,
+      canvas,
     };
   },
 };
@@ -251,7 +173,6 @@ export default {
 }
 
 canvas {
-  border: 1px solid #000;
   width: 100%;
   height: 100%;
 }
@@ -277,8 +198,8 @@ canvas {
   }
 }
 
-.canvas-container {
-  position: absolute;
+.container {
+  position: absolute !important;
   top: 101px;
   left: 0;
   width: 100%;
@@ -289,8 +210,8 @@ canvas {
   position: absolute;
   top: 101px;
   left: 0;
-  width: calc(100vw - 4px);
-  height: calc(100vh - 103px);
+  width: 100vw;
+  height: calc(100vh - 101px);
   border: none;
 }
 </style>

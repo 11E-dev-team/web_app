@@ -15,20 +15,20 @@ export const useCounterStore = defineStore('counter', {
 import Password from '@/utils/password'
 
 import {
-  User,
-  Line,
-  Rectangle,
-  Ellipse,
-  Circle,
-  Arrow,
-  Text,
+  IUser,
+  ILine,
+  IRectangle,
+  IEllipse,
+  ICircle,
+  IArrow,
+  IText,
 } from '@/store/public_interfaces'
 
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
-      user: null as User | null,
-      newUser: null as User | null,
+      user: null as IUser | null,
+      newUser: null as IUser | null,
     }
   }
 })
@@ -63,33 +63,35 @@ enum shapes {
 export const Shapes: Readonly<typeof shapes> = Object.freeze(shapes);
 
 import { ref, Ref } from 'vue';
-import Konva from 'konva';
 
 export const useCanvasStore = defineStore('canvas', {
   state: () => {
     return {
-      lines: [] as Line[],
+      canvas: undefined as fabric.Canvas | undefined,
+      canvas_json: undefined as string | undefined,
+      lines: [] as ILine[],
       currentLine: {
         id: '1',
         points: [],
         color: 'black',
         width: 0,
-      } as Line,
-      rectangles: [] as Rectangle[],
-      ellipses: [] as Ellipse[],
-      arrows: [] as Arrow[],
-      texts: [] as Text[],
+      } as ILine,
+      rectangles: [] as IRectangle[],
+      ellipses: [] as IEllipse[],
+      arrows: [] as IArrow[],
+      texts: [] as IText[],
       currentText: {
         x: 0,
         y: 0,
         text: '',
-      } as Text,
-      currentShape: {} as Rectangle | Ellipse | Arrow,
+      } as IText,
+      currentShape: {} as IRectangle | IEllipse | IArrow,
       currentId: 1 as number,
-      transformer: ref(null) as Ref<null | Konva.Transformer>,
     }
   },
 })
+
+import { Tools, Tools_ } from '@/store/public_interfaces'
 
 export const useCanvasStateStore = defineStore('canvas-state', {
   state: () => {
@@ -97,6 +99,7 @@ export const useCanvasStateStore = defineStore('canvas-state', {
       isDrawing: false as boolean,
       isErasing: false as boolean,
       isTexting: false as boolean,
+      selectedTool: Tools.Cursor as Tools_,
       selectedShape: Shapes.Rectangle as shapes,
       pointer: {
         x: 0,
@@ -104,7 +107,7 @@ export const useCanvasStateStore = defineStore('canvas-state', {
         radius: 0,
         fill: 'grey',
         stroke: 'grey',
-      } as Circle,
+      } as ICircle,
       shapeIdToTransform: null as string | null,
     }
   },
