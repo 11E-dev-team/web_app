@@ -3,7 +3,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 import { Shapes } from '@/store/public_interfaces';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
-const { canvas, currentId, currentShape, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
+const { canvas, currentShape } = storeToRefs(canvasStore);
 const { selectedShape, isDrawing, pointer } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
@@ -96,6 +96,7 @@ function rectangle(evt: fabric.IEvent): void {
   if (!evt.pointer) return;
   const { x, y } = evt.pointer;
   if (!isDrawing.value) return;
+  if (!(currentShape.value instanceof fabric.Rect)) return;
   const left = currentShape.value.left ? Math.min(currentShape.value.left, x) : x;
   const top = currentShape.value.top ? Math.min(currentShape.value.top, y) : y;
   const width = Math.max(Math.abs(x - left), Math.abs(currentShape.value.left ? currentShape.value.left - left : 0));
@@ -114,6 +115,7 @@ function ellipse(evt: fabric.IEvent): void {
   if (!evt.pointer) return;
   const { x, y } = evt.pointer;
   if (!isDrawing.value) return;
+  if (!(currentShape.value instanceof fabric.Ellipse)) return;
   const rx = pointer.value.left ? pointer.value.left - x : 0;
   const ry = pointer.value.top ? pointer.value.top - y : 0;
   let left = rx > 0 ? x : x + 2*rx;

@@ -61,24 +61,7 @@ export const useCanvasStore = defineStore('canvas', {
     return {
       canvas: undefined as fabric.Canvas | undefined,
       canvas_json: undefined as string | undefined,
-      lines: [] as ILine[],
-      currentLine: {
-        id: '1',
-        points: [],
-        color: 'black',
-        width: 0,
-      } as ILine,
-      rectangles: [] as IRectangle[],
-      ellipses: [] as IEllipse[],
-      arrows: [] as IArrow[],
-      texts: [] as IText[],
-      currentText: {
-        x: 0,
-        y: 0,
-        text: '',
-      } as IText,
-      currentShape: {} as fabric.Rect,
-      currentId: 1 as number,
+      currentShape: {} as fabric.Rect | fabric.Ellipse | fabric.IText,
     }
   },
 })
@@ -90,8 +73,6 @@ export const useCanvasStateStore = defineStore('canvas-state', {
   state: () => {
     return {
       isDrawing: false as boolean,
-      isErasing: false as boolean,
-      isTexting: false as boolean,
       selectedTool: Tools.Cursor as Tools_,
       selectedShape: Shapes.Rectangle as Shapes_,
       pointer: new fabric.Circle({

@@ -6,22 +6,19 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted, reactive, watch, onBeforeUnmount, computed, defineComponent } from 'vue';
-import { Ref } from 'vue';
+import { onMounted, reactive, watch, onBeforeUnmount, computed, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { canvas, canvas_json, lines, currentLine, rectangles, ellipses, arrows, texts, currentText } = storeToRefs(canvasStore);
+const { canvas, canvas_json } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
 const { selectedTool, selectedShape, pointer } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
-import { Tools, Tools_ } from '@/store/public_interfaces';
+import { Tools } from '@/store/public_interfaces';
 
-import { startDraw, draw, endDraw } from '@/utils/canvasLogic/pen';
-import { startErase, erase, endErase } from '@/utils/canvasLogic/eraser';
 import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
-import { startText, updateText } from '@/utils/canvasLogic/text';
+import { startText } from '@/utils/canvasLogic/text';
 
 import ToolKit from './ToolKitComponent.vue';
 
