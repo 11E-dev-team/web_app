@@ -54,14 +54,6 @@ export const useAuthorizationStore = defineStore('authorization', {
   },
 })
 
-enum shapes {
-  Rectangle = 'Rectangle',
-  Ellipse = 'Ellipse',
-  Arrow = 'Arrow',
-};
-
-export const Shapes: Readonly<typeof shapes> = Object.freeze(shapes);
-
 import { ref, Ref } from 'vue';
 
 export const useCanvasStore = defineStore('canvas', {
@@ -85,13 +77,14 @@ export const useCanvasStore = defineStore('canvas', {
         y: 0,
         text: '',
       } as IText,
-      currentShape: {} as IRectangle | IEllipse | IArrow,
+      currentShape: {} as fabric.Rect,
       currentId: 1 as number,
     }
   },
 })
 
-import { Tools, Tools_ } from '@/store/public_interfaces'
+import { Tools, Tools_, Shapes, Shapes_ } from '@/store/public_interfaces'
+import { fabric } from 'fabric'
 
 export const useCanvasStateStore = defineStore('canvas-state', {
   state: () => {
@@ -100,15 +93,14 @@ export const useCanvasStateStore = defineStore('canvas-state', {
       isErasing: false as boolean,
       isTexting: false as boolean,
       selectedTool: Tools.Cursor as Tools_,
-      selectedShape: Shapes.Rectangle as shapes,
-      pointer: {
-        x: 0,
-        y: 0,
+      selectedShape: Shapes.Rectangle as Shapes_,
+      pointer: new fabric.Circle({
+        left: 0,
+        top: 0,
         radius: 0,
         fill: 'grey',
         stroke: 'grey',
-      } as ICircle,
-      shapeIdToTransform: null as string | null,
+      }) as fabric.Circle,
     }
   },
 })

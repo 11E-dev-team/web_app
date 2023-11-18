@@ -10,6 +10,14 @@ export enum Tools_ {
 
 export const Tools: Readonly<typeof Tools_> = Object.freeze(Tools_);
 
+export enum Shapes_ {
+  Rectangle = 'Rectangle',
+  Ellipse = 'Ellipse',
+  Arrow = 'Arrow',
+};
+
+export const Shapes: Readonly<typeof Shapes_> = Object.freeze(Shapes_);
+
 export interface IUser {
   id?: number | null,
   email: Email,

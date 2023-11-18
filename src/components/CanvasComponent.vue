@@ -1,29 +1,15 @@
 <template>
-  <div class="toolkit">
-    <!-- TODO: add icons -->
-    <button @click="selectedTool = Tools.Cursor">Cursor</button>
-    <button @click="selectedTool = Tools.Text">Text</button>
-    <button @click="selectedTool = Tools.Shapes">Shapes</button>
-    <button @click="selectedTool = Tools.Pen">Pen</button>
-    <button @click="selectedTool = Tools.Eraser">Eraser</button>
-    <button @click="undo">Undo</button>
-    <!-- TODO: Move to Shapes chooser -->
-    <div>
-      <select v-model="selectedShape">
-        <option v-for="[key, value] in Object.entries(Shapes)" :key="key" :value="key">{{ value }}</option>
-      </select>
-    </div>
-  </div>
+  <ToolKit />
   <div class="container">
     <canvas id="canvas" ref="canvas"></canvas>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, onMounted, reactive, watch, onBeforeUnmount, computed } from 'vue';
+import { ref, onMounted, reactive, watch, onBeforeUnmount, computed, defineComponent } from 'vue';
 import { Ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useCanvasStore, Shapes, useCanvasStateStore } from '@/store';
+import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const { canvas, canvas_json, lines, currentLine, rectangles, ellipses, arrows, texts, currentText } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
@@ -37,14 +23,20 @@ import { startErase, erase, endErase } from '@/utils/canvasLogic/eraser';
 import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
 import { startText, updateText } from '@/utils/canvasLogic/text';
 
-export default {
+import ToolKit from './ToolKitComponent.vue';
+
+export default defineComponent({
   name: 'CanvasComponent',
+  components: {
+    ToolKit,
+  },
   setup() {
     const stageConfig = reactive({
       width: window.innerWidth,
       height: window.innerHeight - 105,
     });
 
+    const isSelectionMode = computed(() => selectedTool.value === Tools.Cursor);
     const isDrawingMode = computed(() => selectedTool.value === Tools.Pen || selectedTool.value === Tools.Eraser);
     const freeDrawingBrushInverted = computed(() => selectedTool.value === Tools.Eraser);
 
@@ -53,12 +45,6 @@ export default {
       console.log("handler");
       console.log(evt);
       switch (selectedTool.value) {
-        case Tools.Pen:
-          startDraw(evt);
-          break;
-        case Tools.Eraser:
-          startErase(evt);
-          break;
         case Tools.Shapes:
           startShape(evt);
           break;
@@ -71,12 +57,6 @@ export default {
     // Handle move event based on selected tool
     function handleMove(evt: fabric.IEvent): void {
       switch (selectedTool.value) {
-        case Tools.Pen:
-          draw(evt);
-          break;
-        case Tools.Eraser:
-          erase(evt);
-          break;
         case Tools.Shapes:
           shape(evt);
           break;
@@ -85,12 +65,6 @@ export default {
 
     function handleEnd(evt: fabric.IEvent): void {
       switch (selectedTool.value) {
-        case Tools.Pen:
-          endDraw(evt);
-          break;
-        case Tools.Eraser:
-          endErase(evt);
-          break;
         case Tools.Shapes:
           endShape(evt);
           break;
@@ -115,31 +89,35 @@ export default {
       //   updateText(evt);
       // });
 
-      if (typeof canvas.value !== 'undefined') {
-        if (!(canvas.value instanceof fabric.Canvas)) {
-          canvas.value = new fabric.Canvas('canvas', {
-            width: stageConfig.width,
-            height: stageConfig.height,
-          });
-          if (canvas_json.value) {
-            canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
-          }
-        };
-
-        // canvas.on('after:render', () =>{ if (!canvas) return; canvas.calcOffset(); });
-        // canvas.value.on('mouse:move', handleMove);
-        // canvas.value.on('mouse:down', handleStart);
-        // canvas.value.on('mouse:up', handleEnd);
-        // canvas.value.freeDrawingBrush = new fabric.EraserBrush(canvas);
-        canvas.value.isDrawingMode = isDrawingMode.value;
-        // canvas.value.freeDrawingBrush = freeDrawingBrushInverted.value;
+      if (!(canvas.value instanceof fabric.Canvas)) {
+        canvas.value = new fabric.Canvas('canvas', {
+          width: stageConfig.width,
+          height: stageConfig.height,
+        });
+        if (canvas_json.value) {
+          canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
+        }
       };
+      canvas.value.on('mouse:move', handleMove);
+      canvas.value.on('mouse:down', handleStart);
+      canvas.value.on('mouse:up', handleEnd);
+
+      canvas.value.selection = isSelectionMode.value;
+      // canvas.value.freeDrawingBrush = new fabric.EraserBrush(canvas);
+      canvas.value.isDrawingMode = isDrawingMode.value;
+      // canvas.value.freeDrawingBrush = freeDrawingBrushInverted.value;
 
       watch(isDrawingMode, (newValue) => {
         if (canvas.value instanceof fabric.Canvas) {
           canvas.value.isDrawingMode = newValue;
         }
       })
+      watch(isSelectionMode, (newValue) => {
+        if (canvas.value instanceof fabric.Canvas) {
+          canvas.value.selection = newValue;
+        }
+      })
+      canvas.value.add(pointer.value)
     });
 
     onBeforeUnmount(() => {
@@ -152,17 +130,9 @@ export default {
       }
     });
 
-    return {
-      stageConfig,
-      selectedShape,
-      Shapes,
-      selectedTool,
-      Tools,
-      undo,
-      canvas,
-    };
+    return;
   },
-};
+});
 </script>
 
 <style scoped lang="scss">
@@ -175,27 +145,6 @@ export default {
 canvas {
   width: 100%;
   height: 100%;
-}
-
-.toolkit {
-  position: relative;
-  z-index: 100;
-  left: 32px;
-  top: 32px;
-
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  gap: 16px;
-
-  width: 80px;
-
-  button {
-    width: 48px;
-    height: 48px;
-
-    background-color: var(--accent, #464ab4);
-  }
 }
 
 .container {

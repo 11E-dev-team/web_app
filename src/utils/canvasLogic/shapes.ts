@@ -1,15 +1,11 @@
 import { storeToRefs } from 'pinia';
-import { useCanvasStore, useCanvasStateStore, Shapes } from '@/store';
-import { IRectangle, IEllipse, IArrow } from '@/store/public_interfaces';
+import { useCanvasStore, useCanvasStateStore } from '@/store';
+import { Shapes } from '@/store/public_interfaces';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
-const { currentId, currentShape, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
+const { canvas, currentId, currentShape, rectangles, ellipses, arrows } = storeToRefs(canvasStore);
 const { selectedShape, isDrawing, pointer } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
-
-function abs(x: number): number {
-  return x < 0 ? -x : x;
-}
 
 export function startShape(evt: fabric.IEvent): void {
   switch (selectedShape.value) {
@@ -19,63 +15,68 @@ export function startShape(evt: fabric.IEvent): void {
     case Shapes.Ellipse:
       startEllipse(evt);
       break;
-    case Shapes.Arrow:
-      startArrow(evt);
-      break;
+    // case Shapes.Arrow:
+    //   startArrow(evt);
+    //   break;
   }
 }
 
 function startRectangle(evt: fabric.IEvent): void {
+  if (!canvas.value) return;
   if (!evt.pointer) return;
   const { x, y } = evt.pointer;
   isDrawing.value = true;
-  currentId.value += 1;
-  currentShape.value = {
-    id: currentId.value.toString(),
-    x: x,
-    y: y,
+  currentShape.value = new fabric.Rect({
+    left: x,
+    top: y,
     width: 0,
     height: 0,
-    type: 'Rectangle',
-  } as IRectangle;
-  rectangles.value.push({ ...currentShape.value });
+    stroke: 'black',
+    fill: 'transparent',
+  });
+  canvas.value.add(currentShape.value);
+  canvas.value.renderAll();
 }
 
 function startEllipse(evt: fabric.IEvent): void {
+  if (!canvas.value) return;
   if (!evt.pointer) return;
   const { x, y } = evt.pointer;
   isDrawing.value = true;
-  currentId.value += 1;
-  currentShape.value = {
-    id: currentId.value.toString(),
-    x: x,
-    y: y,
-    radius: {
-      x: 0,
-      y: 0,
-    },
-    type: 'Ellipse',
-  } as IEllipse;
-  pointer.value.x = x;
-  pointer.value.y = y;
-  pointer.value.radius = 1;
-  ellipses.value.push({ ...currentShape.value });
+  currentShape.value = new fabric.Ellipse({
+    left: x,
+    top: y,
+    rx: 0,
+    ry: 0,
+    stroke: 'black',
+    strokeWidth: 1,
+    fill: 'transparent',
+  });
+  canvas.value.add(currentShape.value);
+  canvas.value.renderAll();
+  pointer.value.set({
+    left: x,
+    top: y,
+    radius: 2,
+    fill: 'grey',
+    stroke: 'grey',
+  })
 }
 
-function startArrow(evt: fabric.IEvent): void {
-  if (!evt.pointer) return;
-  const { x, y } = evt.pointer;
-  isDrawing.value = true;
-  currentId.value += 1;
-  currentShape.value = {
-    id: currentId.value.toString(),
-    points: [x, y],
-    color: 'black',
-    width: 1,
-    type: 'Arrow',
-  } as IArrow;
-  arrows.value.push({ ...currentShape.value });
-}
+// function startArrow(evt: fabric.IEvent): void {
+//   if (!evt.pointer) return;
+//   const { x, y } = evt.pointer;
+//   isDrawing.value = true;
+//   currentId.value += 1;
+//   currentShape.value = {
+//     id: currentId.value.toString(),
+//     points: [x, y],
+//     color: 'black',
+//     width: 1,
+//     type: 'Arrow',
+//   } as IArrow;
+//   arrows.value.push({ ...currentShape.value });
+// }
 
 export function shape(evt: fabric.IEvent): void {
   switch (selectedShape.value) {
@@ -85,9 +86,9 @@ export function shape(evt: fabric.IEvent): void {
     case Shapes.Ellipse:
       ellipse(evt);
       break;
-    case Shapes.Arrow:
-      arrow(evt);
-      break;
+    // case Shapes.Arrow:
+    //   arrow(evt);
+    //   break;
   }
 }
 
@@ -95,35 +96,48 @@ function rectangle(evt: fabric.IEvent): void {
   if (!evt.pointer) return;
   const { x, y } = evt.pointer;
   if (!isDrawing.value) return;
-  if (currentShape.value.type !== 'Rectangle') return;
-  currentShape.value.width = x - currentShape.value.x;
-  currentShape.value.height = y - currentShape.value.y;
-  rectangles.value.pop();
-  rectangles.value.push({ ...currentShape.value });
+  const left = currentShape.value.left ? Math.min(currentShape.value.left, x) : x;
+  const top = currentShape.value.top ? Math.min(currentShape.value.top, y) : y;
+  const width = Math.max(Math.abs(x - left), Math.abs(currentShape.value.left ? currentShape.value.left - left : 0));
+  const height = Math.max(Math.abs(y - top), Math.abs(currentShape.value.top ? currentShape.value.top - top : 0));
+  currentShape.value.set({
+    left: left,
+    top: top,
+    width: width,
+    height: height,
+  })
+
+  canvas.value?.renderAll();
 }
 
 function ellipse(evt: fabric.IEvent): void {
   if (!evt.pointer) return;
   const { x, y } = evt.pointer;
   if (!isDrawing.value) return;
-  if (currentShape.value.type !== 'Ellipse') return;
-  currentShape.value.radius.x = abs(x - currentShape.value.x);
-  currentShape.value.radius.y = abs(y - currentShape.value.y);
-  ellipses.value.pop();
-  ellipses.value.push({ ...currentShape.value });
+  const rx = pointer.value.left ? pointer.value.left - x : 0;
+  const ry = pointer.value.top ? pointer.value.top - y : 0;
+  let left = rx > 0 ? x : x + 2*rx;
+  let top = ry > 0 ? y : y + 2*ry;
+  currentShape.value.set({
+    left: left,
+    top: top,
+    rx: Math.abs(rx),
+    ry: Math.abs(ry),
+  })
+  canvas.value?.renderAll();
   // TODO: Somehow display if radius.x === radius.y (if ellipse is a circle)
 }
 
-function arrow(evt: fabric.IEvent): void {
-  if (!evt.pointer) return;
-  const { x, y } = evt.pointer;
-  if (!isDrawing.value) return;
-  if (currentShape.value.type !== 'Arrow') return;
-  currentShape.value.points[2] = x;
-  currentShape.value.points[3] = y;
-  arrows.value.pop();
-  arrows.value.push({ ...currentShape.value });
-}
+// function arrow(evt: fabric.IEvent): void {
+//   if (!evt.pointer) return;
+//   const { x, y } = evt.pointer;
+//   if (!isDrawing.value) return;
+//   if (currentShape.value.type !== 'Arrow') return;
+//   currentShape.value.points[2] = x;
+//   currentShape.value.points[3] = y;
+//   arrows.value.pop();
+//   arrows.value.push({ ...currentShape.value });
+// }
 
 export function endShape(evt: fabric.IEvent): void {
   switch (selectedShape.value) {
@@ -133,39 +147,34 @@ export function endShape(evt: fabric.IEvent): void {
     case Shapes.Ellipse:
       endEllipse(evt);
       break;
-    case Shapes.Arrow:
-      endArrow(evt);
-      break;
+    // case Shapes.Arrow:
+    //   endArrow(evt);
+    //   break;
   }
 }
 
 function endRectangle(evt: fabric.IEvent): void {
-  if (!isDrawing.value) return;
   isDrawing.value = false;
-  if (currentShape.value.type !== 'Rectangle') return;
-  rectangles.value.pop();
-  rectangles.value.push({ ...currentShape.value });
-  currentShape.value = {} as IRectangle;
 }
 
 function endEllipse(evt: fabric.IEvent): void {
-  if (!isDrawing.value) return;
   isDrawing.value = false;
-  if (currentShape.value.type !== 'Ellipse') return;
-  ellipses.value.pop();
-  ellipses.value.push({ ...currentShape.value });
-  currentShape.value = {} as IEllipse;
-  pointer.value.x = 0;
-  pointer.value.y = 0;
-  pointer.value.radius = 0;
+  pointer.value.set({
+    left: 0,
+    top: 0,
+    radius: 0,
+    fill: 'transparent',
+    stroke: 'transparent',
+  })
+  canvas.value?.renderAll();
 }
 
 
-function endArrow(evt: fabric.IEvent): void {
-  if (!isDrawing.value) return;
-  isDrawing.value = false;
-  if (currentShape.value.type !== 'Arrow') return;
-  arrows.value.pop();
-  arrows.value.push({ ...currentShape.value });
-  currentShape.value = {} as IArrow;
-}
+// function endArrow(evt: fabric.IEvent): void {
+//   if (!isDrawing.value) return;
+//   isDrawing.value = false;
+//   if (currentShape.value.type !== 'Arrow') return;
+//   arrows.value.pop();
+//   arrows.value.push({ ...currentShape.value });
+//   currentShape.value = {} as IArrow;
+// }
