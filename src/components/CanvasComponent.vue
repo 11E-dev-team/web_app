@@ -12,7 +12,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const { canvas, canvas_json } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
-const { selectedTool, selectedShape, pointer } = storeToRefs(canvasStateStore);
+const { selectedTool } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
 import { Tools } from '@/store/public_interfaces';
@@ -114,7 +114,6 @@ export default defineComponent({
           canvas.value.selection = newValue;
         }
       })
-      canvas.value.add(pointer.value)
     });
 
     onBeforeUnmount(() => {

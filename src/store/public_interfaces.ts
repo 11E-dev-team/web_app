@@ -13,6 +13,7 @@ export const Tools: Readonly<typeof Tools_> = Object.freeze(Tools_);
 export enum Shapes_ {
   Rectangle = 'Rectangle',
   Ellipse = 'Ellipse',
+  Line = 'Line',
   Arrow = 'Arrow',
 };
 

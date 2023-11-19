@@ -61,7 +61,8 @@ export const useCanvasStore = defineStore('canvas', {
     return {
       canvas: undefined as fabric.Canvas | undefined,
       canvas_json: undefined as string | undefined,
-      currentShape: {} as fabric.Rect | fabric.Ellipse | fabric.IText,
+      currentShape: {} as fabric.Line | fabric.Rect | fabric.Ellipse | fabric.IText,
+      additionalShapes: [] as (fabric.Triangle | fabric.Circle)[],
     }
   },
 })
@@ -75,13 +76,6 @@ export const useCanvasStateStore = defineStore('canvas-state', {
       isDrawing: false as boolean,
       selectedTool: Tools.Cursor as Tools_,
       selectedShape: Shapes.Rectangle as Shapes_,
-      pointer: new fabric.Circle({
-        left: 0,
-        top: 0,
-        radius: 0,
-        fill: 'grey',
-        stroke: 'grey',
-      }) as fabric.Circle,
     }
   },
 })
