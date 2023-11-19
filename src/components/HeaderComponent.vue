@@ -3,7 +3,7 @@
     <h1>
       <RouterLink :to="homePage">{{ msg }}</RouterLink>
     </h1>
-    <userInfo>{{ email }}</userInfo>
+    <span>{{ email }}</span>
   </header>
 </template>
 

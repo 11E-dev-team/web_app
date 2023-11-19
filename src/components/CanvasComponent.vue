@@ -39,8 +39,6 @@ export default defineComponent({
 
     // Handle click event based on selected tool
     function handleStart(evt: fabric.IEvent): void {
-      console.log("handler");
-      console.log(evt);
       switch (selectedTool.value) {
         case Tools.Shapes:
           startShape(evt);
@@ -82,10 +80,6 @@ export default defineComponent({
         };
       });
 
-      // window.addEventListener('keydown', (evt: KeyboardEvent) => {
-      //   updateText(evt);
-      // });
-
       if (!(canvas.value instanceof fabric.Canvas)) {
         canvas.value = new fabric.Canvas('canvas', {
           width: stageConfig.width,
@@ -117,12 +111,15 @@ export default defineComponent({
     });
 
     onBeforeUnmount(() => {
-      // canvas.value.off('mouse:move', handleMove);
-      // canvas.value.off('mouse:down', handleStart);
-      // canvas.value.off('mouse:up', handleEnd);
-
       if (canvas.value instanceof fabric.Canvas) {
+        canvas.value.off('mouse:move', handleMove);
+        canvas.value.off('mouse:down', handleStart);
+        canvas.value.off('mouse:up', handleEnd);
+
         canvas_json.value = JSON.stringify(canvas.value.toDatalessJSON());
+
+        canvas.value.dispose();
+        canvas.value = undefined;
       }
     });
 
