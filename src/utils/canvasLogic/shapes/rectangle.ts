@@ -2,7 +2,7 @@ import { storeToRefs } from 'pinia';
 import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
-const { canvas, currentShape } = storeToRefs(canvasStore);
+const { canvas, currentShape, additionalShapes } = storeToRefs(canvasStore);
 const { isDrawing } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
@@ -19,6 +19,11 @@ export function startRectangle(evt: fabric.IEvent): void {
     stroke: 'black',
     fill: 'transparent',
   });
+  additionalShapes.value.push(new fabric.Circle({
+    left: x,
+    top: y,
+    radius: 0,
+  }))
   canvas.value.add(currentShape.value);
   canvas.value.renderAll();
 }
@@ -28,13 +33,14 @@ export function rectangle(evt: fabric.IEvent): void {
   const { x, y } = evt.pointer;
   if (!isDrawing.value) return;
   if (!(currentShape.value instanceof fabric.Rect)) return;
-  const left = currentShape.value.left ? Math.min(currentShape.value.left, x) : x;
-  const top = currentShape.value.top ? Math.min(currentShape.value.top, y) : y;
-  const width = Math.max(Math.abs(x - left), Math.abs(currentShape.value.left ? currentShape.value.left - left : 0));
-  const height = Math.max(Math.abs(y - top), Math.abs(currentShape.value.top ? currentShape.value.top - top : 0));
+  const  { left, top } = additionalShapes.value[additionalShapes.value.length - 1]
+  const figLeft = left ? Math.min(left, x) : x;
+  const figTop = top ? Math.min(top, y) : y;
+  const width = Math.max(Math.abs(x - (left ? left : 0)), Math.abs(currentShape.value.left ? currentShape.value.left - (left ? left : 0) : 0));
+  const height = Math.max(Math.abs(y - (top ? top : 0)), Math.abs(currentShape.value.top ? currentShape.value.top - (top ? top : 0) : 0));
   currentShape.value.set({
-    left: left,
-    top: top,
+    left: figLeft,
+    top: figTop,
     width: width,
     height: height,
   })
@@ -44,4 +50,6 @@ export function rectangle(evt: fabric.IEvent): void {
 
 export function endRectangle(evt: fabric.IEvent): void {
   isDrawing.value = false;
+  canvas.value?.remove(additionalShapes.value[additionalShapes.value.length - 1]);
+  additionalShapes.value.pop();
 }

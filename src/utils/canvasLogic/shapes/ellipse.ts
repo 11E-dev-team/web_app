@@ -56,10 +56,7 @@ export function ellipse(evt: fabric.IEvent): void {
 
 export function endEllipse(evt: fabric.IEvent): void {
   isDrawing.value = false;
-  additionalShapes.value[additionalShapes.value.length - 1].set({
-    fill: "transparent",
-    stroke: "transparent",
-  })
+  canvas.value?.remove(additionalShapes.value[additionalShapes.value.length - 1]);
   additionalShapes.value.pop();
   canvas.value?.renderAll();
 }
