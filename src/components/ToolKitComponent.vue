@@ -55,6 +55,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/scss/main.scss';
 .toolkit {
   position: relative;
   z-index: 100;

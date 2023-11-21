@@ -1,4 +1,5 @@
 <template>
+  <NavigationBar />
   <ToolKit />
   <div class="container">
     <canvas id="canvas" ref="canvas"></canvas>
@@ -25,6 +26,7 @@ import { startText } from '@/utils/canvasLogic/text';
 import { sendToBackend } from '@/utils/utils';
 
 import ToolKit from './ToolKitComponent.vue';
+import NavigationBar from './NavigationComponent.vue';
 
 socket.value.onopen = function () {
   console.log('Connection established');
@@ -34,6 +36,7 @@ export default defineComponent({
   name: 'CanvasComponent',
   components: {
     ToolKit,
+    NavigationBar,
   },
   setup() {
     const stageConfig = reactive({
