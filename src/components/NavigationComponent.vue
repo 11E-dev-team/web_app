@@ -1,9 +1,17 @@
 <template>
   <div class="navbar">
-    <RouterLink to="/"></RouterLink> <!-- home -->
-    <button></button> <!-- settings -->
-    <button></button> <!-- group preview -->
-    <button></button> <!-- change view -->
+    <RouterLink to="/">
+      <img src="@/assets/SpizdIconPack/exit.svg" alt="logo">
+    </RouterLink> <!-- home -->
+    <button>
+      <img src="@/assets/SpizdIconPack/settingsIcon.svg" alt="logo">
+    </button> <!-- settings -->
+    <button>
+      <img src="@/assets/SpizdIconPack/groupIcon.svg" alt="logo">
+    </button> <!-- group preview -->
+    <button>
+      <img src="@/assets/SpizdIconPack/desksIcon.svg" alt="logo">
+    </button> <!-- change view -->
   </div>
 </template>
 
@@ -45,7 +53,7 @@ export default defineComponent({
     width: 48px;
     height: 48px;
     
-    background-color: var(--accent, #464AB4);
+    background-color: transparent;
   }
 }
 </style>
