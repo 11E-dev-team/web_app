@@ -1,19 +1,19 @@
 <template>
   <div class="side">
     <div class="student-canvas">
-      <canvas-component notEditable />
+      <canvas-component notEditable :canvas-id="1" />
     </div>
     <div class="student-canvas">
-      <canvas-component notEditable />
+      <canvas-component notEditable :canvas-id="2" />
     </div>
     <div class="student-canvas">
-      <canvas-component notEditable />
+      <canvas-component notEditable :canvas-id="3" />
     </div>
     <div class="student-canvas">
-      <canvas-component notEditable />
+      <canvas-component notEditable :canvas-id="4" />
     </div>
     <div class="student-canvas">
-      <canvas-component notEditable />
+      <canvas-component notEditable :canvas-id="5" />
     </div>
   </div>
 </template>

@@ -14,7 +14,7 @@ const canvasStateStore = useCanvasStateStore();
 const { selectedTool, selectedColor } = storeToRefs(canvasStateStore);
 import { useUserStore } from '@/store';
 const userStore = useUserStore();
-const { socket } = storeToRefs(userStore);
+const { mainSocket, socketsInSession } = storeToRefs(userStore);
 import { fabric } from 'fabric';
 
 import { Tools } from '@/store/public_interfaces';
@@ -25,10 +25,6 @@ import { sendToBackend } from '@/utils/utils';
 
 import ToolKit from './ToolKitComponent.vue';
 import NavigationBar from './NavigationComponent.vue';
-
-socket.value.onopen = function () {
-  console.log('Connection established');
-};
 
 // Handle click event based on selected tool
 function handleStart(evt: fabric.IEvent): void {
@@ -86,6 +82,8 @@ function undo(): void {
   // TODO: Undo the last action
 }
 
+let canvas_: fabric.Canvas | undefined = undefined;
+
 export default defineComponent({
   name: 'CanvasComponent',
   components: {
@@ -95,6 +93,10 @@ export default defineComponent({
   props: {
     main: Boolean,
     isEditable: Boolean,
+    canvasId: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
@@ -114,25 +116,29 @@ export default defineComponent({
     };
   },
   mounted() {
-    window.addEventListener('resize', () => {
-      this.stageConfig.width = this.$refs.container ? (this.$refs.container as HTMLElement).offsetWidth : window.innerWidth;
-      this.stageConfig.height = this.$refs.container ? (this.$refs.container as HTMLElement).offsetHeight : window.innerHeight;
-      if (canvas.value instanceof fabric.Canvas) {
-        canvas.value.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
-      };
-    });
-
-    if (!(canvas.value instanceof fabric.Canvas)) {
-      canvas.value = new fabric.Canvas('canvas', {
-        width: this.stageConfig.width,
-        height: this.stageConfig.height,
-      });
-      if (canvas_json.value) {
-        canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
-      }
-    };
-
     if (this.$props.main) {
+      window.addEventListener('resize', () => {
+        this.stageConfig.width = window.innerWidth;
+        this.stageConfig.height = window.innerHeight;
+        if (canvas.value instanceof fabric.Canvas) {
+          canvas.value.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
+        };
+      });
+
+      if (!(canvas.value instanceof fabric.Canvas)) {
+        canvas.value = new fabric.Canvas('canvas', {
+          width: this.stageConfig.width,
+          height: this.stageConfig.height,
+        });
+        if (canvas_json.value) {
+          canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
+        }
+      };
+
+      mainSocket.value.onopen = function () {
+        console.log('Connection established');
+      };
+
       canvas.value.on('mouse:move', handleMove);
       canvas.value.on('mouse:down', handleStart);
       canvas.value.on('mouse:up', handleEnd);
@@ -143,17 +149,45 @@ export default defineComponent({
       // canvas.value.freeDrawingBrush = new fabric.EraserBrush(canvas);
       canvas.value.isDrawingMode = this.isDrawingMode;
       // canvas.value.freeDrawingBrush = freeDrawingBrushInverted.value;
+
+      mainSocket.value.onmessage = function (evt) {
+        if (!canvas.value) return;
+        console.log(evt.data);
+        canvas_json.value = evt.data;
+        canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
+      };
     } else {
-      canvas.value.selection = false;
-      canvas.value.isDrawingMode = false;
+      window.addEventListener('resize', () => {
+        this.stageConfig.width = this.$refs.container ? (this.$refs.container as HTMLElement).offsetWidth : window.innerWidth;
+        this.stageConfig.height = this.$refs.container ? (this.$refs.container as HTMLElement).offsetHeight : window.innerHeight;
+        if (canvas.value instanceof fabric.Canvas) {
+          canvas.value.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
+        };
+      });
+
+      if (typeof canvas_ === 'undefined') {
+        canvas_ = new fabric.Canvas('canvas', {
+          width: this.stageConfig.width,
+          height: this.stageConfig.height,
+        });
+      };
+
+      const { canvasId } = this.$props;
+      socketsInSession.value[canvasId].onopen = function () {
+        console.log('Connection with ' + canvasId + ' established');
+      }
+      canvas_.selection = false;
+      canvas_.isDrawingMode = false;
+
+      socketsInSession.value[canvasId].onmessage = function (evt) {
+        if (!canvas_) return;
+        console.log(evt.data);
+        const json = evt.data;
+        canvas_.loadFromJSON(json, canvas_.renderAll.bind(canvas_));
+      };
     };
 
-    socket.value.onmessage = function (evt) {
-      if (!canvas.value) return;
-      console.log(evt.data);
-      canvas_json.value = evt.data;
-      canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
-    };
+    
   },
   beforeUnmount() {
     if (canvas.value instanceof fabric.Canvas) {

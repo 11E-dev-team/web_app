@@ -1,8 +1,8 @@
 <template>
-  <canvas-component main />
   <div class="canvas-container">
-    <students-side />
+    <canvas-component main />
   </div>
+  <students-side />
   <navigation-bar adaptive />
   <tool-kit />
 </template>
