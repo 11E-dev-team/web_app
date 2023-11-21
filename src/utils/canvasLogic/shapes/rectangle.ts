@@ -3,7 +3,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { canvas, currentShape, additionalShapes } = storeToRefs(canvasStore);
-const { isDrawing } = storeToRefs(canvasStateStore);
+const { isDrawing, selectedColor } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
 export function startRectangle(evt: fabric.IEvent): void {
@@ -16,7 +16,7 @@ export function startRectangle(evt: fabric.IEvent): void {
     top: y,
     width: 0,
     height: 0,
-    stroke: 'black',
+    stroke: selectedColor.value,
     fill: 'transparent',
   });
   additionalShapes.value.push(new fabric.Circle({

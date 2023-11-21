@@ -12,7 +12,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const { canvas, canvas_json, currentShape } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
-const { selectedTool } = storeToRefs(canvasStateStore);
+const { selectedTool, selectedColor } = storeToRefs(canvasStateStore);
 import { useUserStore } from '@/store';
 const userStore = useUserStore();
 const { socket } = storeToRefs(userStore);
@@ -68,9 +68,12 @@ export default defineComponent({
 
     function handleEnd(evt: fabric.IEvent): void {
       switch (selectedTool.value) {
-        case Tools.Pen || Tools.Cursor:
+        case Tools.Cursor:
           sendToBackend(evt);
           break; 
+        case Tools.Pen:
+          sendToBackend(evt);
+          break;
         case Tools.Shapes:
           endShape(evt);
           sendToBackend(evt);
@@ -120,7 +123,7 @@ export default defineComponent({
       canvas.value.on('mouse:down', handleStart);
       canvas.value.on('mouse:up', handleEnd);
 
-      // canvas.value.on('after:render', sendToBackend);
+      canvas.value.freeDrawingBrush.color = selectedColor.value;
 
       socket.value.onmessage = function (evt) {
         if (!canvas.value) return;

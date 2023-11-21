@@ -3,7 +3,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { canvas, currentShape, additionalShapes } = storeToRefs(canvasStore);
-const { isDrawing } = storeToRefs(canvasStateStore);
+const { isDrawing, selectedColor } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
 export function startEllipse(evt: fabric.IEvent): void {
@@ -16,7 +16,7 @@ export function startEllipse(evt: fabric.IEvent): void {
     top: y,
     rx: 0,
     ry: 0,
-    stroke: 'black',
+    stroke: selectedColor.value,
     strokeWidth: 1,
     fill: 'transparent',
   });

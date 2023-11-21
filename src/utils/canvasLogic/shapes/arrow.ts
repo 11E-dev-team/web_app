@@ -3,7 +3,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { canvas, currentShape, additionalShapes } = storeToRefs(canvasStore);
-const { isDrawing } = storeToRefs(canvasStateStore);
+const { isDrawing, selectedColor } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
 export function startArrow(evt: fabric.IEvent): void {
@@ -14,7 +14,7 @@ export function startArrow(evt: fabric.IEvent): void {
   
   const points = [x, y, x, y];
   currentShape.value = new fabric.Line(points, {
-    stroke: 'black',
+    stroke: selectedColor.value,
     strokeWidth: 1,
   });
 
@@ -23,8 +23,8 @@ export function startArrow(evt: fabric.IEvent): void {
     top: y,
     width: 10,
     height: 10,
-    fill: 'black',
-    stroke: 'black',
+    fill: selectedColor.value,
+    stroke: selectedColor.value,
     strokeWidth: 1,
   }));
 
