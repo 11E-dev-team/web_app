@@ -59,7 +59,7 @@ export default defineComponent({
   position: relative;
   z-index: 100;
   left: 32px;
-  top: calc(50vh - 210px);
+  top: calc(50vh - 160px);
 
   display: flex;
   flex-direction: column;

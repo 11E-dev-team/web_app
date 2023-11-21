@@ -38,7 +38,7 @@ export default defineComponent({
   setup() {
     const stageConfig = reactive({
       width: window.innerWidth,
-      height: window.innerHeight - 105,
+      height: window.innerHeight,
     });
 
     const isSelectionMode = computed(() => selectedTool.value === Tools.Cursor);
@@ -104,7 +104,7 @@ export default defineComponent({
     onMounted(() => {
       window.addEventListener('resize', () => {
         stageConfig.width = window.innerWidth;
-        stageConfig.height = window.innerHeight - 101;
+        stageConfig.height = window.innerHeight;
         if (canvas.value instanceof fabric.Canvas) {
           canvas.value.setDimensions({ width: stageConfig.width, height: stageConfig.height });
         };
@@ -181,18 +181,9 @@ canvas {
 
 .container {
   position: absolute !important;
-  top: 101px;
+  top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 101px);
-}
-
-#textInput {
-  position: absolute;
-  top: 101px;
-  left: 0;
-  width: 100vw;
-  height: calc(100vh - 101px);
-  border: none;
+  height: 100%;
 }
 </style>
