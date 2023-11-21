@@ -10,17 +10,25 @@ import { onMounted, reactive, watch, onBeforeUnmount, computed, defineComponent 
 import { storeToRefs } from 'pinia';
 import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
-const { canvas, canvas_json } = storeToRefs(canvasStore);
+const { canvas, canvas_json, currentShape } = storeToRefs(canvasStore);
 const canvasStateStore = useCanvasStateStore();
 const { selectedTool } = storeToRefs(canvasStateStore);
+import { useUserStore } from '@/store';
+const userStore = useUserStore();
+const { socket } = storeToRefs(userStore);
 import { fabric } from 'fabric';
 
 import { Tools } from '@/store/public_interfaces';
 
 import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
 import { startText } from '@/utils/canvasLogic/text';
+import { sendToBackend } from '@/utils/utils';
 
 import ToolKit from './ToolKitComponent.vue';
+
+socket.value.onopen = function () {
+  console.log('Connection established');
+};
 
 export default defineComponent({
   name: 'CanvasComponent',
@@ -60,8 +68,12 @@ export default defineComponent({
 
     function handleEnd(evt: fabric.IEvent): void {
       switch (selectedTool.value) {
+        case Tools.Pen || Tools.Cursor:
+          sendToBackend(evt);
+          break; 
         case Tools.Shapes:
           endShape(evt);
+          sendToBackend(evt);
           break;
       }
     }
@@ -107,6 +119,15 @@ export default defineComponent({
       canvas.value.on('mouse:move', handleMove);
       canvas.value.on('mouse:down', handleStart);
       canvas.value.on('mouse:up', handleEnd);
+
+      // canvas.value.on('after:render', sendToBackend);
+
+      socket.value.onmessage = function (evt) {
+        if (!canvas.value) return;
+        console.log(evt.data);
+        canvas_json.value = evt.data;
+        canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
+      };
 
       canvas.value.selection = isSelectionMode.value;
       // canvas.value.freeDrawingBrush = new fabric.EraserBrush(canvas);
