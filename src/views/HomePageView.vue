@@ -1,6 +1,8 @@
 <template>
   <canvas-component main />
-  <students-side />
+  <div class="canvas-container">
+    <students-side />
+  </div>
   <navigation-bar adaptive />
   <tool-kit />
 </template>
@@ -24,3 +26,13 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped lang="scss">
+.canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+</style>

@@ -17,7 +17,7 @@ export default defineComponent({
   },
   computed: {
     navbarRight () {
-      return this.adaptive ? 'calc(15vw - 121.7px)' : '16px';
+      return this.adaptive ? 'calc(15vw - 138px)' : '16px';
     },
   }
 })
@@ -30,7 +30,7 @@ export default defineComponent({
   display: flex;
   top: 16px;
   right: v-bind(navbarRight);
-  width: 240px;
+  width: 276px;
   padding: 16px;
   justify-content: space-between;
   gap: 16px;

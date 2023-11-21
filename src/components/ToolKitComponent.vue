@@ -60,7 +60,7 @@ export default defineComponent({
   position: absolute;
   z-index: 100;
   left: 32px;
-  top: calc(50vh - 160px);
+  top: calc(50vh - 162.5px);
 
   display: flex;
   flex-direction: column;

@@ -42,9 +42,9 @@ export default defineComponent({
   padding-top: 116px;
   z-index: 0;
   top: 0;
-  left: calc(70vw - 32px);
+  left: 70vw;
   width: 30vw;
-  height: calc(100vh - 132px);
+  height: 100vh;
   overflow-y: scroll;
   background: var(--buttons-secondary, #D7D7EF);
   border-radius: 16px 0 0 16px;
