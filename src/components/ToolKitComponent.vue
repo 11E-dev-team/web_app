@@ -57,7 +57,7 @@ export default defineComponent({
 <style scoped lang="scss">
 @import '@/assets/scss/main.scss';
 .toolkit {
-  position: relative;
+  position: absolute;
   z-index: 100;
   left: 32px;
   top: calc(50vh - 160px);

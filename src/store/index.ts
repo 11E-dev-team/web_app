@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', {
     return {
       user: null as IUser | null,
       newUser: null as IUser | null,
-      socket: new WebSocket("ws://172.16.11.193:8179/ws/canvas/179"),
+      socket: new WebSocket("ws://172.20.21.66:8179/ws/canvas/179"),
     }
   }
 })

@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <button></button> <!-- home -->
+    <RouterLink to="/"></RouterLink> <!-- home -->
     <button></button> <!-- settings -->
     <button></button> <!-- group preview -->
     <button></button> <!-- change view -->
@@ -12,6 +12,14 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'NavigationBar',
+  props: {
+    adaptive: Boolean,
+  },
+  computed: {
+    navbarRight () {
+      return this.adaptive ? 'calc(15vw - 121.7px)' : '16px';
+    },
+  }
 })
 </script>
 
@@ -21,9 +29,10 @@ export default defineComponent({
   position: absolute;
   display: flex;
   top: 16px;
-  right: 16px;
-  width: fit-content;
+  right: v-bind(navbarRight);
+  width: 240px;
   padding: 16px;
+  justify-content: space-between;
   gap: 16px;
   overflow: hidden;
   border-radius: 16px;
@@ -32,11 +41,11 @@ export default defineComponent({
   box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
   flex-shrink: 0;
 
-  button {
+  * {
     width: 48px;
     height: 48px;
     
-    background-color: #464AB4;
+    background-color: var(--accent, #464AB4);
   }
 }
 </style>
