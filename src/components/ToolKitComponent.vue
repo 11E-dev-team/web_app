@@ -3,14 +3,25 @@
     <button @click="selectedTool = Tools.Cursor"><img src="@/assets/SpizdIconPack/Cursor.svg" /></button>
     <button @click="selectedTool = Tools.Text"><img src="@/assets/SpizdIconPack/Text.svg" /></button>
     <button @click="selectedTool = Tools.Shapes">
-      <img v-if="selectedShape === Shapes.Rectangle" src="@/assets/SpizdIconPack/Shapes/Rectangle.svg" />
-      <img v-else-if="selectedShape === Shapes.Arrow" src="@/assets/SpizdIconPack/Shapes/Arrow.svg" />
-      <img v-else-if="selectedShape === Shapes.Line" src="@/assets/SpizdIconPack/Shapes/Line.svg" />
-      <img v-else-if="selectedShape === Shapes.Ellipse" src="@/assets/SpizdIconPack/Shapes/Circle.svg" />
-      <div class="shape-selector">
-        <select v-model="selectedShape">
-        <option v-for="[key, value] in Object.entries(Shapes)" :key="key" :value="key">{{ value }}</option>
-        </select>
+      <button @click="displayShapesSelector = !displayShapesSelector" style="width: 100%; height: 100%; padding: 0;">
+        <img v-if="selectedShape === Shapes.Rectangle" src="@/assets/SpizdIconPack/Shapes/Rectangle.svg" />
+        <img v-else-if="selectedShape === Shapes.Arrow" src="@/assets/SpizdIconPack/Shapes/Arrow.svg" />
+        <img v-else-if="selectedShape === Shapes.Line" src="@/assets/SpizdIconPack/Shapes/Line.svg" />
+        <img v-else-if="selectedShape === Shapes.Ellipse" src="@/assets/SpizdIconPack/Shapes/Circle.svg" />
+      </button>
+      <div v-if="displayShapesSelector" class="shape-selector">
+        <button @click="selectedShape = Shapes.Rectangle; displayShapesSelector = false">
+          <img src="@/assets/SpizdIconPack/Shapes/Rectangle.svg" />
+        </button>
+        <button @click="selectedShape = Shapes.Arrow; displayShapesSelector = false">
+          <img src="@/assets/SpizdIconPack/Shapes/Arrow.svg" />
+        </button>
+        <button @click="selectedShape = Shapes.Line; displayShapesSelector = false">
+          <img src="@/assets/SpizdIconPack/Shapes/Line.svg" />
+        </button>
+        <button @click="selectedShape = Shapes.Ellipse; displayShapesSelector = false">
+          <img src="@/assets/SpizdIconPack/Shapes/Circle.svg" />
+        </button>
       </div>
     </button>
     <button @click="selectedTool = Tools.Pen"><img src="@/assets/SpizdIconPack/Pen.svg" /></button>
@@ -21,20 +32,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCanvasStateStore } from '@/store';
 const canvasStateStore = useCanvasStateStore();
 const { selectedTool, selectedShape } = storeToRefs(canvasStateStore);
 import { Tools, Shapes } from '@/store/public_interfaces';
+
 export default defineComponent({
   name: 'ToolKitComponent',
   data() {
+    const displayShapesSelector: Ref<boolean> = ref(false);
     return {
       selectedTool,
       Tools,
       selectedShape,
       Shapes,
+      displayShapesSelector,
     }
   }
 })
@@ -56,7 +70,9 @@ export default defineComponent({
   width: fit-content;
 
   border-radius: 16px;
-  background: var(--buttons-secondary, #D7D7EF);
+  border: 2px solid var(--accent, #464AB4);
+  background: var(--background, #E5E6F5);
+  box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
   button {
     width: 48px;
@@ -73,9 +89,26 @@ export default defineComponent({
 }
 
 .shape-selector {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+  padding: 8px;
+  gap: 16px;
   position: relative;
-  top: -37px;
+  top: -58px;
   left: 64px;
+
+  width: fit-content;
+
+  border-radius: 16px;
+  border: 2px solid var(--accent, #464AB4);
+  background: var(--background, #E5E6F5);
+  box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+  button {
+    width: 48px;
+    height: 48px;
+  }
 }
 </style>
