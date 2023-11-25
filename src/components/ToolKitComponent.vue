@@ -1,10 +1,10 @@
 <template>
   <div class="toolkit">
-    <button @click="selectedTool = Tools.Cursor">Cursor</button>
-    <button @click="selectedTool = Tools.Text">Text</button>
-    <button @click="selectedTool = Tools.Shapes">Shapes</button>
-    <button @click="selectedTool = Tools.Pen">Pen</button>
-    <button @click="selectedTool = Tools.Eraser">Eraser</button>
+    <button id="cursor" @click="selectedTool = Tools.Cursor">Cursor</button>
+    <button id="text" @click="selectedTool = Tools.Text">Text</button>
+    <button id="shapes" @click="selectedTool = Tools.Shapes">Shapes</button>
+    <button id="pen" @click="selectedTool = Tools.Pen">Pen</button>
+    <button id="eraser" @click="selectedTool = Tools.Eraser">Eraser</button>
     <!-- <button @click="undo">Undo</button> -->
     <!-- TODO: Move to Shapes chooser -->
     <div>
