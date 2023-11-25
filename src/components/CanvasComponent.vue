@@ -148,6 +148,14 @@ export default defineComponent({
       canvas.value.on('mouse:move', handleMove);
       canvas.value.on('mouse:down', handleStart);
       canvas.value.on('mouse:up', handleEnd);
+      canvas.value.on('object:added', (evt: fabric.IEvent) => {
+        const target = evt.target;
+        if (!target) return;
+        if (target instanceof fabric.Path && target.stroke === 'rgba(0, 0, 0, 0)') {
+          canvas.value?.remove(target);
+          canvas.value?.requestRenderAll();
+        }
+      });
 
       canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
 
