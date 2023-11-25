@@ -28,8 +28,6 @@ import NavigationBar from './NavigationComponent.vue';
 
 // Handle click event based on selected tool
 function handleStart(evt: fabric.IEvent): void {
-  console.log(canvas.value?.selection);
-  console.log(canvas.value?.isDrawingMode);
   switch (selectedTool.value) {
     case Tools.Shapes:
       startShape(evt);
