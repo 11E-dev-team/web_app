@@ -28,6 +28,8 @@ import NavigationBar from './NavigationComponent.vue';
 
 // Handle click event based on selected tool
 function handleStart(evt: fabric.IEvent): void {
+  console.log(canvas.value?.selection);
+  console.log(canvas.value?.isDrawingMode);
   switch (selectedTool.value) {
     case Tools.Shapes:
       startShape(evt);
@@ -149,11 +151,11 @@ export default defineComponent({
       canvas.value.on('mouse:down', handleStart);
       canvas.value.on('mouse:up', handleEnd);
 
-      canvas.value.freeDrawingBrush.color = selectedColor.value;
+      canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
 
       canvas.value.selection = this.isSelectionMode;
       // canvas.value.freeDrawingBrush = new fabric.EraserBrush(canvas);
-      canvas.value.isDrawingMode = this.isDrawingMode;
+      canvas.value.isDrawingMode = (this.isDrawingMode || !this.isSelectionMode);
       // canvas.value.freeDrawingBrush = freeDrawingBrushInverted.value;
 
       mainSocket.value.onmessage = function (evt) {
@@ -210,12 +212,15 @@ export default defineComponent({
   watch: {
     isDrawingMode(newValue) {
       if (canvas.value instanceof fabric.Canvas) {
-        canvas.value.isDrawingMode = newValue;
+        canvas.value.isDrawingMode = (newValue || !this.isSelectionMode);
+        canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
       };
     },
     isSelectionMode(newValue) {
       if (canvas.value instanceof fabric.Canvas) {
         canvas.value.selection = newValue;
+        canvas.value.isDrawingMode = (this.isDrawingMode || !newValue);
+        canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
       };
     },
   },
