@@ -9,30 +9,23 @@
     <!-- TODO: Move to Shapes chooser -->
     <div>
       <select v-model="selectedShape">
-      <option v-for="[key, value] in Object.entries(Shapes)" :key="key" :value="key">{{ value }}</option>
+        <option v-for="[key, value] in Object.entries(Shapes)" :key="key" :value="key">{{ value }}</option>
       </select>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent } from 'vue';
-import { storeToRefs } from 'pinia';
+import { storeToRefs, getActivePinia } from 'pinia';
 import { useCanvasStateStore } from '@/store';
+import { Tools, Shapes } from '@/store/public_interfaces';
+
 const canvasStateStore = useCanvasStateStore();
 const { selectedTool, selectedShape } = storeToRefs(canvasStateStore);
-import { Tools, Shapes } from '@/store/public_interfaces';
-export default defineComponent({
-  name: 'ToolKitComponent',
-  data() {
-    return {
-      selectedTool,
-      Tools,
-      selectedShape,
-      Shapes,
-    }
-  }
-})
+
+
+
 </script>
 
 <style scoped lang="scss">
