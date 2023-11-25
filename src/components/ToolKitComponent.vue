@@ -18,20 +18,26 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
+
 import { useCanvasStateStore } from '@/store';
-const canvasStateStore = useCanvasStateStore();
-const { selectedTool, selectedShape } = storeToRefs(canvasStateStore);
 import { Tools, Shapes } from '@/store/public_interfaces';
 export default defineComponent({
   name: 'ToolKitComponent',
   data() {
     return {
-      selectedTool,
       Tools,
-      selectedShape,
       Shapes,
     }
-  }
+  },
+  setup() {
+    const canvasStateStore = useCanvasStateStore();
+    const { selectedTool, selectedShape } = storeToRefs(canvasStateStore);
+
+    return {
+      selectedTool,
+      selectedShape,
+    }
+  },
 })
 </script>
 
