@@ -14,7 +14,7 @@ const canvasStateStore = useCanvasStateStore();
 const { selectedTool, selectedColor } = storeToRefs(canvasStateStore);
 import { useUserStore } from '@/store';
 const userStore = useUserStore();
-const { mainSocket, socketsInSession } = storeToRefs(userStore);
+const { mainSocket } = storeToRefs(userStore);
 import { fabric } from 'fabric';
 
 import { Tools } from '@/store/public_interfaces';
@@ -173,18 +173,18 @@ export default defineComponent({
       };
 
       const { canvasId } = this.$props;
-      socketsInSession.value[canvasId].onopen = function () {
-        console.log('Connection with ' + canvasId + ' established');
-      }
-      canvas_.selection = false;
-      canvas_.isDrawingMode = false;
+      // socketsInSession.value[canvasId].onopen = function () {
+      //   console.log('Connection with ' + canvasId + ' established');
+      // }
+      // canvas_.selection = false;
+      // canvas_.isDrawingMode = false;
 
-      socketsInSession.value[canvasId].onmessage = function (evt) {
-        if (!canvas_) return;
-        console.log(evt.data);
-        const json = evt.data;
-        canvas_.loadFromJSON(json, canvas_.renderAll.bind(canvas_));
-      };
+      // socketsInSession.value[canvasId].onmessage = function (evt) {
+      //   if (!canvas_) return;
+      //   console.log(evt.data);
+      //   const json = evt.data;
+      //   canvas_.loadFromJSON(json, canvas_.renderAll.bind(canvas_));
+      // };
     };
 
     

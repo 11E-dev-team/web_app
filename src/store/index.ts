@@ -30,15 +30,7 @@ export const useUserStore = defineStore('user', {
       user: null as IUser | null,
       newUser: null as IUser | null,
       canvasId: 1 as number,
-      mainSocket: new WebSocket("ws://172.20.21.66:8179/ws/canvas/0") as WebSocket,
-      socketsInSession: [
-        new WebSocket("ws://172.20.21.66:8179/ws/canvas/0"),
-        new WebSocket("ws://172.20.21.66:8179/ws/canvas/1"),
-        new WebSocket("ws://172.20.21.66:8179/ws/canvas/2"),
-        new WebSocket("ws://172.20.21.66:8179/ws/canvas/3"),
-        new WebSocket("ws://172.20.21.66:8179/ws/canvas/4"),
-        new WebSocket("ws://172.20.21.66:8179/ws/canvas/5"),
-      ] as WebSocket[],
+      mainSocket: new WebSocket("ws://0.0.0.0:8179/ws/canvas/0") as WebSocket,
     }
   }
 })
