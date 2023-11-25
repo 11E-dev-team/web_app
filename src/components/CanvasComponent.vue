@@ -58,6 +58,12 @@ function handleEnd(evt: fabric.IEvent): void {
     case Tools.Shapes:
       endShape(evt);
       sendToBackend(evt);
+      canvas.value?.setActiveObject(currentShape.value);
+      selectedTool.value = Tools.Cursor;
+      canvas.value?.requestRenderAll();
+      break;
+    default:
+      selectedTool.value = Tools.Cursor;
       break;
   }
 }
