@@ -26,9 +26,11 @@ describe("Toolkit", () => {
         plugins: [createTestingPinia()],
       },
     });
+    const canvasStore = useCanvasStateStore();
+
     const cursorButton = wrapper.find("button#cursor");
     cursorButton.trigger("click");
-    const canvasStore = useCanvasStateStore();
+
     expect(canvasStore.selectedTool).toBe(Tools.Cursor);
   });
 
@@ -38,9 +40,11 @@ describe("Toolkit", () => {
         plugins: [createTestingPinia()],
       },
     });
+    const canvasStore = useCanvasStateStore();
+
     const textButton = wrapper.find("button#text");
     textButton.trigger("click");
-    const canvasStore = useCanvasStateStore();
+
     expect(canvasStore.selectedTool).toBe(Tools.Text);
   });
 
@@ -50,9 +54,11 @@ describe("Toolkit", () => {
         plugins: [createTestingPinia()],
       },
     });
+    const canvasStore = useCanvasStateStore();
+
     const shapeButton = wrapper.find("button#shapes");
     shapeButton.trigger("click");
-    const canvasStore = useCanvasStateStore();
+
     expect(canvasStore.selectedTool).toBe(Tools.Shapes);
   });
 
@@ -62,9 +68,11 @@ describe("Toolkit", () => {
         plugins: [createTestingPinia()],
       },
     })
+    const canvasStore = useCanvasStateStore();
+
     const penButton = wrapper.find("button#pen");
     penButton.trigger("click");
-    const canvasStore = useCanvasStateStore();
+
     expect(canvasStore.selectedTool).toBe(Tools.Pen);
   });
 
@@ -74,9 +82,11 @@ describe("Toolkit", () => {
         plugins: [createTestingPinia()],
       },
     })
+    const canvasStore = useCanvasStateStore();
+
     const eraserButton = wrapper.find("button#eraser");
     eraserButton.trigger("click");
-    const canvasStore = useCanvasStateStore();
+
     expect(canvasStore.selectedTool).toBe(Tools.Eraser);
   });
 });

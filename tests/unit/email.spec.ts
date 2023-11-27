@@ -10,7 +10,7 @@ describe("Email", () => {
     expect(new Email("firstname@domain.com").toString()).toBe("firstname@domain.com");
   });
 
-  it("requiring value", () => {
+  it("requires a value", () => {
     try {
       expect(new Email()).toThrow(ValueError);
     } catch (e) {
@@ -18,7 +18,7 @@ describe("Email", () => {
     };
   });
 
-  it("length check", () => {
+  it("can't be empty", () => {
     try {
       expect(new Email("")).toThrow(ValueError);
     } catch (e) {
@@ -26,7 +26,7 @@ describe("Email", () => {
     };
   });
 
-  it("validation check", () => {
+  it("is validated", () => {
     try {
       expect(new Email("a")).toThrow(ValidationError);
     } catch (e) {

@@ -10,7 +10,7 @@ describe("Password", () => {
     expect(new Password("a").toString()).toBe("a");
   });
 
-  it("requiring value", () => {
+  it("requires a value", () => {
     try {
       expect(new Password()).toThrow(ValueError);
     } catch (e) {

@@ -23,7 +23,7 @@ describe("User", () => {
   });
 
   describe("Email", () => {
-    it("requiring value", () => {
+    it("requires a value", () => {
       try {
         expect(user.value = {
           email: new Email(),
@@ -33,7 +33,7 @@ describe("User", () => {
       };
     });
 
-    it("length check", () => {
+    it("can't be empty", () => {
       try {
         expect(user.value = {
           email: new Email(""),
@@ -43,7 +43,7 @@ describe("User", () => {
       };
     });
 
-    it("validation check", () => {
+    it("is validated", () => {
       try {
         expect(user.value = {
           email: new Email("a"),
