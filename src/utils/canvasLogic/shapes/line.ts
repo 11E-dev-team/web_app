@@ -3,7 +3,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { canvas, currentShape } = storeToRefs(canvasStore);
-const { isDrawing } = storeToRefs(canvasStateStore);
+const { isDrawing, selectedColor } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
 export function startLine(evt: fabric.IEvent): void {
@@ -14,7 +14,7 @@ export function startLine(evt: fabric.IEvent): void {
   
   const points = [x, y, x, y]; // Start and end points of the line
   currentShape.value = new fabric.Line(points, {
-    stroke: 'black',
+    stroke: selectedColor.value,
     strokeWidth: 1,
   });
   

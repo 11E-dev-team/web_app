@@ -3,7 +3,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { canvas, currentShape, additionalShapes } = storeToRefs(canvasStore);
-const { isDrawing } = storeToRefs(canvasStateStore);
+const { isDrawing, selectedColor } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
 export function startEllipse(evt: fabric.IEvent): void {
@@ -16,14 +16,14 @@ export function startEllipse(evt: fabric.IEvent): void {
     top: y,
     rx: 0,
     ry: 0,
-    stroke: 'black',
+    stroke: selectedColor.value,
     strokeWidth: 1,
     fill: 'transparent',
   });
 
   additionalShapes.value.push(new fabric.Circle({
-    left: x,
-    top: y,
+    left: x - 2,
+    top: y - 2,
     radius: 2,
     fill: 'grey',
     stroke: 'grey',
@@ -40,8 +40,8 @@ export function ellipse(evt: fabric.IEvent): void {
   if (!isDrawing.value) return;
   if (!(currentShape.value instanceof fabric.Ellipse)) return;
   const pointer = additionalShapes.value[additionalShapes.value.length - 1];
-  const rx = pointer.left ? pointer.left - x : 0;
-  const ry = pointer.top ? pointer.top - y : 0;
+  const rx = pointer.left ? pointer.left - x + 2 : 0;
+  const ry = pointer.top ? pointer.top - y + 2 : 0;
   let left = rx > 0 ? x : x + 2*rx;
   let top = ry > 0 ? y : y + 2*ry;
   currentShape.value.set({
@@ -56,10 +56,7 @@ export function ellipse(evt: fabric.IEvent): void {
 
 export function endEllipse(evt: fabric.IEvent): void {
   isDrawing.value = false;
-  additionalShapes.value[additionalShapes.value.length - 1].set({
-    fill: "transparent",
-    stroke: "transparent",
-  })
+  canvas.value?.remove(additionalShapes.value[additionalShapes.value.length - 1]);
   additionalShapes.value.pop();
   canvas.value?.renderAll();
 }

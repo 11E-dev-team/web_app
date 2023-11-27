@@ -1,6 +1,10 @@
 <template>
-  <HeaderComponent msg="КРОК ШИР 179dev" />
-  <canvas-component />
+  <div class="canvas-container">
+    <canvas-component main />
+  </div>
+  <students-side />
+  <navigation-bar adaptive />
+  <tool-kit />
 </template>
 
 <script lang="ts">
@@ -8,56 +12,27 @@ import { defineComponent } from 'vue';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import CanvasComponent from '@/components/CanvasComponent.vue';
+import NavigationBar from '@/components/NavigationComponent.vue';
+import ToolKit from '@/components/ToolKitComponent.vue';
+import StudentsSide from '@/components/StudentsSideComponent.vue';
 
 export default defineComponent({
   components: {
     HeaderComponent,
     CanvasComponent,
+    NavigationBar,
+    ToolKit,
+    StudentsSide,
   },
 });
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/scss/main.scss';
-
-.main-content {
-  padding: $common-padding;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  height: calc(100vh - ($header-height + $common-padding * 2) - $common-padding * 3); /* Subtract the header and footer heights from the viewport height */
-
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  grid-template-rows: repeat(6, auto);
-  gap: $common-padding;
-
-  grid-template-areas:
-    "groups calendar calendar"
-    "groups calendar calendar"
-    "groups calendar calendar"
-    "groups calendar calendar"
-    "groups nearest-events code"
-    "groups nearest-events participate";
-  
-  .groups {
-    grid-area: groups;
-    background-color: aqua;
-  }
-  .calendar {
-    grid-area: calendar;
-    background-color: blueviolet;
-  }
-  .nearest-events {
-    grid-area: nearest-events;
-    background-color: chartreuse;
-  }
-  .code {
-    grid-area: code;
-    background-color: gold;
-  }
-  .participate {
-    grid-area: participate;
-    background-color: hotpink;
-  }
+.canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 </style>

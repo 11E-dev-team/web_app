@@ -29,6 +29,8 @@ export const useUserStore = defineStore('user', {
     return {
       user: null as IUser | null,
       newUser: null as IUser | null,
+      canvasId: 1 as number,
+      mainSocket: new WebSocket("ws://0.0.0.0:8179/ws/canvas/0") as WebSocket,
     }
   }
 })
@@ -54,8 +56,6 @@ export const useAuthorizationStore = defineStore('authorization', {
   },
 })
 
-import { ref, Ref } from 'vue';
-
 export const useCanvasStore = defineStore('canvas', {
   state: () => {
     return {
@@ -76,6 +76,15 @@ export const useCanvasStateStore = defineStore('canvas-state', {
       isDrawing: false as boolean,
       selectedTool: Tools.Cursor as Tools_,
       selectedShape: Shapes.Rectangle as Shapes_,
+      selectedColor: [
+        '#',
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+      ].join("") as string,
     }
   },
 })

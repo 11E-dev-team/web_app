@@ -13,6 +13,10 @@
   background-color: var(--background, #e5e6f5);
 }
 
+* {
+  box-sizing: border-box;
+}
+
 a {
   text-decoration: underline var(--secondary, #d7d7ef);
   color: black;

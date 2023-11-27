@@ -3,6 +3,7 @@ import { useCanvasStore, useCanvasStateStore } from '@/store';
 const canvasStore = useCanvasStore();
 const canvasStateStore = useCanvasStateStore();
 const { canvas, currentShape } = storeToRefs(canvasStore);
+const { selectedColor } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';
 
 export function startText(evt: fabric.IEvent): void {
@@ -14,7 +15,7 @@ export function startText(evt: fabric.IEvent): void {
     top: y,
     fontSize: 20,
     fontFamily: 'Arial',
-    fill: 'black',
+    fill: selectedColor.value,
   })
   canvas.value.add(currentShape.value)
   canvas.value.setActiveObject(currentShape.value);
