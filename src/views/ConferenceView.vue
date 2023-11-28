@@ -8,8 +8,10 @@ import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/store';
+import { setWebSocket } from '@/utils/canvasLogic/websocket';
+
 const userStore = useUserStore();
-const { conferenceId, mainSocket } = storeToRefs(userStore);
+const { conferenceId } = storeToRefs(userStore);
 
 export default defineComponent({
   name: 'ConferenceView',
@@ -20,7 +22,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    mainSocket.value = new WebSocket(`ws://0.0.0.0:8179/ws/canvas/${this.conferenceId}`);
+    setWebSocket(this.conferenceId);
   },
 })
 </script>
