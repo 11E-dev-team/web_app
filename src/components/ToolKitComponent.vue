@@ -37,6 +37,7 @@ import { storeToRefs } from 'pinia';
 
 import { useCanvasStateStore } from '@/store';
 import { Tools, Shapes } from '@/store/public_interfaces';
+import { deleteSelected } from '@/utils/canvasLogic/deleteUtils';
 
 export default defineComponent({
   name: 'ToolKitComponent',
@@ -58,10 +59,7 @@ export default defineComponent({
     }
   },
   methods: {
-    deleteSelected(): void {
-      // TODO: add deleting func pls
-      return
-    }
+    deleteSelected,
   }
 })
 </script>

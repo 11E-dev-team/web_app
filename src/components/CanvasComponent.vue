@@ -68,17 +68,9 @@ function handleEnd(evt: fabric.IEvent): void {
   }
 }
 
-function deleteSelected(): void {
-  if (!canvas.value) return;
-  const activeObject = canvas.value.getActiveObject();
-  if (!activeObject) return;
-  canvas.value.remove(activeObject);
-}
-
 function handleKeyDown(evt: KeyboardEvent): void {
   switch (evt.key) {
     case 'Backspace' || 'Delete':
-      deleteSelected();
       break;
   }
 }
