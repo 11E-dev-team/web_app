@@ -12,13 +12,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios from 'axios';
-import { storeToRefs } from 'pinia';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import router from '@/router';
-import { useUserStore } from '@/store';
-const userStore = useUserStore();
-const { canvasId, mainSocket } = storeToRefs(userStore);
 
 export default defineComponent({
   components: {
@@ -28,8 +24,6 @@ export default defineComponent({
     createConference() {
       axios.post('http://0.0.0.0:8179/conference').then((response) => {
         const { conference_id } = response.data;
-        canvasId.value = conference_id;
-        mainSocket.value = new WebSocket(`ws://0.0.0.0:8179/ws/canvas/${conference_id}`);
         router.push(`/conference/${conference_id}`);
       });
     },

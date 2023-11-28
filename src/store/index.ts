@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', {
     return {
       user: undefined as IUser | undefined,
       newUser: undefined as IUser | undefined,
-      canvasId: "" as string,
+      conferenceId: "" as string,
       mainSocket: undefined as WebSocket | undefined,
     }
   }
