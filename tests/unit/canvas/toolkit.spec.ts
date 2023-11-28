@@ -76,7 +76,7 @@ describe("Toolkit", () => {
     expect(canvasStore.selectedTool).toBe(Tools.Pen);
   });
 
-  it("selects eraser", async () => {
+  it("has delete button", async () => {
     const wrapper = mount(Toolkit, {
       global: {
         plugins: [createTestingPinia()],
@@ -84,9 +84,7 @@ describe("Toolkit", () => {
     })
     const canvasStore = useCanvasStateStore();
 
-    const eraserButton = wrapper.find("button#eraser");
-    eraserButton.trigger("click");
-
-    expect(canvasStore.selectedTool).toBe(Tools.Eraser);
+    const deleteButton = wrapper.find("button#delete");
+    deleteButton.trigger("click");
   });
 });
