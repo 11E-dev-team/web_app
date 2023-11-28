@@ -1,8 +1,8 @@
 <template>
   <div class="toolkit">
-    <button @click="selectedTool = Tools.Cursor"><img src="@/assets/SpizdIconPack/Cursor.svg" /></button>
-    <button @click="selectedTool = Tools.Text"><img src="@/assets/SpizdIconPack/Text.svg" /></button>
-    <button @click="selectedTool = Tools.Shapes">
+    <button id="cursor" @click="selectedTool = Tools.Cursor"><img src="@/assets/SpizdIconPack/Cursor.svg" /></button>
+    <button id="text" @click="selectedTool = Tools.Text"><img src="@/assets/SpizdIconPack/Text.svg" /></button>
+    <button id="shapes" @click="selectedTool = Tools.Shapes">
       <button @click="displayShapesSelector = !displayShapesSelector" style="width: 100%; height: 100%; padding: 0;">
         <img v-if="selectedShape === Shapes.Rectangle" src="@/assets/SpizdIconPack/Shapes/Rectangle.svg" />
         <img v-else-if="selectedShape === Shapes.Arrow" src="@/assets/SpizdIconPack/Shapes/Arrow.svg" />
@@ -24,8 +24,8 @@
         </button>
       </div>
     </button>
-    <button @click="selectedTool = Tools.Pen"><img src="@/assets/SpizdIconPack/Pen.svg" /></button>
-    <button @click="selectedTool = Tools.Eraser"><img src="@/assets/SpizdIconPack/Eraser.svg" /></button>
+    <button id="pen" @click="selectedTool = Tools.Pen"><img src="@/assets/SpizdIconPack/Pen.svg" /></button>
+    <button id="eraser" @click="selectedTool = Tools.Eraser"><img src="@/assets/SpizdIconPack/Eraser.svg" /></button>
     <!-- <button @click="undo">Undo</button> -->
   </div>
     <!-- TODO: Move to Shapes chooser -->
@@ -34,9 +34,8 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from 'vue';
 import { storeToRefs } from 'pinia';
+
 import { useCanvasStateStore } from '@/store';
-const canvasStateStore = useCanvasStateStore();
-const { selectedTool, selectedShape } = storeToRefs(canvasStateStore);
 import { Tools, Shapes } from '@/store/public_interfaces';
 
 export default defineComponent({
@@ -44,13 +43,20 @@ export default defineComponent({
   data() {
     const displayShapesSelector: Ref<boolean> = ref(false);
     return {
-      selectedTool,
       Tools,
-      selectedShape,
       Shapes,
       displayShapesSelector,
     }
-  }
+  },
+  setup() {
+    const canvasStateStore = useCanvasStateStore();
+    const { selectedTool, selectedShape } = storeToRefs(canvasStateStore);
+
+    return {
+      selectedTool,
+      selectedShape,
+    }
+  },
 })
 </script>
 
