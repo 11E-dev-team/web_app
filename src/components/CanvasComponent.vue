@@ -141,7 +141,7 @@ export default defineComponent({
         }
       };
 
-      mainSocket.value.onopen = function () {
+      if (mainSocket.value) mainSocket.value.onopen = function () {
         console.log('Connection established');
       };
 
@@ -164,7 +164,7 @@ export default defineComponent({
       canvas.value.isDrawingMode = (this.isDrawingMode || !this.isSelectionMode);
       // canvas.value.freeDrawingBrush = freeDrawingBrushInverted.value;
 
-      mainSocket.value.onmessage = function (evt) {
+      if (mainSocket.value) mainSocket.value.onmessage = function (evt) {
         if (!canvas.value) return;
         console.log(evt.data);
         canvas_json.value = evt.data;

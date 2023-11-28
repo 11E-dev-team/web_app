@@ -27,10 +27,10 @@ import {
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
-      user: null as IUser | null,
-      newUser: null as IUser | null,
-      canvasId: 1 as number,
-      mainSocket: new WebSocket("ws://0.0.0.0:8179/ws/canvas/0") as WebSocket,
+      user: undefined as IUser | undefined,
+      newUser: undefined as IUser | undefined,
+      canvasId: "" as string,
+      mainSocket: undefined as WebSocket | undefined,
     }
   }
 })

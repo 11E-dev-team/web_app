@@ -10,12 +10,12 @@ import Email from "@/utils/email";
 import { ValidationError, ValueError } from "@/errors";
 
 beforeEach(() => {
-  user.value = null;
+  user.value = undefined;
 })
 
 describe("User", () => {
   it("can be set", () => {
-    expect(user.value).toBe(null);
+    expect(user.value).toBe(undefined);
     user.value = {
       email: new Email("firstname@domain.com"),
     };
