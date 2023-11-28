@@ -25,7 +25,7 @@
       </div>
     </button>
     <button id="pen" @click="selectedTool = Tools.Pen"><img src="@/assets/SpizdIconPack/Pen.svg" /></button>
-    <button id="eraser" @click="selectedTool = Tools.Eraser"><img src="@/assets/SpizdIconPack/Eraser.svg" /></button>
+    <button id="delete" @click="deleteSelected">delete <!-- TODO: spaid dolzhen narisovat korzinu --></button>
     <!-- <button @click="undo">Undo</button> -->
   </div>
     <!-- TODO: Move to Shapes chooser -->
@@ -57,6 +57,12 @@ export default defineComponent({
       selectedShape,
     }
   },
+  methods: {
+    deleteSelected(): void {
+      // TODO: add deleting func pls
+      return
+    }
+  }
 })
 </script>
 
