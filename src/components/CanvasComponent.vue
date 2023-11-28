@@ -171,14 +171,6 @@ export default defineComponent({
         canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
       };
     } else {
-      window.addEventListener('resize', () => {
-        this.stageConfig.width = this.$refs.container ? (this.$refs.container as HTMLElement).offsetWidth : window.innerWidth;
-        this.stageConfig.height = this.$refs.container ? (this.$refs.container as HTMLElement).offsetHeight : window.innerHeight;
-        if (canvas.value instanceof fabric.Canvas) {
-          canvas.value.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
-        };
-      });
-
       if (typeof canvas_ === 'undefined') {
         canvas_ = new fabric.Canvas('canvas', {
           width: this.stageConfig.width,
