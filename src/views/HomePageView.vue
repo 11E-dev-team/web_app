@@ -1,6 +1,6 @@
 <template>
   <div class="canvas-container">
-    <canvas-component main />
+    <editable-canvas-component id="" />
   </div>
   <students-side />
   <navigation-bar adaptive />
@@ -11,7 +11,7 @@
 import { defineComponent } from 'vue';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
-import CanvasComponent from '@/components/CanvasComponent.vue';
+import EditableCanvasComponent from '@/components/canvas/EditableCanvasComponent.vue';
 import NavigationBar from '@/components/NavigationComponent.vue';
 import ToolKit from '@/components/ToolKitComponent.vue';
 import StudentsSide from '@/components/StudentsSideComponent.vue';
@@ -19,7 +19,7 @@ import StudentsSide from '@/components/StudentsSideComponent.vue';
 export default defineComponent({
   components: {
     HeaderComponent,
-    CanvasComponent,
+    EditableCanvasComponent,
     NavigationBar,
     ToolKit,
     StudentsSide,
