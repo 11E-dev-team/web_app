@@ -78,7 +78,7 @@ export default defineComponent({
   padding: 8px;
   gap: 16px;
 
-  width: fit-content;
+  width: 64px;
 
   border-radius: 16px;
   border: 2px solid var(--accent, #464AB4);
@@ -93,8 +93,8 @@ export default defineComponent({
     border: none;
 
     img {
-      width: 100%;
-      height: 100%;
+      width: 40px;
+      height: 40px;
     }
   }
 }

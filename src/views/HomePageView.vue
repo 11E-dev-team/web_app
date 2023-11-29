@@ -14,7 +14,7 @@ import HeaderComponent from '@/components/HeaderComponent.vue';
 import CanvasComponent from '@/components/CanvasComponent.vue';
 import NavigationBar from '@/components/NavigationComponent.vue';
 import ToolKit from '@/components/ToolKitComponent.vue';
-import StudentsSide from '@/components/StudentsSideComponent.vue';
+// import StudentsSide from '@/components/StudentsSideComponent.vue';
 
 export default defineComponent({
   components: {
@@ -22,7 +22,7 @@ export default defineComponent({
     CanvasComponent,
     NavigationBar,
     ToolKit,
-    StudentsSide,
+    // StudentsSide,
   },
 });
 </script>

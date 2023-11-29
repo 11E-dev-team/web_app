@@ -36,10 +36,18 @@ export default defineComponent({
 .navbar {
   position: absolute;
   display: flex;
+  align-items: center;
   top: 16px;
   right: v-bind(navbarRight);
-  width: 276px;
-  padding: 16px;
+  width: fit-content;
+  height: 64px;
+  padding: {
+    left: 16px;
+    right: 16px;
+    top: 16px;
+    bottom: 8px;
+  };
+  
   justify-content: space-between;
   gap: 16px;
   overflow: hidden;
@@ -54,6 +62,10 @@ export default defineComponent({
     height: 48px;
     
     background-color: transparent;
+  }
+  img {
+    width: 40px;
+    height: 40px;
   }
 }
 </style>
