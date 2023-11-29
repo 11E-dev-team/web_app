@@ -25,7 +25,7 @@
       </div>
     </button>
     <button id="pen" @click="selectedTool = Tools.Pen"><img src="@/assets/SpizdIconPack/Pen.svg" /></button>
-    <button id="delete" @click="deleteSelected">delete <!-- TODO: spaid dolzhen narisovat korzinu --></button>
+    <button id="delete" @click="deleteSelected"><img src="@/assets/SpizdIconPack/Trash.svg" /></button>
     <!-- <button @click="undo">Undo</button> -->
   </div>
     <!-- TODO: Move to Shapes chooser -->
