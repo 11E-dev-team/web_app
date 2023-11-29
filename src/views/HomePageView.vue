@@ -12,9 +12,9 @@ import { defineComponent } from 'vue';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import EditableCanvasComponent from '@/components/canvas/EditableCanvasComponent.vue';
-import NavigationBar from '@/components/NavigationComponent.vue';
-import ToolKit from '@/components/ToolKitComponent.vue';
-import StudentsSide from '@/components/StudentsSideComponent.vue';
+import NavigationBar from '@/components/canvas/NavigationComponent.vue';
+import ToolKit from '@/components/canvas/ToolKitComponent.vue';
+import StudentsSide from '@/components/canvas/StudentsSideComponent.vue';
 
 export default defineComponent({
   components: {
