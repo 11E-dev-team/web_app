@@ -24,7 +24,7 @@ import {
   IText,
 } from '@/store/public_interfaces'
 
-interface IIdInConference {
+interface IUserIdInConference {
   conferenceId: string
   id: string
   role?: number
@@ -35,9 +35,8 @@ export const useUserStore = defineStore('user', {
     return {
       user: undefined as IUser | undefined,
       newUser: undefined as IUser | undefined,
-      idInConference: [] as IIdInConference[],
+      idInConference: [] as IUserIdInConference[],
       conferenceId: "" as string,
-      mainSocket: undefined as WebSocket | undefined,
     }
   }
 })
