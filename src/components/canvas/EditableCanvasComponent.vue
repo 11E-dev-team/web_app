@@ -9,70 +9,15 @@ import { reactive, computed, defineComponent, ref, Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { fabric } from 'fabric';
 
-import { useCanvasStore, useCanvasStateStore, useUserStore } from '@/store';
-import { Tools } from '@/store/public_interfaces';
-import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
-import { startText } from '@/utils/canvasLogic/text';
+import { useCanvasStore, useCanvasStateStore } from '@/store';
+import { Tools } from '@/shared/interfaces';
 import { sendToBackend } from '@/utils/utils';
-import Conference from '@/utils/canvasLogic/Conference';
+import Conference from '@/canvasLogic/Conference';
+import FabricDrawer from '@/canvasLogic/FabricDrawer';
+import { CanvasMouse } from '@/canvasLogic/Canvas';
 
 const { canvas, canvas_json, currentShape } = storeToRefs(useCanvasStore());
 const { selectedTool, selectedColor } = storeToRefs(useCanvasStateStore());
-
-// Handle click event based on selected tool
-function handleStart(evt: fabric.IEvent): void {
-  switch (selectedTool.value) {
-    case Tools.Shapes:
-      startShape(evt);
-      break;
-    case Tools.Text:
-      startText(evt);
-      break;
-  }
-}
-
-// Handle move event based on selected tool
-function handleMove(evt: fabric.IEvent): void {
-  switch (selectedTool.value) {
-    case Tools.Shapes:
-      shape(evt);
-      break;
-  }
-}
-
-function handleEnd(evt: fabric.IEvent): void {
-  switch (selectedTool.value) {
-    case Tools.Shapes:
-      endShape(evt);
-      canvas.value?.setActiveObject(currentShape.value);
-      selectedTool.value = Tools.Cursor;
-      canvas.value?.requestRenderAll();
-      break;
-    default:
-      selectedTool.value = Tools.Cursor;
-      break;
-  }
-}
-
-function deleteSelected(): void {
-  if (!canvas.value) return;
-  const activeObject = canvas.value.getActiveObject();
-  if (!activeObject) return;
-  canvas.value.remove(activeObject);
-}
-
-function handleKeyDown(evt: KeyboardEvent): void {
-  switch (evt.key) {
-    case 'Backspace' || 'Delete':
-      deleteSelected();
-      break;
-  }
-}
-
-// Handle undo
-function undo(): void {
-  // TODO: Undo the last action
-}
 
 export default defineComponent({
   name: 'EditableCanvasComponent',
@@ -89,12 +34,14 @@ export default defineComponent({
     const isSelectionMode = computed(() => selectedTool.value === Tools.Cursor);
     const isDrawingMode = computed(() => selectedTool.value === Tools.Pen || selectedTool.value === Tools.Eraser);
     const freeDrawingBrushInverted = computed(() => selectedTool.value === Tools.Eraser);
+    const canvasMouse: CanvasMouse = new CanvasMouse();
     return {
       container,
       stageConfig,
       isSelectionMode,
       isDrawingMode,
       freeDrawingBrushInverted,
+      canvasMouse,
     };
   },
   mounted() {
@@ -116,9 +63,37 @@ export default defineComponent({
       }
     };
 
-    canvas.value.on('mouse:move', handleMove);
-    canvas.value.on('mouse:down', handleStart);
-    canvas.value.on('mouse:up', (evt: fabric.IEvent) => handleEnd(evt));
+    const drawer: FabricDrawer = new FabricDrawer(canvas.value);
+    const canvasMouse: CanvasMouse = new CanvasMouse();
+    this.canvasMouse = canvasMouse;
+
+    canvas.value.on('mouse:down', (event: fabric.IEvent) => {
+      if (!event.pointer) return;
+
+      canvasMouse.down({
+        x: event.pointer.x,
+        y: event.pointer.y,
+      });
+      if (canvasMouse.currentObject) drawer.add(canvasMouse.currentObject);
+    });
+    canvas.value.on('mouse:move', (event: fabric.IEvent) => {
+      if (!event.pointer) return;
+
+      canvasMouse.move({
+        x: event.pointer.x,
+        y: event.pointer.y,
+      });
+      if (canvasMouse.currentObject) drawer.change(canvasMouse.currentObject);
+    });
+    canvas.value.on('mouse:up', (event: fabric.IEvent) => {
+      if (!event.pointer) return;
+
+      canvasMouse.up({
+        x: event.pointer.x,
+        y: event.pointer.y,
+      });
+      if (canvasMouse.currentObject) drawer.end(canvasMouse.currentObject);
+    });
     canvas.value.on('object:added', (evt: fabric.IEvent) => {
       const target = evt.target;
       if (!target) return;
@@ -160,6 +135,10 @@ export default defineComponent({
         canvas.value.isDrawingMode = (this.isDrawingMode || !newValue);
         canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
       };
+    },
+    selectedTool(newValue) {
+      // FIXME: watcher isn't working
+      this.canvasMouse.changeTool(newValue);
     },
   },
 });

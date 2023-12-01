@@ -1,6 +1,6 @@
 import { storeToRefs } from 'pinia';
 import { useCanvasStateStore } from '@/store';
-import { Shapes } from '@/store/public_interfaces';
+import { Shapes } from '@/shared/interfaces';
 const canvasStateStore = useCanvasStateStore();
 const { selectedShape } = storeToRefs(canvasStateStore);
 import { fabric } from 'fabric';

@@ -36,7 +36,7 @@ import { defineComponent, ref, Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useCanvasStateStore } from '@/store';
-import { Tools, Shapes } from '@/store/public_interfaces';
+import { Tools, Shapes } from '@/shared/interfaces';
 
 export default defineComponent({
   name: 'ToolKitComponent',

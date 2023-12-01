@@ -10,7 +10,7 @@ import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/store';
-import Conference from '@/utils/canvasLogic/Conference';
+import Conference from '@/canvasLogic/Conference';
 import EditableCanvasComponent from '@/components/canvas/EditableCanvasComponent.vue';
 import StaticCanvasComponent from '@/components/canvas/StaticCanvasComponent.vue';
 

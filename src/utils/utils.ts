@@ -1,7 +1,7 @@
 import { storeToRefs } from 'pinia';
 
 import { useCanvasStore } from '@/store';
-import Conference from './canvasLogic/Conference';
+import Conference from '../canvasLogic/Conference';
 
 const canvasStore = useCanvasStore();
 const { canvas, canvas_json } = storeToRefs(canvasStore);
