@@ -1,8 +1,6 @@
 <template>
   <!-- TODO: Write a conference view and logic -->
-  <span>You're in {{ conferenceId }} conference</span>
-  <editable-canvas-component />
-  <static-canvas-component />
+  <teacher-view />
 </template>
 
 <script lang="ts">
@@ -11,8 +9,8 @@ import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/store';
 import { Conference } from '@/utils/canvasLogic/Conference';
-import EditableCanvasComponent from '@/components/canvas/EditableCanvasComponent.vue';
-import StaticCanvasComponent from '@/components/canvas/StaticCanvasComponent.vue';
+import StudentView from './StudentView.vue';
+import TeacherView from './TeacherView.vue';
 
 const userStore = useUserStore();
 const { conferenceId } = storeToRefs(userStore);
@@ -20,8 +18,8 @@ const { conferenceId } = storeToRefs(userStore);
 export default defineComponent({
   name: 'ConferenceView',
   components: {
-    EditableCanvasComponent,
-    StaticCanvasComponent,
+    StudentView,
+    TeacherView,
   },
   data() {
     conferenceId.value = this.$route.params["id"] as string;
