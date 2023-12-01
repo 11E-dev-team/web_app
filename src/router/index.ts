@@ -24,7 +24,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/conference/:id',
     name: 'conference',
-    component: () => import('../views/ConferenceView.vue')
+    component: () => import('../views/conference/ConferenceView.vue')
   },
   {
     path: '/about',
