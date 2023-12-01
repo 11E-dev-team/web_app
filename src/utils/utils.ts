@@ -10,5 +10,5 @@ export function sendToBackend(evt: fabric.IEvent): void {
   if (!canvas.value) return;
   canvas_json.value = JSON.stringify(canvas.value.toDatalessJSON());
   console.log(canvas_json.value);
-  mainSocket.value.send(canvas_json.value);
+  if (mainSocket.value) mainSocket.value.send(canvas_json.value);
 }

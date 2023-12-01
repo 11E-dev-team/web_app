@@ -1,10 +1,7 @@
 <template>
   <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
-    <div class="scrollable-container">
-      <p>This is the body of the home screen.</p>
-      <p>Feel free to add any content you want here!</p>
-    </div>
+    <button id="create-conference" class="cta-button" @click="createConference">Create Conference</button>
   </main>
   <footer class="footer">
     <RouterLink to="/register" class="cta-button">Register</RouterLink>
@@ -14,12 +11,22 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import axios from 'axios';
 
 import HeaderComponent from '@/components/HeaderComponent.vue';
+import router from '@/router';
 
 export default defineComponent({
   components: {
     HeaderComponent,
+  },
+  methods: {
+    createConference() {
+      axios.post('http://0.0.0.0:8179/conference').then((response) => {
+        const { conference_id } = response.data;
+        router.push(`/conference/${conference_id}`);
+      });
+    },
   },
 });
 </script>
@@ -33,10 +40,6 @@ export default defineComponent({
   overflow-y: auto;
   overscroll-behavior: contain;
   height: calc(100vh - ($header-height + $common-padding * 2) * 2); /* Subtract the header and footer heights from the viewport height */
-}
-
-.scrollable-container {
-  /* Add styles for the scrollable container */
 }
 
 footer {

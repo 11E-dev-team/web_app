@@ -22,6 +22,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/HomePageView.vue')
   },
   {
+    path: '/conference/:id',
+    name: 'conference',
+    component: () => import('../views/ConferenceView.vue')
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting
