@@ -14,10 +14,10 @@ import { Tools } from '@/store/public_interfaces';
 import { startShape, shape, endShape } from '@/utils/canvasLogic/shapes';
 import { startText } from '@/utils/canvasLogic/text';
 import { sendToBackend } from '@/utils/utils';
+import Conference from '@/utils/canvasLogic/Conference';
 
 const { canvas, canvas_json, currentShape } = storeToRefs(useCanvasStore());
 const { selectedTool, selectedColor } = storeToRefs(useCanvasStateStore());
-const { mainSocket } = storeToRefs(useUserStore());
 
 // Handle click event based on selected tool
 function handleStart(evt: fabric.IEvent): void {
@@ -42,15 +42,8 @@ function handleMove(evt: fabric.IEvent): void {
 
 function handleEnd(evt: fabric.IEvent): void {
   switch (selectedTool.value) {
-    case Tools.Cursor:
-      sendToBackend(evt);
-      break; 
-    case Tools.Pen:
-      sendToBackend(evt);
-      break;
     case Tools.Shapes:
       endShape(evt);
-      sendToBackend(evt);
       canvas.value?.setActiveObject(currentShape.value);
       selectedTool.value = Tools.Cursor;
       canvas.value?.requestRenderAll();
@@ -85,6 +78,7 @@ export default defineComponent({
   name: 'EditableCanvasComponent',
   props: {
     canvasId: String,
+    conference: Conference,
   },
   data() {
     const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
@@ -122,13 +116,9 @@ export default defineComponent({
       }
     };
 
-    if (mainSocket.value) mainSocket.value.onopen = function () {
-      console.log('Connection established');
-    };
-
     canvas.value.on('mouse:move', handleMove);
     canvas.value.on('mouse:down', handleStart);
-    canvas.value.on('mouse:up', handleEnd);
+    canvas.value.on('mouse:up', (evt: fabric.IEvent) => handleEnd(evt));
     canvas.value.on('object:added', (evt: fabric.IEvent) => {
       const target = evt.target;
       if (!target) return;
@@ -136,6 +126,10 @@ export default defineComponent({
         canvas.value?.remove(target);
         canvas.value?.requestRenderAll();
       }
+      if (this.conference)sendToBackend(this.conference);
+    });
+    canvas.value.on('object:modified', () => {
+      if (this.conference)sendToBackend(this.conference);
     });
 
     canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
@@ -144,20 +138,9 @@ export default defineComponent({
     // canvas.value.freeDrawingBrush = new fabric.EraserBrush(canvas);
     canvas.value.isDrawingMode = (this.isDrawingMode || !this.isSelectionMode);
     // canvas.value.freeDrawingBrush = freeDrawingBrushInverted.value;
-
-    if (mainSocket.value) mainSocket.value.onmessage = function (evt) {
-      if (!canvas.value) return;
-      console.log(evt.data);
-      canvas_json.value = evt.data;
-      canvas.value.loadFromJSON(canvas_json.value, canvas.value.renderAll.bind(canvas.value));
-    };
   },
   beforeUnmount() {
     if (canvas.value instanceof fabric.Canvas) {
-      canvas.value.off('mouse:move', handleMove);
-      canvas.value.off('mouse:down', handleStart);
-      canvas.value.off('mouse:up', handleEnd);
-
       canvas_json.value = JSON.stringify(canvas.value.toDatalessJSON());
 
       canvas.value.dispose();

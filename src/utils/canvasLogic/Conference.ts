@@ -53,7 +53,7 @@ class IncorrectConferenceEventTypeError extends Error {
   };
 };
 
-export class Conference {
+export default class Conference {
   private static WEBSOCKET_URL = "ws://0.0.0.0:8179/ws/conference/";
 
   private webSocket: WebSocket | null = null;
@@ -70,6 +70,10 @@ export class Conference {
     this.webSocket.onmessage = (event: MessageEvent) => {
       this.handleMessage(event, conferenceId);
     };
+  };
+
+  public send(data: any): void {
+    this.webSocket?.send(JSON.stringify(data));
   };
 
   public leave(): void {

@@ -1,14 +1,14 @@
 import { storeToRefs } from 'pinia';
-import { useCanvasStore, useUserStore } from '@/store';
-const canvasStore = useCanvasStore();
-const UserStore = useUserStore();
-const { canvas, canvas_json } = storeToRefs(canvasStore);
-const { mainSocket } = storeToRefs(UserStore);
-import { fabric } from 'fabric';
 
-export function sendToBackend(evt: fabric.IEvent): void {
+import { useCanvasStore } from '@/store';
+import Conference from './canvasLogic/Conference';
+
+const canvasStore = useCanvasStore();
+const { canvas, canvas_json } = storeToRefs(canvasStore);
+
+export function sendToBackend(Conference: Conference): void {
   if (!canvas.value) return;
   canvas_json.value = JSON.stringify(canvas.value.toDatalessJSON());
   console.log(canvas_json.value);
-  if (mainSocket.value) mainSocket.value.send(canvas_json.value);
+  Conference.send(canvas_json.value);
 }
