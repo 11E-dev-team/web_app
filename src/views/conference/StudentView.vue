@@ -1,7 +1,8 @@
 <template>
   <!-- TODO: Write a conference view and logic -->
-  <editable-canvas-component />
-  <static-canvas-component />
+  <span>Welcome to the student view!</span>
+  <!-- <editable-canvas-component />
+  <static-canvas-component /> -->
 </template>
 
 <script lang="ts">

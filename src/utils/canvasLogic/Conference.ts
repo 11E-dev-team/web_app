@@ -54,7 +54,7 @@ class IncorrectConferenceEventTypeError extends Error {
 };
 
 export class Conference {
-  private static WEBSOCKET_URL = "ws://0.0.0.0:8179/ws/conference";
+  private static WEBSOCKET_URL = "ws://0.0.0.0:8179/ws/conference/http://localhost:8080/#/conference/0e7e35cd-ea2e-41c3-98be-d378032cfd17";
 
   private webSocket: WebSocket | null = null;
 

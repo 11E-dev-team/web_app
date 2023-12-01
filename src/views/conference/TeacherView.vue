@@ -1,7 +1,8 @@
 <template>
   <!-- TODO: Write a conference view and logic -->
-  <editable-canvas-component />
-  <static-canvas-component />
+  <span>Welcome to the teacher view!</span>
+  <!-- <editable-canvas-component />
+  <static-canvas-component /> -->
 </template>
 
 <script lang="ts">
@@ -11,7 +12,7 @@ import EditableCanvasComponent from '@/components/canvas/EditableCanvasComponent
 import StaticCanvasComponent from '@/components/canvas/StaticCanvasComponent.vue';
 
 export default defineComponent({
-  name: 'StudentView',
+  name: 'TeacherView',
   components: {
     EditableCanvasComponent,
     StaticCanvasComponent,

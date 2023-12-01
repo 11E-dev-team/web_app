@@ -1,6 +1,7 @@
 <template>
   <!-- TODO: Write a conference view and logic -->
-  <teacher-view />
+  <teacher-view v-if="isTeacher" />
+  <student-view v-else />
 </template>
 
 <script lang="ts">
@@ -13,7 +14,7 @@ import StudentView from './StudentView.vue';
 import TeacherView from './TeacherView.vue';
 
 const userStore = useUserStore();
-const { conferenceId } = storeToRefs(userStore);
+const { conferenceId, idInConference } = storeToRefs(userStore);
 
 export default defineComponent({
   name: 'ConferenceView',
@@ -34,6 +35,12 @@ export default defineComponent({
   },
   unmounted() {
     this.conference?.leave();
+  },
+  computed: {
+    isTeacher(): boolean {
+      const idInConference_ = idInConference.value.find(x => x.conferenceId === this.conferenceId);
+      return idInConference_ !== undefined && idInConference_.role !== undefined && idInConference_.role >= 4;
+    },
   },
 })
 </script>
