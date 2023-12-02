@@ -39,9 +39,11 @@ export class CanvasMouse {
       default:
         this.currentModifiedObject = null;
         if (
-          this.selectedTool === Tools.Cursor
-        ) return;
-        throw new IncorrectToolError(this.selectedTool);
+          this.selectedTool !== Tools.Cursor
+          && this.selectedTool !== Tools.Pen
+          ) {
+          throw new IncorrectToolError(this.selectedTool);
+        };
     }
   };
 
@@ -62,10 +64,12 @@ export class CanvasMouse {
       default:
         this.currentModifiedObject = null;
         if (
-          this.selectedTool === Tools.Cursor
-          || this.selectedTool === Tools.Text
-        ) return;
-        throw new IncorrectToolError(this.selectedTool);
+          this.selectedTool !== Tools.Cursor
+          && this.selectedTool !== Tools.Text
+          && this.selectedTool !== Tools.Pen
+          ) {
+          throw new IncorrectToolError(this.selectedTool);
+        };
     };
   };
 
@@ -86,14 +90,22 @@ export class CanvasMouse {
       default:
         this.currentModifiedObject = null;
         if (
-          this.selectedTool === Tools.Cursor
-          || this.selectedTool === Tools.Text
-        ) return;
-        throw new IncorrectToolError(this.selectedTool);
+          this.selectedTool !== Tools.Cursor
+          && this.selectedTool !== Tools.Text
+          && this.selectedTool !== Tools.Pen
+        ) {
+          throw new IncorrectToolError(this.selectedTool);
+        };
     };
+    // TODO: Make it work (send an event to the parent)
+    // if ( this.selectedTool !== Tools.Pen ) this.changeTool(Tools.Cursor);
   };
 
   public get currentObject(): CanvasObject | null {
     return this.currentModifiedObject;
+  };
+
+  public get currentTool(): Tools_ {
+    return this.selectedTool;
   };
 };

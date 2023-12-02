@@ -36,17 +36,10 @@ export default defineComponent({
             width: container.value ? container.value.offsetWidth : window.innerWidth,
             height: container.value ? container.value.offsetHeight : window.innerHeight,
         });
-        const selectedTool: Ref<Tools_> = ref(Tools.Cursor);
-        const isSelectionMode = computed(() => selectedTool.value === Tools.Cursor);
-        const isDrawingMode = computed(() => selectedTool.value === Tools.Pen || selectedTool.value === Tools.Eraser);
-        const freeDrawingBrushInverted = computed(() => selectedTool.value === Tools.Eraser);
         const canvasMouse: CanvasMouse = new CanvasMouse();
         return {
             container,
             stageConfig,
-            isSelectionMode,
-            isDrawingMode,
-            freeDrawingBrushInverted,
             canvasMouse,
         };
     },
@@ -117,11 +110,7 @@ export default defineComponent({
             if (this.conference)
                 sendToBackend(this.conference);
         });
-        canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
-        canvas.value.selection = this.isSelectionMode;
-        // canvas.value.freeDrawingBrush = new fabric.EraserBrush(canvas);
-        canvas.value.isDrawingMode = (this.isDrawingMode || !this.isSelectionMode);
-        // canvas.value.freeDrawingBrush = freeDrawingBrushInverted.value;
+        this.updateCanvasSettings();
     },
     beforeUnmount() {
         if (canvas.value instanceof fabric.Canvas) {
@@ -130,26 +119,17 @@ export default defineComponent({
             canvas.value = undefined;
         }
     },
-    watch: {
-        isDrawingMode(newValue) {
-            if (canvas.value instanceof fabric.Canvas) {
-                canvas.value.isDrawingMode = (newValue || !this.isSelectionMode);
-                canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
-            }
-            ;
-        },
-        isSelectionMode(newValue) {
-            if (canvas.value instanceof fabric.Canvas) {
-                canvas.value.selection = newValue;
-                canvas.value.isDrawingMode = (this.isDrawingMode || !newValue);
-                canvas.value.freeDrawingBrush.color = this.isDrawingMode ? selectedColor.value : 'rgba(0, 0, 0, 0)';
-            }
-            ;
-        },
-    },
     methods: {
+      updateCanvasSettings() {
+        if (!(canvas.value instanceof fabric.Canvas)) return;
+
+        canvas.value.freeDrawingBrush.color = this.canvasMouse.currentTool === Tools.Pen ? selectedColor.value : 'rgba(0, 0, 0, 0)';
+        canvas.value.selection = this.canvasMouse.currentTool === Tools.Cursor;
+        canvas.value.isDrawingMode = this.canvasMouse.currentTool !== Tools.Cursor;
+      },
       changeTool(tool: Tools_) {
         this.canvasMouse.changeTool(tool);
+        this.updateCanvasSettings();
       },
       changeShape(shape: Shapes_) {
         this.canvasMouse.changeShape(shape);
