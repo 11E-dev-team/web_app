@@ -4,7 +4,6 @@
   </div>
   <students-side />
   <navigation-bar adaptive />
-  <tool-kit />
 </template>
 
 <script lang="ts">
@@ -13,7 +12,6 @@ import { defineComponent } from 'vue';
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import EditableCanvasComponent from '@/components/canvas/EditableCanvasComponent.vue';
 import NavigationBar from '@/components/canvas/NavigationComponent.vue';
-import ToolKit from '@/components/canvas/ToolKitComponent.vue';
 import StudentsSide from '@/components/canvas/StudentsSideComponent.vue';
 
 export default defineComponent({
@@ -21,7 +19,6 @@ export default defineComponent({
     HeaderComponent,
     EditableCanvasComponent,
     NavigationBar,
-    ToolKit,
     StudentsSide,
   },
 });
