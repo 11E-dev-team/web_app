@@ -18,6 +18,10 @@ export class CanvasMouse {
     this.selectedTool = tool;
   };
 
+  public changeShape(shape: Shapes_): void {
+    this.selectedShape = shape;
+  };
+
   public down(event: IMouseEvent): void {
     switch (this.selectedTool) {
       case Tools.Shapes:

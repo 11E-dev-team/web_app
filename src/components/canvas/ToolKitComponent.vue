@@ -1,8 +1,8 @@
 <template>
   <div class="toolkit">
-    <button id="cursor" @click="selectedTool = Tools.Cursor"><img src="@/assets/SpizdIconPack/Cursor.svg" /></button>
-    <button id="text" @click="selectedTool = Tools.Text"><img src="@/assets/SpizdIconPack/Text.svg" /></button>
-    <button id="shapes" @click="selectedTool = Tools.Shapes">
+    <button id="cursor" @click="changeTool(Tools.Cursor)"><img src="@/assets/SpizdIconPack/Cursor.svg" /></button>
+    <button id="text" @click="changeTool(Tools.Text)"><img src="@/assets/SpizdIconPack/Text.svg" /></button>
+    <button id="shapes" @click="changeTool(Tools.Shapes)">
       <button @click="displayShapesSelector = !displayShapesSelector" style="width: 100%; height: 100%; padding: 0;">
         <img v-if="selectedShape === Shapes.Rectangle" src="@/assets/SpizdIconPack/Shapes/Rectangle.svg" />
         <img v-else-if="selectedShape === Shapes.Arrow" src="@/assets/SpizdIconPack/Shapes/Arrow.svg" />
@@ -10,51 +10,53 @@
         <img v-else-if="selectedShape === Shapes.Ellipse" src="@/assets/SpizdIconPack/Shapes/Circle.svg" />
       </button>
       <div v-if="displayShapesSelector" class="shape-selector">
-        <button @click="selectedShape = Shapes.Rectangle; displayShapesSelector = false">
+        <button @click="changeShape(Shapes.Rectangle); displayShapesSelector = false">
           <img src="@/assets/SpizdIconPack/Shapes/Rectangle.svg" />
         </button>
-        <button @click="selectedShape = Shapes.Arrow; displayShapesSelector = false">
+        <button @click="changeShape(Shapes.Arrow); displayShapesSelector = false">
           <img src="@/assets/SpizdIconPack/Shapes/Arrow.svg" />
         </button>
-        <button @click="selectedShape = Shapes.Line; displayShapesSelector = false">
+        <button @click="changeShape(Shapes.Line); displayShapesSelector = false">
           <img src="@/assets/SpizdIconPack/Shapes/Line.svg" />
         </button>
-        <button @click="selectedShape = Shapes.Ellipse; displayShapesSelector = false">
+        <button @click="changeShape(Shapes.Ellipse); displayShapesSelector = false">
           <img src="@/assets/SpizdIconPack/Shapes/Circle.svg" />
         </button>
       </div>
     </button>
-    <button id="pen" @click="selectedTool = Tools.Pen"><img src="@/assets/SpizdIconPack/Pen.svg" /></button>
-    <button id="eraser" @click="selectedTool = Tools.Eraser"><img src="@/assets/SpizdIconPack/Eraser.svg" /></button>
+    <button id="pen" @click="changeTool(Tools.Pen)"><img src="@/assets/SpizdIconPack/Pen.svg" /></button>
+    <button id="eraser" @click="changeTool(Tools.Eraser)"><img src="@/assets/SpizdIconPack/Eraser.svg" /></button>
     <!-- <button @click="undo">Undo</button> -->
   </div>
     <!-- TODO: Move to Shapes chooser -->
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from 'vue';
+import { defineComponent, ref, Ref, PropType } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useCanvasStateStore } from '@/store';
-import { Tools, Shapes } from '@/shared/interfaces';
+import { Tools, Shapes, Tools_, Shapes_ } from '@/shared/interfaces';
 
 export default defineComponent({
   name: 'ToolKitComponent',
   data() {
     const displayShapesSelector: Ref<boolean> = ref(false);
+    const selectedShape: Ref<Shapes_> = ref(Shapes.Rectangle);
     return {
       Tools,
       Shapes,
       displayShapesSelector,
+      selectedShape,
     }
   },
-  setup() {
-    const canvasStateStore = useCanvasStateStore();
-    const { selectedTool, selectedShape } = storeToRefs(canvasStateStore);
-
-    return {
-      selectedTool,
-      selectedShape,
+  methods: {
+    changeTool(tool: Tools_) {
+      this.$emit('update:tool', tool);
+    },
+    changeShape(shape: Shapes_) {
+      this.$emit('update:shape', shape);
+      this.selectedShape = shape;
     }
   },
 })

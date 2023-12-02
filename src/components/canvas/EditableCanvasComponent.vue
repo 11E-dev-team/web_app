@@ -2,7 +2,7 @@
   <div class="container" ref="container">
     <canvas id="canvas" ref="canvas"></canvas>
   </div>
-  <tool-kit @click="changeTool" />
+  <tool-kit @update:tool="changeTool" />
 </template>
 
 <script lang="ts">
@@ -11,7 +11,7 @@ import { storeToRefs } from 'pinia';
 import { fabric } from 'fabric';
 
 import { useCanvasStore, useCanvasStateStore } from '@/store';
-import { Tools } from '@/shared/interfaces';
+import { Tools, Tools_, Shapes_ } from '@/shared/interfaces';
 import { sendToBackend } from '@/utils/utils';
 import Conference from '@/canvasLogic/Conference';
 import FabricDrawer from '@/canvasLogic/FabricDrawer';
@@ -19,7 +19,7 @@ import { CanvasMouse } from '@/canvasLogic/Canvas';
 import ToolKit from './ToolKitComponent.vue';
 
 const { canvas, canvas_json, currentShape } = storeToRefs(useCanvasStore());
-const { selectedTool, selectedColor } = storeToRefs(useCanvasStateStore());
+const { selectedColor } = storeToRefs(useCanvasStateStore());
 
 export default defineComponent({
     name: 'EditableCanvasComponent',
@@ -36,6 +36,7 @@ export default defineComponent({
             width: container.value ? container.value.offsetWidth : window.innerWidth,
             height: container.value ? container.value.offsetHeight : window.innerHeight,
         });
+        const selectedTool: Ref<Tools_> = ref(Tools.Cursor);
         const isSelectionMode = computed(() => selectedTool.value === Tools.Cursor);
         const isDrawingMode = computed(() => selectedTool.value === Tools.Pen || selectedTool.value === Tools.Eraser);
         const freeDrawingBrushInverted = computed(() => selectedTool.value === Tools.Eraser);
@@ -147,8 +148,11 @@ export default defineComponent({
         },
     },
     methods: {
-      changeTool() {
-        this.canvasMouse.changeTool(selectedTool.value);
+      changeTool(tool: Tools_) {
+        this.canvasMouse.changeTool(tool);
+      },
+      changeShape(shape: Shapes_) {
+        this.canvasMouse.changeShape(shape);
       },
     },
 });
