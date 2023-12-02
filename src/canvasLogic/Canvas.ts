@@ -1,5 +1,5 @@
 import { Shapes, Shapes_, Tools, Tools_ } from "@/shared/interfaces";
-import { Shape, Rectangle } from "./Objects";
+import { CanvasObject, Shape, Rectangle, Text } from "./Objects";
 import { IncorrectShapeError, IncorrectToolError } from "@/shared/errors";
 
 export interface IMouseEvent {
@@ -10,7 +10,7 @@ export interface IMouseEvent {
 export class CanvasMouse {
   private selectedTool: Tools_ = Tools.Cursor;
   private selectedShape: Shapes_ = Shapes.Rectangle;
-  private currentModifiedObject: Shape | null = null;
+  private currentModifiedObject: CanvasObject | null = null;
 
   constructor() {};
 
@@ -33,7 +33,14 @@ export class CanvasMouse {
             throw new IncorrectShapeError(this.selectedShape);
         }
         break;
+      case Tools.Text:
+        this.currentModifiedObject = new Text(event.x, event.y);
+        break;
       default:
+        this.currentModifiedObject = null;
+        if (
+          this.selectedTool === Tools.Cursor
+        ) return;
         throw new IncorrectToolError(this.selectedTool);
     }
   };
@@ -45,6 +52,7 @@ export class CanvasMouse {
       case Tools.Shapes:
         switch (this.selectedShape) {
           case Shapes.Rectangle:
+            if (!(this.currentModifiedObject instanceof Rectangle)) return;
             this.currentModifiedObject.change(event.x, event.y);
             break;
           default:
@@ -52,6 +60,11 @@ export class CanvasMouse {
         };
         break;
       default:
+        this.currentModifiedObject = null;
+        if (
+          this.selectedTool === Tools.Cursor
+          || this.selectedTool === Tools.Text
+        ) return;
         throw new IncorrectToolError(this.selectedTool);
     };
   };
@@ -63,6 +76,7 @@ export class CanvasMouse {
       case Tools.Shapes:
         switch (this.selectedShape) {
           case Shapes.Rectangle:
+            if (!(this.currentModifiedObject instanceof Rectangle)) return;
             this.currentModifiedObject.end(event.x, event.y);
             break;
           default:
@@ -70,11 +84,16 @@ export class CanvasMouse {
         };
         break;
       default:
+        this.currentModifiedObject = null;
+        if (
+          this.selectedTool === Tools.Cursor
+          || this.selectedTool === Tools.Text
+        ) return;
         throw new IncorrectToolError(this.selectedTool);
     };
   };
 
-  public get currentObject(): Shape | null {
+  public get currentObject(): CanvasObject | null {
     return this.currentModifiedObject;
   };
 };

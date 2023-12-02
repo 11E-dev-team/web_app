@@ -1,8 +1,8 @@
 import { fabric } from "fabric";
 
-import { CanvasObject, CanvasObjects, Shape } from "./Objects";
+import { CanvasObject, CanvasObjects, Shape, Text } from "./Objects";
 import { Shapes } from "@/shared/interfaces";
-import { IncorrectShapeError } from "@/shared/errors";
+import { IncorrectShapeError, IncorrectToolError } from "@/shared/errors";
 
 export default class FabricDrawer {
   protected canvas: fabric.Canvas;
@@ -18,8 +18,11 @@ export default class FabricDrawer {
       case CanvasObjects.Shape:
         this.addShape(object as Shape);
         break;
+      case CanvasObjects.Text:
+        this.addText(object as Text);
+        break;
       default:
-        throw new IncorrectShapeError(CanvasObjects.Shape);
+        throw new IncorrectToolError(CanvasObjects.Shape);
     }
   };
 
@@ -29,7 +32,7 @@ export default class FabricDrawer {
         this.changeShape(object as Shape);
         break;
       default:
-        throw new IncorrectShapeError(CanvasObjects.Shape);
+        throw new IncorrectToolError(CanvasObjects.Shape);
     };
   };
 
@@ -39,7 +42,7 @@ export default class FabricDrawer {
         this.endShape(object as Shape);
         break;
       default:
-        throw new IncorrectShapeError(CanvasObjects.Shape);
+        throw new IncorrectToolError(CanvasObjects.Shape);
     };
   };
 
@@ -83,6 +86,17 @@ export default class FabricDrawer {
     this.canvas.renderAll();
   };
 
+  private addText(text: Text): void {
+    this.currentFabricShape = new fabric.IText(text.value, {
+      left: text.initialX,
+      top: text.initialY,
+    });
+    this.canvas.add(this.currentFabricShape);
+    this.canvas.renderAll();
+    this.canvas.setActiveObject(this.currentFabricShape);
+    if (this.currentFabricShape instanceof fabric.IText) this.currentFabricShape.enterEditing();
+  };
+
    private changeShape(shape: Shape): void {
     this.currentFabricShape?.set({
       left: shape.initialX,
@@ -95,6 +109,7 @@ export default class FabricDrawer {
 
   private endShape(shape: Shape): void {
     this.changeShape(shape);
+    if (this.currentFabricShape) this.canvas.setActiveObject(this.currentFabricShape);
     this.currentFabricShape = undefined;
   };
 };
