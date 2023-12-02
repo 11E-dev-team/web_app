@@ -20,7 +20,7 @@ abstract class ConferenceEvent {
   abstract handle(): void;
 }
 
-class WelcomeConferenceEvent extends ConferenceEvent {
+class ConferenceWelcomingEvent extends ConferenceEvent {
   constructor(data: any, conferenceId: string) {
     super(data, conferenceId);
   };
@@ -37,7 +37,7 @@ class WelcomeConferenceEvent extends ConferenceEvent {
   };
 };
 
-class BroadcastConferenceEvent extends ConferenceEvent {
+class ConferenceBroadcastingEvent extends ConferenceEvent {
   constructor(data: any, conferenceId: string) {
     super(data, conferenceId);
   };
@@ -90,10 +90,10 @@ export default class Conference {
     switch (type) {
       case ConferenceEventType.Welcome:
         console.log("Got a user id");
-        return new WelcomeConferenceEvent(data, conferenceId);
+        return new ConferenceWelcomingEvent(data, conferenceId);
       case ConferenceEventType.Broadcast:
         console.log("Got a broadcast");
-        return new BroadcastConferenceEvent(data, conferenceId);
+        return new ConferenceBroadcastingEvent(data, conferenceId);
       default:
         throw new IncorrectConferenceEventTypeError(`Unknown conference event type: ${type}`);
     };
