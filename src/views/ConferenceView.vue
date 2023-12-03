@@ -26,6 +26,8 @@ export default defineComponent({
   data() {
     conferenceId.value = this.$route.params["id"] as string;
     let conference: Conference | undefined;
+
+    // const fabricCanvas = new FabricCanvas();
     return {
       conferenceId,
       conference,

@@ -40,12 +40,17 @@ class ConferenceWelcomingEvent extends ConferenceEvent {
 };
 
 class ConferenceBroadcastingEvent extends ConferenceEvent {
-  constructor(data: any, conferenceId: string) {
+  private _update: (id: CanvasId, data: string) => void;
+
+  constructor(data: any, conferenceId: string, update: (id: CanvasId, data: string) => void) {
     super(data, conferenceId);
+
+    this._update = update;
   };
 
   handle(): void {
-    // TODO: broadcast a canvas
+    const { target, drawing } = this.data;
+    this._update(target, JSON.stringify(drawing));
   };
 }
 
@@ -115,7 +120,7 @@ export default class Conference {
         return new ConferenceWelcomingEvent(data, conferenceId);
       case ConferenceEventType.Broadcast:
         console.log("Got a broadcast");
-        return new ConferenceBroadcastingEvent(data, conferenceId);
+        return new ConferenceBroadcastingEvent(data, conferenceId, this._subscribers.notify.bind(this._subscribers));
       default:
         throw new IncorrectConferenceEventTypeError(`Unknown conference event type: ${type}`);
     };

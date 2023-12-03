@@ -1,6 +1,6 @@
 <template>
   <div class="canvas-container">
-    <editable-canvas-component id="" />
+    <editable-canvas-component canvas-id="a" />
   </div>
   <students-side />
   <navigation-bar adaptive />

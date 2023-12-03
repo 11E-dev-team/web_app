@@ -21,8 +21,8 @@ export default defineComponent({
       ToolKit,
     },
     props: {
-        canvasId: { type: String, required: true },
         conference: Conference,
+        fabricCanvas: {type: Object as () => FabricCanvas, required: true},
     },
     data() {
         const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
@@ -30,93 +30,85 @@ export default defineComponent({
             width: container.value ? container.value.offsetWidth : window.innerWidth,
             height: container.value ? container.value.offsetHeight : window.innerHeight,
         });
-        let fabricCanvas = ref<FabricCanvas | undefined>(undefined);
         return {
             container,
             stageConfig,
-            fabricCanvas,
         };
     },
     mounted() {
-        if (!(this.fabricCanvas instanceof FabricCanvas && this.fabricCanvas.canvas instanceof fabric.Canvas))
-            this.fabricCanvas = new FabricCanvas(
-                this.canvasId,
-                new fabric.Canvas(
-                    'canvas',
-                    {
-                        width: this.stageConfig.width,
-                        height: this.stageConfig.height,
-                    }
-                )
-            );
+        if (!(this.$props.fabricCanvas instanceof FabricCanvas && this.$props.fabricCanvas.canvas instanceof fabric.Canvas))
+            this.$props.fabricCanvas.canvas = new fabric.Canvas('canvas', {
+                width: this.stageConfig.width,
+                height: this.stageConfig.height,
+            });
 
         window.addEventListener('resize', () => {
             this.stageConfig.width = window.innerWidth;
             this.stageConfig.height = window.innerHeight;
-            if (this.fabricCanvas instanceof FabricCanvas) {
-                this.fabricCanvas.canvas.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
+            if (this.$props.fabricCanvas instanceof FabricCanvas) {
+                this.$props.fabricCanvas.canvas.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
             }
             ;
         });
 
 
-        this.fabricCanvas.canvas.on('mouse:down', (event: fabric.IEvent) => {
+        this.$props.fabricCanvas.canvas.on('mouse:down', (event: fabric.IEvent) => {
             if (!event.pointer)
                 return;
-            this.fabricCanvas?.mouseDown({
+            this.$props.fabricCanvas?.mouseDown({
                 x: event.pointer.x,
                 y: event.pointer.y,
             });
         });
 
-        this.fabricCanvas.canvas.on('mouse:move', (event: fabric.IEvent) => {
+        this.$props.fabricCanvas.canvas.on('mouse:move', (event: fabric.IEvent) => {
             if (!event.pointer)
                 return;
-            this.fabricCanvas?.mouseMove({
+            this.$props.fabricCanvas?.mouseMove({
                 x: event.pointer.x,
                 y: event.pointer.y,
             });
         });
 
-        this.fabricCanvas.canvas.on('mouse:up', (event: fabric.IEvent) => {
+        this.$props.fabricCanvas.canvas.on('mouse:up', (event: fabric.IEvent) => {
             if (!event.pointer)
                 return;
-            this.fabricCanvas?.mouseUp({
+            this.$props.fabricCanvas?.mouseUp({
                 x: event.pointer.x,
                 y: event.pointer.y,
             });
         });
 
-        this.fabricCanvas.canvas.on('object:added', (evt: fabric.IEvent) => {
+        this.$props.fabricCanvas.canvas.on('object:added', (evt: fabric.IEvent) => {
             const target = evt.target;
             if (!target)
                 return;
             if (target instanceof fabric.Path && target.stroke === 'rgba(0, 0, 0, 0)') {
-                this.fabricCanvas?.canvas?.remove(target);
-                this.fabricCanvas?.canvas?.requestRenderAll();
+                this.$props.fabricCanvas?.canvas?.remove(target);
+                this.$props.fabricCanvas?.canvas?.requestRenderAll();
             }
             if (this.conference)
                 sendToBackend(this.conference);
         });
 
-        this.fabricCanvas.canvas.on('object:modified', () => {
+        this.$props.fabricCanvas.canvas.on('object:modified', () => {
             if (this.conference)
                 sendToBackend(this.conference);
         });
 
-        this.fabricCanvas.updateSettings();
+        this.$props.fabricCanvas.updateSettings();
     },
     beforeUnmount() {
-        if (this.fabricCanvas?.canvas instanceof fabric.Canvas) {
-            this.fabricCanvas?.canvas.dispose();
+        if (this.$props.fabricCanvas?.canvas instanceof fabric.Canvas) {
+            this.$props.fabricCanvas?.canvas.dispose();
         }
     },
     methods: {
         toolUpdatingHandler(tool: Tools_) {
-            this.fabricCanvas?.changeTool(tool);
+            this.$props.fabricCanvas?.changeTool(tool);
         },
         shapeUpdatingHandler(shape: Shapes_) {
-            this.fabricCanvas?.changeShape(shape);
+            this.$props.fabricCanvas?.changeShape(shape);
         },
     }
 });

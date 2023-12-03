@@ -10,7 +10,7 @@ export class FabricCanvas extends Canvas {
 
   private _drawer: FabricDrawer;
 
-  constructor(id: CanvasId, canvas: fabric.Canvas) {
+  constructor(id: CanvasId, canvas: fabric.Canvas) { //TODO: make it possible to specify canvas later
     super(id);
 
     this.canvas = canvas;
@@ -52,5 +52,12 @@ export class FabricCanvas extends Canvas {
   public changeTool(tool: Tools_): void {
     this._canvasMouse.changeTool(tool);
     this.updateSettings();
+  };
+
+  public update(data: string): void {
+    console.log('Fabric canvas updating');
+    console.log(data);
+    this.canvas.loadFromJSON(data, () => {});
+    console.log('Fabric canvas updated');
   };
 };
