@@ -2,7 +2,7 @@
   <div class="container" ref="container">
     <canvas id="canvas" ref="canvas"></canvas>
   </div>
-  <tool-kit @update:tool="fabricCanvas?.changeTool" @update:shape="fabricCanvas?.changeShape" />
+  <tool-kit @update:tool="toolUpdatingHandler" @update:shape="shapeUpdatingHandler" />
 </template>
 
 <script lang="ts">
@@ -13,6 +13,7 @@ import { sendToBackend } from '@/utils/utils';
 import Conference from '@/canvasLogic/Conference';
 import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
 import ToolKit from './ToolKitComponent.vue';
+import { Shapes_, Tools_ } from '@/shared/interfaces';
 
 export default defineComponent({
     name: 'EditableCanvasComponent',
@@ -110,6 +111,14 @@ export default defineComponent({
             this.fabricCanvas?.canvas.dispose();
         }
     },
+    methods: {
+        toolUpdatingHandler(tool: Tools_) {
+            this.fabricCanvas?.changeTool(tool);
+        },
+        shapeUpdatingHandler(shape: Shapes_) {
+            this.fabricCanvas?.changeShape(shape);
+        },
+    }
 });
 </script>
 
