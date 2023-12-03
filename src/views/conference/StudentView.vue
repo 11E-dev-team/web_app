@@ -2,6 +2,7 @@
     <div class="canvas-container">
       <editable-canvas-component id="" />
     </div>
+    <students-side />
     <navigation-bar />
     <tool-kit />
   </template>
@@ -14,7 +15,7 @@
   import NavigationBar from '@/components/canvas/NavigationComponent.vue';
   import ToolKit from '@/components/canvas/ToolKitComponent.vue';
   import StudentsSide from '@/components/canvas/StudentsSideComponent.vue';
-  
+
   export default defineComponent({
     components: {
       HeaderComponent,
