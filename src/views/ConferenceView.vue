@@ -1,7 +1,7 @@
 <template>
   <!-- TODO: Write a conference view and logic -->
   <span>You're in {{ conferenceId }} conference</span>
-  <editable-canvas-component />
+  <editable-canvas-component canvasId="canvas" />
   <static-canvas-component />
 </template>
 

@@ -1,6 +1,8 @@
 import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/store';
+import { Canvas } from './Canvas';
+import { CanvasId } from '@/shared/types';
 
 enum ConferenceEventType_ {
   Welcome = "welcome",
@@ -53,31 +55,51 @@ class IncorrectConferenceEventTypeError extends Error {
   };
 };
 
-export default class Conference {
-  private static WEBSOCKET_URL = "ws://0.0.0.0:8179/ws/conference/";
+class ConferenceSubscribers {
+  private _subscribers: Map<CanvasId, Canvas> = new Map();
 
-  private webSocket: WebSocket | null = null;
+  constructor () {};
+
+  public notify(id: CanvasId, data: string): void {
+    this._subscribers.get(id)?.update(data);
+  };
+
+  public subscribe(canvas: Canvas): void {
+    this._subscribers.set(canvas.id, canvas);
+  };
+};
+
+export default class Conference {
+  private static _WEBSOCKET_URL = "ws://0.0.0.0:8179/ws/conference/";
+
+  private _webSocket: WebSocket | null = null;
+
+  private _subscribers: ConferenceSubscribers = new ConferenceSubscribers();
 
   constructor(conferenceId: string) {
     this.join(conferenceId);
   };
 
   private join(conferenceId: string): void {
-    this.webSocket = new WebSocket(Conference.WEBSOCKET_URL + conferenceId);
-    this.webSocket.onopen = () => {
+    this._webSocket = new WebSocket(Conference._WEBSOCKET_URL + conferenceId);
+    this._webSocket.onopen = () => {
       console.log("Connected");
     }
-    this.webSocket.onmessage = (event: MessageEvent) => {
+    this._webSocket.onmessage = (event: MessageEvent) => {
       this.handleMessage(event, conferenceId);
     };
   };
 
   public send(data: any): void {
-    this.webSocket?.send(JSON.stringify(data));
+    this._webSocket?.send(JSON.stringify(data));
   };
 
   public leave(): void {
-    this.webSocket?.close();
+    this._webSocket?.close();
+  };
+
+  public subscribe(target: Canvas): void {
+    this._subscribers.subscribe(target);
   };
 
   private handleMessage(event: MessageEvent, conferenceId: string): void {

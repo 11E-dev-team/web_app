@@ -1,6 +1,7 @@
 import { Shapes, Shapes_, Tools, Tools_ } from "@/shared/interfaces";
 import { CanvasObject, Shape, Rectangle, Text } from "./Objects";
 import { IncorrectShapeError, IncorrectToolError } from "@/shared/errors";
+import { CanvasId } from "@/shared/types";
 
 export interface IMouseEvent {
   x: number;
@@ -11,6 +12,16 @@ export class CanvasMouse {
   private selectedTool: Tools_ = Tools.Cursor;
   private selectedShape: Shapes_ = Shapes.Rectangle;
   private currentModifiedObject: CanvasObject | null = null;
+
+  public currentColor: string = [
+    '#',
+    Math.floor(9 * Math.random()),
+    Math.floor(9 * Math.random()),
+    Math.floor(9 * Math.random()),
+    Math.floor(9 * Math.random()),
+    Math.floor(9 * Math.random()),
+    Math.floor(9 * Math.random()),
+  ].join("");
 
   constructor() {};
 
@@ -108,4 +119,34 @@ export class CanvasMouse {
   public get currentTool(): Tools_ {
     return this.selectedTool;
   };
+};
+
+export abstract class Canvas {
+  public id: CanvasId;
+
+  protected _canvasMouse: CanvasMouse = new CanvasMouse();
+
+  constructor(id: CanvasId) {
+    this.id = id;
+  };
+
+  public update(data: string): void {};
+
+  public set canvasMouse(canvasMouse: CanvasMouse) {
+    this._canvasMouse = canvasMouse;
+  };
+
+  public changeTool(tool: Tools_): void {
+    this._canvasMouse.changeTool(tool);
+  };
+
+  public changeShape(shape: Shapes_): void {
+    this._canvasMouse.changeShape(shape);
+  };
+
+  abstract mouseDown(event: IMouseEvent): void;
+
+  abstract mouseMove(event: IMouseEvent): void;
+
+  abstract mouseUp(event: IMouseEvent): void;
 };

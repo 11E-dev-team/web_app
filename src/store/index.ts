@@ -72,15 +72,6 @@ export const useCanvasStateStore = defineStore('canvas-state', {
   state: () => {
     return {
       isDrawing: false as boolean,
-      selectedColor: [
-        '#',
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-      ].join("") as string,
     }
   },
 })
