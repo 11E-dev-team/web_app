@@ -124,10 +124,12 @@ export class CanvasMouse {
 export abstract class Canvas {
   public id: CanvasId;
 
-  protected _canvasMouse: CanvasMouse = new CanvasMouse();
+  protected _canvasMouse: CanvasMouse;
 
   constructor(id: CanvasId) {
     this.id = id;
+
+    this._canvasMouse = new CanvasMouse();
   };
 
   public update(data: string): void {};

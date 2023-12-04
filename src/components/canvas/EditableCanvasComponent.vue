@@ -22,7 +22,7 @@ export default defineComponent({
     },
     props: {
         conference: Conference,
-        fabricCanvas: {type: Object as () => FabricCanvas, required: true},
+        fabricCanvas: {type: Object, required: true},
     },
     data() {
         const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);

@@ -51,6 +51,7 @@ class ConferenceBroadcastingEvent extends ConferenceEvent {
   handle(): void {
     const { target, drawing } = this.data;
     this._update(target, JSON.stringify(drawing));
+    console.log(`Broadcasting to ${target}`);
   };
 }
 
@@ -60,16 +61,21 @@ class IncorrectConferenceEventTypeError extends Error {
   };
 };
 
+type Subscriber = Required<{
+  update: (data: string) => void,
+  id: CanvasId,
+}>
+
 class ConferenceSubscribers {
-  private _subscribers: Map<CanvasId, Canvas> = new Map();
+  private _subscribers: Map<CanvasId, Subscriber> = new Map();
 
   constructor () {};
 
   public notify(id: CanvasId, data: string): void {
-    this._subscribers.get(id)?.update(data);
+    this._subscribers.get(String(id))?.update(data);
   };
 
-  public subscribe(canvas: Canvas): void {
+  public subscribe(canvas: Subscriber): void {
     this._subscribers.set(canvas.id, canvas);
   };
 };
@@ -103,7 +109,7 @@ export default class Conference {
     this._webSocket?.close();
   };
 
-  public subscribe(target: Canvas): void {
+  public subscribe(target: Subscriber): void {
     this._subscribers.subscribe(target);
   };
 
