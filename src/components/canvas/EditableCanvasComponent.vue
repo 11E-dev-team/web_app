@@ -187,6 +187,7 @@ canvas {
 }
 
 .container {
+  background-color: var(--background);
   top: 0;
   left: 0;
   width: 100%;

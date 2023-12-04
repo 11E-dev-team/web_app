@@ -69,7 +69,7 @@ export default defineComponent({
 .toolkit {
   position: absolute;
   z-index: 100;
-  left: 32px;
+  left: 8px;
   top: calc(50vh - 162.5px);
 
   display: flex;
@@ -82,7 +82,7 @@ export default defineComponent({
 
   border-radius: 16px;
   border: 2px solid var(--accent, #464AB4);
-  background: var(--background, #E5E6F5);
+  background: var(--background);
   box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
   button {
