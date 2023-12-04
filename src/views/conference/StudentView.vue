@@ -17,6 +17,7 @@
   import StudentsSide from '@/components/canvas/StudentsSideComponent.vue';
 
   export default defineComponent({
+    name: 'StudentView',
     components: {
       HeaderComponent,
       EditableCanvasComponent,
