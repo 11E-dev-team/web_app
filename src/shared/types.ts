@@ -1,3 +1,3 @@
 export type ConferenceId = string;
 
-export type CanvasId = string;
+export type CanvasId = number;

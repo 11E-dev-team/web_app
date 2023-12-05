@@ -51,7 +51,7 @@ class ConferenceBroadcastingEvent extends ConferenceEvent {
   handle(): void {
     const { target, drawing } = this.data;
     this._update(target, JSON.stringify(drawing));
-    console.log(`Broadcasting to ${target}`);
+    console.log(`Got broadcast to ${target}`);
   };
 }
 
@@ -72,7 +72,7 @@ class ConferenceSubscribers {
   constructor () {};
 
   public notify(id: CanvasId, data: string): void {
-    this._subscribers.get(String(id))?.update(data);
+    this._subscribers.get(id)?.update(data);
   };
 
   public subscribe(canvas: Subscriber): void {
@@ -102,6 +102,7 @@ export default class Conference {
   };
 
   public send(data: any): void {
+    console.log("Sending", JSON.stringify(data), this._webSocket);
     this._webSocket?.send(JSON.stringify(data));
   };
 

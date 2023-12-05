@@ -1,16 +1,16 @@
 import fabric from "fabric/fabric-impl";
-import { Canvas, CanvasMouse, IMouseEvent } from "./Canvas";
+import { Canvas, IMouseEvent } from "./Canvas";
 import FabricDrawer from "./FabricDrawer";
-import { ref, Ref } from "vue";
 import { CanvasId } from "@/shared/types";
 import { Tools, Tools_ } from "@/shared/interfaces";
+import Conference from "./Conference";
 
 export class FabricCanvas extends Canvas {
   private _canvas: fabric.Canvas | undefined;
 
   private _drawer: FabricDrawer | undefined;
 
-  constructor(id: CanvasId, canvas?: fabric.Canvas) { //TODO: make it possible to specify canvas later
+  constructor(id: CanvasId, canvas?: fabric.Canvas, conference?: Conference) { //TODO: make it possible to specify canvas later
     super(id);
 
     this._canvas = canvas;
@@ -60,8 +60,9 @@ export class FabricCanvas extends Canvas {
   public update(data: string): void {
     if (!this._canvas) return;
     console.log('Fabric canvas updating');
+    data = JSON.parse(data);
     console.log(data);
-    this._canvas.loadFromJSON(data, () => {});
+    this._canvas.loadFromJSON(data, this._canvas.renderAll.bind(this._canvas));
     console.log('Fabric canvas updated');
   };
 
@@ -73,4 +74,9 @@ export class FabricCanvas extends Canvas {
   public get canvas(): fabric.Canvas {
     return this._canvas as fabric.Canvas;
   }
+
+  public broadcast(): void {
+    console.log(`Started broadcast from ${this.id}`);
+    this.sendToConference({"drawing": JSON.stringify(this._canvas?.toDatalessJSON())});
+  };
 };

@@ -6,10 +6,9 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, defineComponent, ref, Ref } from 'vue';
+import { reactive, defineComponent, ref, Ref } from 'vue';
 import { fabric } from 'fabric';
 
-import { sendToBackend } from '@/utils/utils';
 import Conference from '@/canvasLogic/Conference';
 import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
 import ToolKit from './ToolKitComponent.vue';
@@ -87,13 +86,11 @@ export default defineComponent({
                 this.$props.fabricCanvas?.canvas?.remove(target);
                 this.$props.fabricCanvas?.canvas?.requestRenderAll();
             }
-            if (this.conference)
-                sendToBackend(this.conference);
+            this.fabricCanvas.broadcast();
         });
 
         this.$props.fabricCanvas.canvas.on('object:modified', () => {
-            if (this.conference)
-                sendToBackend(this.conference);
+            this.fabricCanvas.broadcast();
         });
 
         this.$props.fabricCanvas.updateSettings();

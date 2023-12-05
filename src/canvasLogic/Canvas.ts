@@ -2,6 +2,7 @@ import { Shapes, Shapes_, Tools, Tools_ } from "@/shared/interfaces";
 import { CanvasObject, Shape, Rectangle, Text } from "./Objects";
 import { IncorrectShapeError, IncorrectToolError } from "@/shared/errors";
 import { CanvasId } from "@/shared/types";
+import Conference from "./Conference";
 
 export interface IMouseEvent {
   x: number;
@@ -126,16 +127,28 @@ export abstract class Canvas {
 
   protected _canvasMouse: CanvasMouse;
 
-  constructor(id: CanvasId) {
+  protected _conference: Conference | undefined;
+
+  constructor(id: CanvasId, conference?: Conference) {
     this.id = id;
 
     this._canvasMouse = new CanvasMouse();
+    this._conference = conference;
   };
 
   public update(data: string): void {};
 
   public set canvasMouse(canvasMouse: CanvasMouse) {
     this._canvasMouse = canvasMouse;
+  };
+
+  public set conference(conference: Conference) {
+    this._conference = conference;
+  };
+
+  public sendToConference(data: any): void {
+    console.log("Sending to conference", {"target": this.id, ...data});
+    this._conference?.send({"target": this.id, ...data});
   };
 
   public changeTool(tool: Tools_): void {

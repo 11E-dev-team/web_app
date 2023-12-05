@@ -14,7 +14,6 @@ import Conference from '@/canvasLogic/Conference';
 import EditableCanvasComponent from '@/components/canvas/EditableCanvasComponent.vue';
 import StaticCanvasComponent from '@/components/canvas/StaticCanvasComponent.vue';
 import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
-import { Canvas } from 'fabric/fabric-impl';
 
 const userStore = useUserStore();
 const { conferenceId } = storeToRefs(userStore);
@@ -29,7 +28,7 @@ export default defineComponent({
     conferenceId.value = this.$route.params["id"] as string;
     let conference: Conference | undefined;
 
-    const fabricCanvas = new FabricCanvas("0");
+    const fabricCanvas = new FabricCanvas(0);
     return {
       conferenceId,
       conference,
@@ -39,6 +38,7 @@ export default defineComponent({
   mounted() {
     this.conference = new Conference(this.conferenceId);
     this.conference.subscribe(this.fabricCanvas);
+    this.fabricCanvas.conference = this.conference;
   },
   unmounted() {
     this.conference?.leave();
