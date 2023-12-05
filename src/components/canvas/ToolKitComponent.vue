@@ -80,7 +80,7 @@ export default defineComponent({
 
   width: 64px;
 
-  border-radius: 16px;
+  border-radius: 8px;
   border: 2px solid var(--accent, #464AB4);
   background: var(--background);
   box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);

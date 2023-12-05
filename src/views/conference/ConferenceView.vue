@@ -1,5 +1,8 @@
 <template>
   <!-- TODO: Write a conference view and logic -->
+  <!-- <student-view v-if="isTeacher" />
+  <teacher-view v-else /> -->
+  <!-- Switch back if else -->
   <teacher-view v-if="isTeacher" />
   <student-view v-else />
 </template>
