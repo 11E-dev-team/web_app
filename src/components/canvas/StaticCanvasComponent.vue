@@ -1,6 +1,6 @@
 <template>
   <div class="container" ref="container">
-    <canvas id="canvas" ref="canvas_"></canvas>
+    <canvas id="canvas" ref="canvas"></canvas>
   </div>
 </template>
 
@@ -8,13 +8,12 @@
 import { reactive, defineComponent, ref, Ref } from 'vue';
 import { fabric } from 'fabric';
 
-
-let canvas_: Ref<fabric.Canvas | undefined> = ref<fabric.Canvas | undefined>(undefined);
+import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
 
 export default defineComponent({
   name: 'StaticCanvasComponent',
   props: {
-    canvasId: String,
+      fabricCanvas: Object,
   },
   data() {
     const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
@@ -28,12 +27,29 @@ export default defineComponent({
     };
   },
   mounted() {
-    if (typeof canvas_.value === 'undefined') {
-      canvas_.value = new fabric.Canvas('canvas_', {
-        width: this.stageConfig.width,
-        height: this.stageConfig.height,
-      });
-    };
+    window.addEventListener('resize', () => {
+        this.stageConfig.width = window.innerWidth;
+        this.stageConfig.height = window.innerHeight;
+        if (this.$props.fabricCanvas instanceof FabricCanvas) {
+            this.$props.fabricCanvas.canvas.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
+        };
+    });
+
+    this.updateCanvas();
+  },
+  methods: {
+    updateCanvas() {
+      if (this.$props.fabricCanvas && !(this.$props.fabricCanvas instanceof FabricCanvas && this.$props.fabricCanvas.canvas instanceof fabric.Canvas))
+        this.$props.fabricCanvas.canvas = new fabric.Canvas('canvas', {
+            width: this.stageConfig.width,
+            height: this.stageConfig.height,
+        });
+    },
+  },
+  watch: {
+    fabricCanvas() {
+      this.updateCanvas();
+    },
   },
 });
 </script>

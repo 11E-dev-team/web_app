@@ -4,6 +4,7 @@ import { useUserStore } from '@/store';
 import { Canvas } from './Canvas';
 import { CanvasId } from '@/shared/types';
 
+// Types of events from websocket
 enum ConferenceEventType_ {
   Welcome = "welcome",
   Broadcast = "broadcast",
@@ -66,13 +67,43 @@ type Subscriber = Required<{
   id: CanvasId,
 }>
 
+type Controller = Required<{
+  update: (data: IClientConferenceEvent) => void,
+}>
+
+// Conference events on client
+enum ClientConferenceEventTypes_ {
+  CreateCanvas = "create_canvas",
+}
+
+export const ClientConferenceEventTypes = Object.freeze(ClientConferenceEventTypes_);
+
+export interface IClientConferenceEvent {
+  type: ClientConferenceEventTypes_,
+  data: any,
+}
+
 class ConferenceSubscribers {
   private _subscribers: Map<CanvasId, Subscriber> = new Map();
 
-  constructor () {};
+  private _controller: Controller;
+
+  constructor (controller: Controller) {
+    this._controller = controller;
+  };
 
   public notify(id: CanvasId, data: string): void {
+    if (!this._subscribers.has(id)) {
+      this.notifyController({
+        type: ClientConferenceEventTypes.CreateCanvas,
+        data: {id: id},
+      })
+    };
     this._subscribers.get(id)?.update(data);
+  };
+
+  private notifyController(data: IClientConferenceEvent): void {
+    this._controller.update(data);
   };
 
   public subscribe(canvas: Subscriber): void {
@@ -85,10 +116,14 @@ export default class Conference {
 
   private _webSocket: WebSocket | null = null;
 
-  private _subscribers: ConferenceSubscribers = new ConferenceSubscribers();
+  private _subscribers: ConferenceSubscribers = new ConferenceSubscribers(this);
 
-  constructor(conferenceId: string) {
+  private _controller: Controller;
+
+  constructor(controller: Controller, conferenceId: string) {
     this.join(conferenceId);
+
+    this._controller = controller;
   };
 
   private join(conferenceId: string): void {
@@ -112,6 +147,14 @@ export default class Conference {
 
   public subscribe(target: Subscriber): void {
     this._subscribers.subscribe(target);
+  };
+
+  public update(data: any): void {
+    this._controller.update(data);
+  };
+
+  private notifyController(data: IClientConferenceEvent): void {
+    this._controller.update(data);
   };
 
   private handleMessage(event: MessageEvent, conferenceId: string): void {
