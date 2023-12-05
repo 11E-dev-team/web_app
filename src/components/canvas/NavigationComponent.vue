@@ -4,10 +4,10 @@
       <img src="@/assets/SpizdIconPack/exit.svg" alt="logo">
     </RouterLink> <!-- home -->
     <!-- <button> -->
-      <!-- <img src="@/assets/SpizdIconPack/settingsIcon.svg" alt="logo"> -->
+    <!-- <img src="@/assets/SpizdIconPack/settingsIcon.svg" alt="logo"> -->
     <!-- </button> settings -->
     <!-- <button> -->
-      <!-- <img src="@/assets/SpizdIconPack/groupIcon.svg" alt="logo"> -->
+    <!-- <img src="@/assets/SpizdIconPack/groupIcon.svg" alt="logo"> -->
     <!-- </button> group preview -->
     <button>
       <img src="@/assets/SpizdIconPack/desksIcon.svg" alt="logo">
@@ -24,8 +24,8 @@ export default defineComponent({
     adaptive: Boolean,
   },
   computed: {
-    navbarRight () {
-      return this.adaptive ? 'calc(15vw - 138px)' : '16px';
+    navbarRight() {
+      return this.adaptive ? 'calc(15vw - 138px)' : '8px';
     },
   }
 })
@@ -33,6 +33,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import '@/assets/scss/main.scss';
+
 .navbar {
   position: absolute;
   display: flex;
@@ -41,13 +42,16 @@ export default defineComponent({
   right: v-bind(navbarRight);
   width: fit-content;
   height: 64px;
+
   padding: {
     left: 16px;
     right: 16px;
     top: 16px;
     bottom: 8px;
-  };
-  
+  }
+
+  ;
+
   justify-content: space-between;
   gap: 16px;
   overflow: hidden;
@@ -60,9 +64,10 @@ export default defineComponent({
   * {
     width: 48px;
     height: 48px;
-    
+
     background-color: transparent;
   }
+
   img {
     width: 40px;
     height: 40px;

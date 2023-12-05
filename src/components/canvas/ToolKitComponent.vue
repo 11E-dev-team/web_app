@@ -80,9 +80,13 @@ export default defineComponent({
 
   width: 64px;
 
-  border-radius: 8px;
-  border: 2px solid var(--accent, #464AB4);
-  background: var(--background);
+  border: {
+    style: var(--default-border-style, solid);
+    radius: var(--external-border-radius, 8px);
+    color: var(--default-border-color, var(--accent, #464AB4));
+    width: var(--default-border-width, 2px);
+  };
+  background: var(--background, #E5E6F5);
   box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
   button {
@@ -107,13 +111,17 @@ export default defineComponent({
   padding: 8px;
   gap: 16px;
   position: relative;
-  top: -58px;
+  top: -40px;
   left: 64px;
 
   width: fit-content;
 
-  border-radius: 16px;
-  border: 2px solid var(--accent, #464AB4);
+  border: {
+    style: var(--default-border-style, solid);
+    radius: var(--external-border-radius, 8px);
+    color: var(--default-border-color, var(--accent, #464AB4));
+    width: var(--default-border-width, 2px);
+  };
   background: var(--background, #E5E6F5);
   box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
 

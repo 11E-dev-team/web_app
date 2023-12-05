@@ -18,20 +18,21 @@ export default defineComponent({
     adaptive: Boolean,
   },
   computed: {
-    navbarRight () {
-      return this.adaptive ? 'calc(15vw - 138px)' : '16px';
+    StudentsSideRight () {
+      return this.adaptive ? 'calc(15vw - 138px)' : '8px';
     },
   }
 });
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/scss/main.scss';
 .teacher-canvas {
   position: absolute;
   display: flex;
   align-items: center;
-  top: 100px;
-  right: v-bind(navbarRight);
+  top: 96px;
+  right: v-bind(StudentsSideRight);
   padding: {
     left: 16px;
     right: 16px;
@@ -45,11 +46,11 @@ export default defineComponent({
   height: 300px;
 
   border: {
-    style: solid;
-    radius: 16px;
-    color: var(--accent, #464AB4);
-    width: 1px;
+    style: var(--default-border-style, solid);
+    radius: var(--external-border-radius, 16px);
+    color: var(--default-border-color, var(--accent, #464AB4));
+    width: var(--default-border-width, 2px);
   }
-  background: var(--background);
+  background: var(--background, #E5E6F5);
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
   <div class="canvas-container">
-      <editable-canvas-component id="" />
-    </div>
-    <teachers-side />
-    <navigation-bar />
-    <tool-kit />
+    <editable-canvas-component id="" />
+  </div>
+  <teachers-side />
+  <navigation-bar />
+  <tool-kit />
 </template>
 
 <script lang="ts">
@@ -19,11 +19,11 @@ import TeachersSide from '@/components/canvas/TeachersSideComponent.vue';
 export default defineComponent({
   name: 'TeacherView',
   components: {
-      HeaderComponent,
-      EditableCanvasComponent,
-      NavigationBar,
-      ToolKit,
-      TeachersSide,
-    },
+    HeaderComponent,
+    EditableCanvasComponent,
+    NavigationBar,
+    ToolKit,
+    TeachersSide,
+  },
 });
 </script>

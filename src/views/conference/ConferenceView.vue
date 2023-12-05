@@ -1,10 +1,9 @@
 <template>
   <!-- TODO: Write a conference view and logic -->
-  <!-- <student-view v-if="isTeacher" />
-  <teacher-view v-else /> -->
+  <!-- <student-view v-if="isTeacher" /> -->
+  <student-view v-if=true />
+  <teacher-view v-else />
   <!-- Switch back if else -->
-  <teacher-view v-if="isTeacher" />
-  <student-view v-else />
 </template>
 
 <script lang="ts">
@@ -25,25 +24,25 @@ export default defineComponent({
     StudentView,
     TeacherView,
   },
-  data() {
-    conferenceId.value = this.$route.params["id"] as string;
-    let conference: Conference | undefined;
-    return {
-      conferenceId,
-      conference,
-    }
-  },
-  mounted() {
-    this.conference = new Conference(this.conferenceId);
-  },
-  unmounted() {
-    this.conference?.leave();
-  },
-  computed: {
-    isTeacher(): boolean {
-      const idInConference_ = idInConference.value.find(x => x.conferenceId === this.conferenceId);
-      return idInConference_ !== undefined && idInConference_.role !== undefined && idInConference_.role >= 4;
-    },
-  },
+  // data() {
+  //   conferenceId.value = this.$route.params["id"] as string;
+  //   let conference: Conference | undefined;
+  //   return {
+  //     conferenceId,
+  //     conference,
+  //   }
+  // },
+  // mounted() {
+  //   this.conference = new Conference(this.conferenceId);
+  // },
+  // unmounted() {
+  //   this.conference?.leave();
+  // },
+  // computed: {
+  //   isTeacher(): boolean {
+  //     const idInConference_ = idInConference.value.find(x => x.conferenceId === this.conferenceId);
+  //     return idInConference_ !== undefined && idInConference_.role !== undefined && idInConference_.role >= 4;
+  //   },
+  // },
 })
 </script>
