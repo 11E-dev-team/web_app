@@ -37,7 +37,7 @@ import { storeToRefs } from 'pinia';
 
 import { useCanvasStateStore } from '@/store';
 import { deleteSelected } from '@/utils/canvasLogic/deleteUtils';
-import { Tools, Shapes } from '@/store/public_interfaces';
+import { Tools, Tools_, Shapes, Shapes_ } from '@/shared/interfaces';
 
 export default defineComponent({
   name: 'ToolKitComponent',
