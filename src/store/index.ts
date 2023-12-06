@@ -14,15 +14,7 @@ export const useCounterStore = defineStore('counter', {
 
 import Password from '@/utils/password'
 
-import {
-  IUser,
-  ILine,
-  IRectangle,
-  IEllipse,
-  ICircle,
-  IArrow,
-  IText,
-} from '@/store/public_interfaces'
+import { IUser } from '@/shared/interfaces'
 
 interface IUserIdInConference {
   conferenceId: string
@@ -74,24 +66,13 @@ export const useCanvasStore = defineStore('canvas', {
   },
 })
 
-import { Tools, Tools_, Shapes, Shapes_ } from '@/store/public_interfaces'
+import { Tools, Tools_, Shapes, Shapes_ } from '@/shared/interfaces'
 import { fabric } from 'fabric'
 
 export const useCanvasStateStore = defineStore('canvas-state', {
   state: () => {
     return {
       isDrawing: false as boolean,
-      selectedTool: Tools.Cursor as Tools_,
-      selectedShape: Shapes.Rectangle as Shapes_,
-      selectedColor: [
-        '#',
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-        Math.floor(9 * Math.random()),
-      ].join("") as string,
     }
   },
 })

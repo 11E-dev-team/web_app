@@ -4,7 +4,7 @@ import { createTestingPinia } from '@pinia/testing';
 
 import Toolkit from "@/components/ToolKitComponent.vue";
 import { useCanvasStateStore } from '@/store';
-import { Tools, Shapes } from '@/store/public_interfaces';
+import { Tools, Shapes } from '@/shared/interfaces';
 
 beforeEach(() => {
   setActivePinia(createPinia());
