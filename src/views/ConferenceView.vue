@@ -1,23 +1,21 @@
 <template>
-  <span>You're in {{ conferenceId }} conference</span>
-  <editable-canvas-component :fabricCanvas="fabricCanvas" />
-  <div v-for="fabricCanvas in fabricCanvasArray">
+  <span>You're {{ conference?.userData?.id }} in {{ conferenceId }} conference, you have {{ conference?.userData?.role }} role</span>
+
+  <div v-for="fabricCanvas in editableFabricCanvasArray">
+    <editable-canvas-component :fabricCanvas="fabricCanvas" />
+  </div>
+  <div v-for="fabricCanvas in staticFabricCanvasArray">
     <static-canvas-component :fabricCanvas="fabricCanvas" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, Ref, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 
-import { useUserStore } from '@/store';
 import Conference, { ClientConferenceEventTypes, IClientConferenceEvent } from '@/canvasLogic/Conference';
 import EditableCanvasComponent from '@/components/canvas/EditableCanvasComponent.vue';
 import StaticCanvasComponent from '@/components/canvas/StaticCanvasComponent.vue';
 import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
-
-const userStore = useUserStore();
-const { conferenceId, user } = storeToRefs(userStore);
 
 export default defineComponent({
   name: 'ConferenceView',
@@ -26,14 +24,16 @@ export default defineComponent({
     StaticCanvasComponent,
   },
   data() {
-    conferenceId.value = this.$route.params["id"] as string;
+    const conferenceId: string = this.$route.params["id"] as string;
     let conference: Ref<Conference | undefined> = ref();
-    const fabricCanvasArray: Ref<FabricCanvas[]> = ref([]);
+    const staticFabricCanvasArray: Ref<FabricCanvas[]> = ref([]);
+    const editableFabricCanvasArray: Ref<FabricCanvas[]> = ref([]);
 
     return {
       conferenceId,
       conference,
-      fabricCanvasArray,
+      staticFabricCanvasArray,
+      editableFabricCanvasArray,
     }
   },
   mounted() {
@@ -47,7 +47,11 @@ export default defineComponent({
       const fabricCanvas = new FabricCanvas(data.data.id);
       if (this.conference) fabricCanvas.conference = this.conference;
       this.conference?.subscribe(fabricCanvas);
-      this.fabricCanvasArray.push(fabricCanvas);
+      if (data.data.id === this.conference?.userData?.id) {
+        this.editableFabricCanvasArray.push(fabricCanvas);
+      } else {
+        this.staticFabricCanvasArray.push(fabricCanvas);
+      };
     },
     update(data: IClientConferenceEvent) {
       if (data.type === ClientConferenceEventTypes.CreateCanvas) {
@@ -55,16 +59,5 @@ export default defineComponent({
       };
     },
   },
-  computed: {
-    fabricCanvas(): FabricCanvas | undefined {
-      return user.value?.id ? this.fabricCanvasArray[user.value?.id] : undefined;
-    },
-  },
 });
 </script>
-
-<style scoped lang="scss">
-div {
-  display: none;
-}
-</style>

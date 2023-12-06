@@ -35,6 +35,7 @@ export class CanvasMouse {
   };
 
   public down(event: IMouseEvent): void {
+    console.log(this.currentTool);
     switch (this.selectedTool) {
       case Tools.Shapes:
         switch (this.selectedShape) {
