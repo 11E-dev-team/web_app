@@ -28,8 +28,6 @@ export const useUserStore = defineStore('user', {
       user: undefined as IUser | undefined,
       newUser: undefined as IUser | undefined,
       idInConference: [] as IUserIdInConference[],
-      conferenceId: "" as string,
-      mainSocket: undefined as WebSocket | undefined,
     }
   }
 })

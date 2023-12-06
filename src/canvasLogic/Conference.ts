@@ -20,7 +20,7 @@ abstract class ConferenceEvent {
     this.conferenceId = conferenceId;
   };
 
-  abstract handle(): void;
+  abstract handle(update?: (type: string, data: any) => void): void;
 }
 
 class ConferenceWelcomingEvent extends ConferenceEvent {
@@ -28,15 +28,18 @@ class ConferenceWelcomingEvent extends ConferenceEvent {
     super(data, conferenceId);
   };
 
-  handle(): void {
+  handle(update: (type: string, data: any) => void): void {
     const userStore = useUserStore();
     const { idInConference } = storeToRefs(userStore);
+
+    const userData: {id: string, role: number} = this.data;
 
     idInConference.value.push({
       conferenceId: this.conferenceId,
       id: this.data.id,
       role: this.data.role,
     });
+    update("update_user_data", userData);
   };
 };
 
@@ -120,6 +123,8 @@ export default class Conference {
 
   private _controller: Controller;
 
+  private _userData: {id: string, role: number} | null = null;
+
   constructor(controller: Controller, conferenceId: string) {
     this.join(conferenceId);
 
@@ -159,8 +164,12 @@ export default class Conference {
 
   private handleMessage(event: MessageEvent, conferenceId: string): void {
     const { type, ...data } = JSON.parse(event.data);
-    // TODO: move somewhere from utils
-    this.getConferenceEvent(conferenceId, type, data).handle();
+    this.getConferenceEvent(conferenceId, type, data).handle(this.updateUserData.bind(this));
+  };
+
+  private updateUserData(type: string, userData: {id: string, role: number}): void {
+    if (type !== "update_user_data") return;
+    this._userData = userData;
   };
 
   private getConferenceEvent(conferenceId: string, type: ConferenceEventType_, data: any): ConferenceEvent {
@@ -174,5 +183,9 @@ export default class Conference {
       default:
         throw new IncorrectConferenceEventTypeError(`Unknown conference event type: ${type}`);
     };
-  }
+  };
+
+  public get userData(): {id: string, role: number} | null {
+    return this._userData;
+  };
 };
