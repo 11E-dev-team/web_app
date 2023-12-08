@@ -5,12 +5,14 @@ import { Shapes } from "@/shared/interfaces";
 import { IncorrectShapeError, IncorrectToolError } from "@/shared/errors";
 
 export default class FabricDrawer {
-  protected canvas: fabric.Canvas;
-  protected currentFabricShape: fabric.Object | fabric.Line | fabric.Ellipse | undefined;
+  protected _canvas: fabric.Canvas;
+  protected _currentFabricShape: fabric.Object | fabric.Line | fabric.Ellipse | undefined;
+  protected _strokeColor: string | undefined;
 
-  constructor(canvas: fabric.Canvas) {
-    this.canvas = canvas;
-    this.currentFabricShape = undefined;
+  constructor(_canvas: fabric.Canvas, _strokeColor?: string) {
+    this._canvas = _canvas;
+    this._currentFabricShape = undefined;
+    this._strokeColor = _strokeColor;
   };
 
   public add(object: CanvasObject) {
@@ -46,73 +48,76 @@ export default class FabricDrawer {
     };
   };
 
+  public set strokeColor(color: string) {
+    this._strokeColor = color;
+  };
+
   private addShape(shape: Shape): void {
     switch (shape.type) {
       case Shapes.Rectangle:
-        this.currentFabricShape = new fabric.Rect({
+        this._currentFabricShape = new fabric.Rect({
           left: shape.initialX,
           top: shape.initialY,
           width: 0,
           height: 0,
-          borderColor: 'black',
+          stroke: this._strokeColor ? this._strokeColor : 'black',
           fill: 'transparent',
         });
         break;
       case Shapes.Ellipse:
-        this.currentFabricShape = new fabric.Ellipse({
+        this._currentFabricShape = new fabric.Ellipse({
           left: shape.initialX,
           top: shape.initialY,
           rx: 0,
           ry: 0,
-          stroke: 'black',
+          stroke: this._strokeColor ? this._strokeColor : 'black',
           fill: 'transparent',
           strokeWidth: 1,
         });
         break;
       case Shapes.Line:
-        this.currentFabricShape = new fabric.Line([
+        this._currentFabricShape = new fabric.Line([
             shape.initialX,
             shape.initialY,
             shape.directionX,
             shape.directionY,
         ], {
-          stroke: 'black',
+          stroke: this._strokeColor ? this._strokeColor : 'black',
         });
         break;
       case Shapes.Arrow:
-        this.currentFabricShape = new fabric.Line([
+        this._currentFabricShape = new fabric.Line([
           shape.initialX,
           shape.initialY,
           shape.directionX,
           shape.directionY,
         ], {
-          stroke: 'black',
-          fill: 'black',
+          stroke: this._strokeColor ? this._strokeColor : 'black',
         });
         break;
       default:
         throw new IncorrectShapeError(shape.type);
     };
-    this.canvas.add(this.currentFabricShape);
-    this.canvas.renderAll();
+    this._canvas.add(this._currentFabricShape);
+    this._canvas.renderAll();
   };
 
   private addText(text: Text): void {
-    this.currentFabricShape = new fabric.IText(text.value, {
+    this._currentFabricShape = new fabric.IText(text.value, {
       left: text.initialX,
       top: text.initialY,
     });
-    this.canvas.add(this.currentFabricShape);
-    this.canvas.renderAll();
-    this.canvas.setActiveObject(this.currentFabricShape);
-    if (this.currentFabricShape instanceof fabric.IText) this.currentFabricShape.enterEditing();
+    this._canvas.add(this._currentFabricShape);
+    this._canvas.renderAll();
+    this._canvas.setActiveObject(this._currentFabricShape);
+    if (this._currentFabricShape instanceof fabric.IText) this._currentFabricShape.enterEditing();
   };
 
    private changeShape(shape: Shape): void {
     switch (shape.type) {
       case Shapes.Rectangle:
-        if (!(this.currentFabricShape instanceof fabric.Rect)) return;
-        this.currentFabricShape?.set({
+        if (!(this._currentFabricShape instanceof fabric.Rect)) return;
+        this._currentFabricShape?.set({
           left: shape.initialX,
           top: shape.initialY,
           width: shape.directionX,
@@ -120,8 +125,8 @@ export default class FabricDrawer {
         });
         break;
       case Shapes.Ellipse:
-        if (!(this.currentFabricShape instanceof fabric.Ellipse)) return;
-        this.currentFabricShape?.set({
+        if (!(this._currentFabricShape instanceof fabric.Ellipse)) return;
+        this._currentFabricShape?.set({
           left: shape.initialX,
           top: shape.initialY,
           rx: shape.directionX,
@@ -129,8 +134,8 @@ export default class FabricDrawer {
         });
         break;
       case Shapes.Line: case Shapes.Arrow:
-        if (!(this.currentFabricShape instanceof fabric.Line)) return;
-        this.currentFabricShape?.set({
+        if (!(this._currentFabricShape instanceof fabric.Line)) return;
+        this._currentFabricShape?.set({
           x1: shape.initialX,
           y1: shape.initialY,
           x2: shape.directionX,
@@ -141,12 +146,12 @@ export default class FabricDrawer {
         throw new IncorrectShapeError(shape.type);
     }
     
-    this.canvas.renderAll();
+    this._canvas.renderAll();
   };
 
   private endShape(shape: Shape): void {
     this.changeShape(shape);
-    if (this.currentFabricShape) this.canvas.setActiveObject(this.currentFabricShape);
-    this.currentFabricShape = undefined;
+    if (this._currentFabricShape) this._canvas.setActiveObject(this._currentFabricShape);
+    this._currentFabricShape = undefined;
   };
 };

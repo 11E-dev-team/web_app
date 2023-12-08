@@ -1,5 +1,5 @@
 import fabric from "fabric/fabric-impl";
-import { Canvas, IMouseEvent } from "./Canvas";
+import { Canvas, CanvasMouse, IMouseEvent } from "./Canvas";
 import FabricDrawer from "./FabricDrawer";
 import { CanvasId } from "@/shared/types";
 import { Tools, Tools_ } from "@/shared/interfaces";
@@ -15,7 +15,7 @@ export class FabricCanvas extends Canvas {
 
     this._canvas = canvas;
     if (this._canvas) {
-      this._drawer = new FabricDrawer(this._canvas);
+      this._drawer = new FabricDrawer(this._canvas, this._canvasMouse.currentColor);
     };
   };
   
@@ -68,12 +68,17 @@ export class FabricCanvas extends Canvas {
 
   public set canvas(canvas: fabric.Canvas) {
     this._canvas = canvas;
-    this._drawer = new FabricDrawer(canvas);
+    this._drawer = new FabricDrawer(canvas, this._canvasMouse.currentColor);
   };
 
   public get canvas(): fabric.Canvas {
     return this._canvas as fabric.Canvas;
-  }
+  };
+
+  public set canvasMouse(canvasMouse: CanvasMouse) {
+    this._canvasMouse = canvasMouse;
+    if (this._drawer) this._drawer.strokeColor = canvasMouse.currentColor;
+  };
 
   public broadcast(): void {
     console.log(`Started broadcast from ${this.id}`);
