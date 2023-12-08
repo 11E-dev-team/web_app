@@ -96,12 +96,30 @@ export class Rectangle extends Shape {
 export class Ellipse extends Shape {
   public type = Shapes.Ellipse;
 
+  private calcRadiusX(): number {
+    return this.directionPointer.x - this.initialPointer.x;
+  };
+
+  private calcRadiusY(): number {
+    return this.directionPointer.y - this.initialPointer.y;
+  };
+
+  public get initialX(): number {
+    const rx = this.calcRadiusX();
+    return this.initialPointer.x - Math.abs(rx);
+  };
+
+  public get initialY(): number {
+    const ry = this.calcRadiusY();
+    return this.initialPointer.y - Math.abs(ry);
+  };
+
   public get directionX(): number {
-    return Math.abs(this.directionPointer.x - this.initialPointer.x) * 2;
+    return Math.abs(this.calcRadiusX());
   };
 
   public get directionY(): number {
-    return Math.abs(this.directionPointer.y - this.initialPointer.y) * 2;
+    return Math.abs(this.calcRadiusY());
   };
 };
 

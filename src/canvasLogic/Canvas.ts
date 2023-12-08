@@ -1,5 +1,5 @@
 import { Shapes, Shapes_, Tools, Tools_ } from "@/shared/interfaces";
-import { CanvasObject, Shape, Rectangle, Text } from "./Objects";
+import { CanvasObject, Shape, Rectangle, Text, Ellipse, Line, Arrow } from "./Objects";
 import { IncorrectShapeError, IncorrectToolError } from "@/shared/errors";
 import { CanvasId } from "@/shared/types";
 import Conference from "./Conference";
@@ -42,6 +42,15 @@ export class CanvasMouse {
           case Shapes.Rectangle:
             this.currentModifiedObject = new Rectangle(event.x, event.y);
             break;
+          case Shapes.Ellipse:
+            this.currentModifiedObject = new Ellipse(event.x, event.y);
+            break;
+          case Shapes.Line:
+            this.currentModifiedObject = new Line(event.x, event.y);
+            break;
+          case Shapes.Arrow:
+            this.currentModifiedObject = new Arrow(event.x, event.y);
+            break;
           default:
             throw new IncorrectShapeError(this.selectedShape);
         }
@@ -65,14 +74,8 @@ export class CanvasMouse {
 
     switch (this.selectedTool) {
       case Tools.Shapes:
-        switch (this.selectedShape) {
-          case Shapes.Rectangle:
-            if (!(this.currentModifiedObject instanceof Rectangle)) return;
-            this.currentModifiedObject.change(event.x, event.y);
-            break;
-          default:
-            throw new IncorrectShapeError(this.selectedShape);
-        };
+        if (!(this.currentModifiedObject instanceof Shape)) return;
+        this.currentModifiedObject.change(event.x, event.y);
         break;
       default:
         this.currentModifiedObject = null;
@@ -91,14 +94,8 @@ export class CanvasMouse {
 
     switch (this.selectedTool) {
       case Tools.Shapes:
-        switch (this.selectedShape) {
-          case Shapes.Rectangle:
-            if (!(this.currentModifiedObject instanceof Rectangle)) return;
-            this.currentModifiedObject.end(event.x, event.y);
-            break;
-          default:
-            throw new IncorrectShapeError(this.selectedShape);
-        };
+        if (!(this.currentModifiedObject instanceof Shape)) return;
+        this.currentModifiedObject.end(event.x, event.y);
         break;
       default:
         this.currentModifiedObject = null;
