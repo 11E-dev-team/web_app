@@ -1,5 +1,5 @@
 import fabric from "fabric/fabric-impl";
-import { Canvas, CanvasMouse, IMouseEvent } from "./Canvas";
+import { Canvas, CanvasMouse, IMouseEvent, IWheelEvent } from "./Canvas";
 import FabricDrawer from "./FabricDrawer";
 import { CanvasId } from "@/shared/types";
 import { Tools, Tools_ } from "@/shared/interfaces";
@@ -37,6 +37,14 @@ export class FabricCanvas extends Canvas {
     this._canvasMouse.up(event);
     if (this._canvasMouse.currentObject) {
       this._drawer?.end(this._canvasMouse.currentObject);
+    };
+  };
+
+  public deleteSelected(): void {
+    const activeObjects = this.canvas.getActiveObjects();
+    if (!activeObjects) return;
+    for (const activeObject of activeObjects) {
+      this._canvas?.remove(activeObject);
     };
   };
 

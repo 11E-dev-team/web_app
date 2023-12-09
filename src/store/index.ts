@@ -56,8 +56,6 @@ export const useAuthorizationStore = defineStore('authorization', {
 export const useCanvasStore = defineStore('canvas', {
   state: () => {
     return {
-      canvas: undefined as fabric.Canvas | undefined,
-      canvas_json: undefined as string | undefined,
       currentShape: {} as fabric.Line | fabric.Rect | fabric.Ellipse | fabric.IText,
       additionalShapes: [] as (fabric.Triangle | fabric.Circle)[],
     }

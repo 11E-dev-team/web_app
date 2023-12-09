@@ -2,7 +2,7 @@
   <div class="container" ref="container">
     <canvas id="canvas" ref="canvas"></canvas>
   </div>
-  <tool-kit @update:tool="toolUpdatingHandler" @update:shape="shapeUpdatingHandler" />
+  <tool-kit :canvas="fabricCanvas" />
 </template>
 
 <script lang="ts">
@@ -56,7 +56,6 @@ export default defineComponent({
             this.fabricCanvas?.changeShape(shape);
         },
         updateCanvas() {
-            console.log(this.fabricCanvas);
             if (this.fabricCanvas && !(this.fabricCanvas instanceof FabricCanvas && this.fabricCanvas.canvas instanceof fabric.Canvas))
                 this.fabricCanvas.canvas = new fabric.Canvas('canvas', {
                     width: this.stageConfig.width,
@@ -64,12 +63,13 @@ export default defineComponent({
                 });
 
             if (this.fabricCanvas instanceof FabricCanvas) {
-                this.fabricCanvas.canvas.on('mouse:down', (event: fabric.IEvent) => {
+                this.fabricCanvas.canvas.on('mouse:down', (event: fabric.IEvent<MouseEvent>) => {
                     if (!event.pointer)
                         return;
+                    console.log(this.fabricCanvas.canvas.viewportTransform);
                     this.fabricCanvas?.mouseDown({
-                        x: event.pointer.x,
-                        y: event.pointer.y,
+                        x: (event.pointer.x - this.fabricCanvas.canvas.viewportTransform[4]) / this.fabricCanvas.canvas.getZoom(),
+                        y: (event.pointer.y - this.fabricCanvas.canvas.viewportTransform[5]) / this.fabricCanvas.canvas.getZoom(),
                     });
                 });
 
@@ -77,8 +77,8 @@ export default defineComponent({
                     if (!event.pointer)
                         return;
                     this.fabricCanvas?.mouseMove({
-                        x: event.pointer.x,
-                        y: event.pointer.y,
+                        x: (event.pointer.x - this.fabricCanvas.canvas.viewportTransform[4]) / this.fabricCanvas.canvas.getZoom(),
+                        y: (event.pointer.y - this.fabricCanvas.canvas.viewportTransform[5]) / this.fabricCanvas.canvas.getZoom(),
                     });
                 });
 
@@ -86,9 +86,19 @@ export default defineComponent({
                     if (!event.pointer)
                         return;
                     this.fabricCanvas?.mouseUp({
-                        x: event.pointer.x,
-                        y: event.pointer.y,
+                        x: (event.pointer.x - this.fabricCanvas.canvas.viewportTransform[4]) / this.fabricCanvas.canvas.getZoom(),
+                        y: (event.pointer.y - this.fabricCanvas.canvas.viewportTransform[5]) / this.fabricCanvas.canvas.getZoom(),
                     });
+                });
+
+                this.fabricCanvas.canvas.on('mouse:wheel', (event: fabric.IEvent<WheelEvent>) => {
+                    let zoom: number = this.fabricCanvas.canvas.getZoom();
+                    zoom *= 0.999 ** event.e.deltaY;
+                    this.fabricCanvas.canvas.zoomToPoint({
+                        x: event.e.offsetX, y: event.e.offsetY
+                    }, zoom);
+                    event.e.preventDefault();
+                    event.e.stopPropagation();
                 });
 
                 this.fabricCanvas.canvas.on('object:added', (evt: fabric.IEvent) => {

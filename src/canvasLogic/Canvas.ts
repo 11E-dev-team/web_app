@@ -9,6 +9,16 @@ export interface IMouseEvent {
   y: number;
 };
 
+export interface IWheelEvent {
+  deltaY: number;
+  x: number;
+  y: number;
+  event: Required<{
+    preventDefault: () => void;
+    stopPropagation: () => void;
+  }>;
+};
+
 export class CanvasMouse {
   private selectedTool: Tools_ = Tools.Cursor;
   private selectedShape: Shapes_ = Shapes.Rectangle;

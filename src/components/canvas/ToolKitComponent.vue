@@ -32,15 +32,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, PropType } from 'vue';
-import { storeToRefs } from 'pinia';
+import { defineComponent, ref, Ref } from 'vue';
 
-import { useCanvasStateStore } from '@/store';
-import { deleteSelected } from '@/utils/canvasLogic/deleteUtils';
 import { Tools, Tools_, Shapes, Shapes_ } from '@/shared/interfaces';
 
 export default defineComponent({
   name: 'ToolKitComponent',
+  props: {
+    canvas: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     const displayShapesSelector: Ref<boolean> = ref(false);
     const selectedShape: Ref<Shapes_> = ref(Shapes.Rectangle);
@@ -53,13 +56,15 @@ export default defineComponent({
   },
   methods: {
     changeTool(tool: Tools_) {
-      this.$emit('update:tool', tool);
+      this.canvas.changeTool(tool);
     },
     changeShape(shape: Shapes_) {
-      this.$emit('update:shape', shape);
+      this.canvas.changeShape(shape);
       this.selectedShape = shape;
     },
-    deleteSelected,
+    deleteSelected() {
+      this.canvas.deleteSelected();
+    },
   },
 })
 </script>
