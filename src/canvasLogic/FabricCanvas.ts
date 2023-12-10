@@ -68,10 +68,26 @@ export class FabricCanvas extends Canvas {
   public update(receivedData: string): void {
     if (!this._canvas) return;
     console.log('Fabric canvas updating');
-    const { canvas, viewport } = JSON.parse(receivedData);
+    const {
+      canvas,
+      viewport,
+      stageConfig: parentStageConfig,
+    } = JSON.parse(receivedData);
+    const stageConfig = {
+      width: this._canvas.getWidth(),
+      height: this._canvas.getHeight()
+    };
     console.log(canvas, viewport);
     this._canvas.loadFromJSON(canvas, this._canvas.renderAll.bind(this._canvas));
     this._canvas.setViewportTransform(viewport);
+    this._canvas.setZoom(this._canvas.getZoom() * (
+      (parentStageConfig.width / parentStageConfig.height)
+      > (stageConfig.width / parentStageConfig.height)
+      ? stageConfig.width / parentStageConfig.width
+      : stageConfig.height / parentStageConfig.height
+    ));
+    this._canvas.setWidth(stageConfig.width);
+    this._canvas.setHeight(stageConfig.height);
     console.log('Fabric canvas updated');
   };
 
@@ -95,6 +111,10 @@ export class FabricCanvas extends Canvas {
       "drawing": JSON.stringify({
         "canvas": this._canvas?.toDatalessJSON(),
         "viewport": this._canvas?.viewportTransform,
+        "stageConfig": {
+          "width": this._canvas?.getWidth(),
+          "height": this._canvas?.getHeight()
+        },
       })
     });
   };
