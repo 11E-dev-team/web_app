@@ -111,12 +111,7 @@ export default defineComponent({
     align-items: center;
     top: 96px;
     right: 8px;
-    padding: {
-      left: 16px;
-      right: 16px;
-      top: 16px;
-      bottom: 8px;
-    };
+    padding: 0;
     box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
     max-width: 33vw;
@@ -126,7 +121,7 @@ export default defineComponent({
 
     border: {
       style: var(--default-border-style, solid);
-      radius: var(--external-border-radius, 16px);
+      radius: var(--internal-border-radius, 8px);
       color: var(--default-border-color, var(--accent, #464AB4));
       width: var(--default-border-width, 2px);
     }

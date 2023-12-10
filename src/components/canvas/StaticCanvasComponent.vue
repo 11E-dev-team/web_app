@@ -1,4 +1,5 @@
 <template>
+  <!-- static canvas -->
   <div class="container" ref="container">
     <canvas id="canvas" ref="canvas"></canvas>
   </div>
@@ -15,14 +16,16 @@ export default defineComponent({
   props: {
       fabricCanvas: Object,
   },
-  data() {
+  setup() {
     const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
-    const stageConfig = reactive({
-      width: container.value ? container.value.offsetWidth : window.innerWidth,
-      height: container.value ? container.value.offsetHeight : window.innerHeight,
-    });
+
     return {
       container,
+    }
+  },
+  data() {
+    const stageConfig: {width: number, height: number} = reactive({width: 0, height: 0});
+    return {
       stageConfig,
     };
   },

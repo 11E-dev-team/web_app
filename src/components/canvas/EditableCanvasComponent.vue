@@ -21,14 +21,16 @@ export default defineComponent({
     props: {
         fabricCanvas: {type: Object, required: true},
     },
-    data() {
+    setup() {
         const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
-        const stageConfig = reactive({
-            width: container.value ? container.value.offsetWidth : window.innerWidth,
-            height: container.value ? container.value.offsetHeight : window.innerHeight,
-        });
+
         return {
-            container,
+        container,
+        }
+    },
+    data() {
+        const stageConfig: {width: number, height: number} = reactive({width: 0, height: 0});
+        return {
             stageConfig,
         };
     },
