@@ -3,7 +3,7 @@
 
   <!-- TeachersView -->
   <div v-if="conference?.userData?.role === 4" id="teacher-view">
-    <div v-for="fabricCanvas in editableFabricCanvasArray" :key="fabricCanvas.id" >
+    <div v-for="fabricCanvas in editableFabricCanvasArray" class="teacher-canvas" :key="fabricCanvas.id" >
       <editable-canvas-component :fabricCanvas="fabricCanvas" />
     </div>
     <div class="side">
@@ -130,6 +130,8 @@ export default defineComponent({
 }
 
 #teacher-view {
+  width: 100%;
+  height: 100%;
   .side {
     position: absolute;
     display: flex;
@@ -157,6 +159,13 @@ export default defineComponent({
   
       background: var(--background, #E5E6F5);
     }
+  }
+  .teacher-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(67vw - 32px);
+    height: 100vh;
   }
 }
 .navbar {
