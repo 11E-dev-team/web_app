@@ -54,7 +54,7 @@ class ConferenceBroadcastingEvent extends ConferenceEvent {
 
   handle(): void {
     const { target, drawing } = this.data;
-    this._update(target, JSON.stringify(drawing));
+    this._update(target, drawing);
     console.log(`Got broadcast to ${target}`);
   };
 }

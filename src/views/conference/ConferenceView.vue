@@ -2,25 +2,25 @@
   <span>You're {{ conference?.userData?.id }} in {{ conferenceId }} conference, you have {{ conference?.userData?.role }} role</span>
 
   <!-- TeachersView -->
-  <div v-if="conference?.userData?.id == '0'" id="TeacherView">
-    <div v-for="fabricCanvas in editableFabricCanvasArray">
+  <div v-if="conference?.userData?.role === 4" id="teacher-view">
+    <div v-for="fabricCanvas in editableFabricCanvasArray" :key="fabricCanvas.id" >
       <editable-canvas-component :fabricCanvas="fabricCanvas" />
     </div>
     <div class="side">
-      <div v-for="fabricCanvas in staticFabricCanvasArray" class="student-canvas">
+      <div v-for="fabricCanvas in staticFabricCanvasArray" class="student-canvas" :key="fabricCanvas.id">
         <static-canvas-component :fabricCanvas="fabricCanvas" />
       </div>
     </div>
   </div>
 
   <!-- StudentsView -->
-  <div v-else id="StudentView">
-    <div v-for="fabricCanvas in editableFabricCanvasArray">
+  <div v-else id="student-view">
+    <div v-for="fabricCanvas in editableFabricCanvasArray" :key="fabricCanvas.id">
       <editable-canvas-component :fabricCanvas="fabricCanvas" />
     </div>
 
     <div class="teacher-canvas">
-      <div v-for="fabricCanvas in staticFabricCanvasArray">
+      <div v-for="fabricCanvas in staticFabricCanvasArray" :key="fabricCanvas.id" style="width: 100%; height: 100%;">
         <static-canvas-component :fabricCanvas="fabricCanvas" />
       </div>
     </div>
@@ -97,7 +97,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-#StudentView{
+#student-view{
  .canvas-container {
     position: absolute;
     top: 0;
@@ -119,9 +119,10 @@ export default defineComponent({
     };
     box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
-
-    width: calc(30vw - 32px);
-    height: 300px;
+    max-width: 33vw;
+    width: 16*32px;
+    aspect-ratio: 16/9;
+    z-index: 1;
 
     border: {
       style: var(--default-border-style, solid);
@@ -133,7 +134,7 @@ export default defineComponent({
   }
 }
 
-#TeacherView {
+#teacher-view {
   .side {
     position: absolute;
     display: flex;
@@ -152,8 +153,10 @@ export default defineComponent({
     border-radius: 16px 0 0 16px;
   
     .student-canvas {
+      max-width: 33vw;
       width: 16*32px;
-      height: 9*32px;
+      aspect-ratio: 16/9;
+      z-index: 1;
   
       border-radius: 8px;
   

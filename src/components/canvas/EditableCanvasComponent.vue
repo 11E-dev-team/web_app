@@ -34,8 +34,8 @@ export default defineComponent({
     },
     mounted() {
         window.addEventListener('resize', () => {
-            this.stageConfig.width = window.innerWidth;
-            this.stageConfig.height = window.innerHeight;
+            this.stageConfig.width = this.container ? this.container.offsetWidth : window.innerWidth;
+            this.stageConfig.height = this.container ? this.container.offsetHeight : window.innerHeight;
             if (this.fabricCanvas instanceof FabricCanvas) {
                 this.fabricCanvas.canvas.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
             };

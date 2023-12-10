@@ -65,12 +65,13 @@ export class FabricCanvas extends Canvas {
     this.updateSettings();
   };
 
-  public update(data: string): void {
+  public update(receivedData: string): void {
     if (!this._canvas) return;
     console.log('Fabric canvas updating');
-    data = JSON.parse(data);
-    console.log(data);
-    this._canvas.loadFromJSON(data, this._canvas.renderAll.bind(this._canvas));
+    const { canvas, viewport } = JSON.parse(receivedData);
+    console.log(canvas, viewport);
+    this._canvas.loadFromJSON(canvas, this._canvas.renderAll.bind(this._canvas));
+    this._canvas.setViewportTransform(viewport);
     console.log('Fabric canvas updated');
   };
 
@@ -90,6 +91,11 @@ export class FabricCanvas extends Canvas {
 
   public broadcast(): void {
     console.log(`Started broadcast from ${this.id}`);
-    this.sendToConference({"drawing": JSON.stringify(this._canvas?.toDatalessJSON())});
+    this.sendToConference({
+      "drawing": JSON.stringify({
+        "canvas": this._canvas?.toDatalessJSON(),
+        "viewport": this._canvas?.viewportTransform,
+      })
+    });
   };
 };
