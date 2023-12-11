@@ -1,12 +1,12 @@
 <template>
-  <div class="container" ref="container">
-    <canvas id="canvas" ref="canvas"></canvas>
+  <div class="canvasContainer" ref="canvasContainer">
+    <canvas id="my-fabric-canvas"></canvas>
   </div>
   <tool-kit :canvas="fabricCanvas" />
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent, ref, Ref, toRefs, toRef } from 'vue';
+import { reactive, defineComponent, ref, Ref } from 'vue';
 import { fabric } from 'fabric';
 
 import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
@@ -22,22 +22,24 @@ export default defineComponent({
         fabricCanvas: {type: Object, required: true},
     },
     setup() {
-        const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
+        const canvasContainer: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
+        const stageConfig: {width: number, height: number} = reactive(canvasContainer.value ? {
+            width: canvasContainer.value.offsetWidth,
+            height: canvasContainer.value.offsetHeight,
+        } : {
+            width: window.innerWidth,
+            height: window.innerHeight
+        });
 
         return {
-        container,
+            canvasContainer,
+            stageConfig
         }
-    },
-    data() {
-        const stageConfig: {width: number, height: number} = reactive({width: 0, height: 0});
-        return {
-            stageConfig,
-        };
     },
     mounted() {
         window.addEventListener('resize', () => {
-            this.stageConfig.width = this.container ? this.container.offsetWidth : window.innerWidth;
-            this.stageConfig.height = this.container ? this.container.offsetHeight : window.innerHeight;
+            this.stageConfig.width = this.canvasContainer ? this.canvasContainer.offsetWidth : window.innerWidth;
+            this.stageConfig.height = this.canvasContainer ? this.canvasContainer.offsetHeight : window.innerHeight;
             if (this.fabricCanvas instanceof FabricCanvas) {
                 this.fabricCanvas.canvas.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
             };
@@ -59,7 +61,7 @@ export default defineComponent({
         },
         updateCanvas() {
             if (this.fabricCanvas && !(this.fabricCanvas instanceof FabricCanvas && this.fabricCanvas.canvas instanceof fabric.Canvas))
-                this.fabricCanvas.canvas = new fabric.Canvas('canvas', {
+                this.fabricCanvas.canvas = new fabric.Canvas('my-fabric-canvas', {
                     width: this.stageConfig.width,
                     height: this.stageConfig.height,
                 });
@@ -143,7 +145,7 @@ canvas {
   height: 100%;
 }
 
-.container {
+.canvasContainer {
   background-color: var(--background);
   top: 0;
   left: 0;

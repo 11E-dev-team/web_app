@@ -7,8 +7,8 @@
       <editable-canvas-component :fabricCanvas="fabricCanvas" />
     </div>
     <div class="side">
-      <div v-for="fabricCanvas in staticFabricCanvasArray" class="student-canvas" :key="fabricCanvas.id">
-        <static-canvas-component :fabricCanvas="fabricCanvas" />
+      <div v-for="staticFabricCanvas in staticFabricCanvasArray" class="student-canvas" :key="staticFabricCanvas.id">
+        <static-canvas-component :fabricCanvas="staticFabricCanvas" />
       </div>
     </div>
   </div>
