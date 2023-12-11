@@ -1,13 +1,13 @@
 <template>
-  <span>You're {{ conference?.userData?.id }} in {{ conferenceId }} conference, you have {{ conference?.userData?.role }} role</span>
-
   <!-- TeachersView -->
   <div v-if="conference?.userData?.role === 4" id="teacher-view">
-    <div v-for="fabricCanvas in editableFabricCanvasArray" class="teacher-canvas" :key="fabricCanvas.id" >
-      <editable-canvas-component :fabricCanvas="fabricCanvas" />
+    <div v-for="editableFabricCanvas in editableFabricCanvasArray" class="teacher-canvas" :key="editableFabricCanvas.id" >
+      <div class="canvas-id-label" >{{ editableFabricCanvas.id }}</div>
+      <editable-canvas-component :fabricCanvas="editableFabricCanvas" />
     </div>
     <div class="side">
       <div v-for="staticFabricCanvas in staticFabricCanvasArray" class="student-canvas" :key="staticFabricCanvas.id">
+        <div class="canvas-id-label" >{{ staticFabricCanvas.id }}</div>
         <static-canvas-component :fabricCanvas="staticFabricCanvas" />
       </div>
     </div>
@@ -15,13 +15,15 @@
 
   <!-- StudentsView -->
   <div v-else id="student-view">
-    <div v-for="fabricCanvas in editableFabricCanvasArray" :key="fabricCanvas.id">
-      <editable-canvas-component :fabricCanvas="fabricCanvas" />
+    <div v-for="editableFabricCanvas in editableFabricCanvasArray" :key="editableFabricCanvas.id">
+      <div class="canvas-id-label" >{{ editableFabricCanvas.id }}</div>
+      <editable-canvas-component :fabricCanvas="editableFabricCanvas" />
     </div>
 
     <div class="teacher-canvas">
-      <div v-for="fabricCanvas in staticFabricCanvasArray" :key="fabricCanvas.id" style="width: 100%; height: 100%;">
-        <static-canvas-component :fabricCanvas="fabricCanvas" />
+      <div v-for="staticFabricCanvas in staticFabricCanvasArray" :key="staticFabricCanvas.id" style="width: 100%; height: 100%;">
+        <div class="canvas-id-label" >{{ staticFabricCanvas.id }}</div>
+        <static-canvas-component :fabricCanvas="staticFabricCanvas" />
       </div>
     </div>
   </div>
@@ -97,6 +99,18 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+div.canvas-id-label {
+  position: relative;
+  top: 8px;
+  left: 8px;
+
+  width: fit-content;
+  height: fit-content;
+
+  font-family: monospace;
+  font-weight: 100;
+}
+
 #student-view{
  .canvas-container {
     position: absolute;
