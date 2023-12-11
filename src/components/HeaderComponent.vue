@@ -1,8 +1,9 @@
 <template>
   <header class="header">
-    <h1>
-      <RouterLink :to="homePage">{{ msg }}</RouterLink>
-    </h1>
+    <RouterLink :to="homePage">
+      <img src="@/assets/SpizdIconPack/Logo.svg" />
+      <span>boardcast</span>
+    </RouterLink>
     <span>{{ email }}</span>
   </header>
 </template>
@@ -43,5 +44,21 @@ export default defineComponent({
   padding: $common-padding;
   border-bottom: 1px solid var(--accent, #464ab4);
   background: var(--background, #e5e6f5);
+
+  a {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    text-decoration: none;
+    
+    img {
+      width: 2rem;
+      height: 2rem;
+      margin-right: $common-padding/2;
+    }
+    span {
+      font-weight: 250;
+    }
+  }
 }
 </style>
