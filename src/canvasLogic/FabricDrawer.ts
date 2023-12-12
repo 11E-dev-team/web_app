@@ -6,7 +6,7 @@ import { IncorrectShapeError, IncorrectToolError } from "@/shared/errors";
 
 export default class FabricDrawer {
   protected _canvas: fabric.Canvas;
-  protected _currentFabricShape: fabric.Object | fabric.Line | fabric.Ellipse | undefined;
+  protected _currentFabricShape: fabric.Object | fabric.Line | fabric.Group | fabric.Ellipse | undefined;
   protected _strokeColor: string | undefined;
 
   constructor(_canvas: fabric.Canvas, _strokeColor?: string) {
@@ -86,19 +86,35 @@ export default class FabricDrawer {
         });
         break;
       case Shapes.Arrow:
-        this._currentFabricShape = new fabric.Line([
-          shape.initialX,
-          shape.initialY,
-          shape.directionX,
-          shape.directionY,
-        ], {
-          stroke: this._strokeColor ? this._strokeColor : 'black',
-        });
+        this._currentFabricShape = new fabric.Group([
+          new fabric.Line([
+            shape.initialX,
+            shape.initialY,
+            shape.directionX,
+            shape.directionY,
+          ], {
+            stroke: this._strokeColor ? this._strokeColor : 'black',
+            strokeWidth: 1,
+          }),
+          new fabric.Triangle({
+            left: shape.directionX,
+            top: shape.directionY,
+            width: 10,
+            height: 10,
+            fill: this._strokeColor ? this._strokeColor : 'black',
+            stroke: this._strokeColor ? this._strokeColor : 'black',
+            strokeWidth: 1,
+          }),
+        ]);
         break;
       default:
         throw new IncorrectShapeError(shape.type);
     };
-    this._canvas.add(this._currentFabricShape);
+    if (this._currentFabricShape instanceof fabric.Group)
+      for (let i = 0; i < this._currentFabricShape._objects.length; i++) 
+        this._canvas.add(this._currentFabricShape.getObjects()[i]);
+    else
+      this._canvas.add(this._currentFabricShape);
     this._canvas.renderAll();
   };
 
@@ -133,13 +149,32 @@ export default class FabricDrawer {
           ry: shape.directionY,
         });
         break;
-      case Shapes.Line: case Shapes.Arrow:
+      case Shapes.Line:
         if (!(this._currentFabricShape instanceof fabric.Line)) return;
         this._currentFabricShape?.set({
           x1: shape.initialX,
           y1: shape.initialY,
           x2: shape.directionX,
           y2: shape.directionY,
+        });
+        break;
+      case Shapes.Arrow:
+        if (!(this._currentFabricShape instanceof fabric.Group)) return;
+        const [body, head] = this._currentFabricShape.getObjects();
+        if (!(body instanceof fabric.Line && head instanceof fabric.Triangle)) return;
+        body.set({
+          x1: shape.initialX,
+          y1: shape.initialY,
+          x2: shape.directionX,
+          y2: shape.directionY,
+        });
+        const dx = shape.directionX - shape.initialX;
+        const dy = shape.directionY - shape.initialY;
+        const angle = Math.atan2(dy, dx);
+        head.set({
+          left: shape.directionX + 10 * Math.sin(angle)/2,
+          top: shape.directionY - 10 * Math.cos(angle)/2,
+          angle: (angle * 180 / Math.PI) + 90,
         });
         break;
       default:
@@ -151,7 +186,8 @@ export default class FabricDrawer {
 
   private endShape(shape: Shape): void {
     this.changeShape(shape);
-    if (this._currentFabricShape) this._canvas.setActiveObject(this._currentFabricShape);
+    if (this._currentFabricShape)
+      this._canvas.setActiveObject(this._currentFabricShape);
     this._currentFabricShape = undefined;
   };
 };
