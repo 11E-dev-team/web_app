@@ -35,12 +35,12 @@
     <!-- <button> -->
     <!-- <img src="@/assets/SpizdIconPack/settingsIcon.svg" alt="logo"> -->
     <!-- </button> settings -->
-    <!-- <button> -->
-    <!-- <img src="@/assets/SpizdIconPack/groupIcon.svg" alt="logo"> -->
-    <!-- </button> group preview -->
-    <button>
+    <button @click="invite">
+      <img src="@/assets/SpizdIconPack/groupIcon.svg" alt="invite">
+    </button> <!-- groups -->
+    <!-- <button>
       <img src="@/assets/SpizdIconPack/desksIcon.svg" alt="logo">
-    </button> <!-- change view -->
+    </button> change view -->
   </div>
 
 </template>
@@ -93,6 +93,9 @@ export default defineComponent({
       if (data.type === ClientConferenceEventTypes.CreateCanvas) {
         this.createCanvas(data);
       };
+    },
+    invite() {
+      navigator.clipboard.writeText("http://91.142.79.111:8080/#/conference/" + this.conferenceId);
     },
   },
 });
