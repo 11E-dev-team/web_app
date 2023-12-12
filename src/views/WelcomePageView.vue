@@ -48,11 +48,11 @@ footer {
   justify-content: center;
   align-items: center;
   padding: $common-padding;
-  background-color: #f2f2f2;
 }
 
 .cta-button {
   color: coral;
+  background-color: transparent;
 }
 
 footer a + a {
