@@ -36,8 +36,8 @@
     <!-- <img src="@/assets/SpizdIconPack/settingsIcon.svg" alt="logo"> -->
     <!-- </button> settings -->
     <button @click="invite">
-      <img src="@/assets/SpizdIconPack/groupIcon.svg" alt="invite">
-    </button> <!-- groups -->
+      <img src="@/assets/SpizdIconPack/Invite.svg" alt="invite">
+    </button> <!-- invite -->
     <!-- <button>
       <img src="@/assets/SpizdIconPack/desksIcon.svg" alt="logo">
     </button> change view -->
