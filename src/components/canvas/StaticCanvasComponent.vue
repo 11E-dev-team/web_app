@@ -42,11 +42,20 @@ export default defineComponent({
   },
   methods: {
     updateCanvas() {
-      if (this.$props.fabricCanvas && !(this.$props.fabricCanvas instanceof FabricCanvas && this.$props.fabricCanvas.canvas instanceof fabric.Canvas))
-        this.$props.fabricCanvas.canvas = new fabric.Canvas(this.canvasContainerId, {
+      if (
+        this.$props.fabricCanvas
+        && !(this.$props.fabricCanvas instanceof FabricCanvas
+        && this.$props.fabricCanvas.canvas instanceof fabric.Canvas)
+      ) {
+        this.$props.fabricCanvas.canvas = new fabric.Canvas(
+          this.canvasContainerId, {
             width: this.stageConfig.width,
             height: this.stageConfig.height,
         });
+        this.$props.fabricCanvas.canvas.selection = false;
+        this.$props.fabricCanvas.canvas.skipTargetFind = true;
+      }
+        
     },
   },
   watch: {
