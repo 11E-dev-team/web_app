@@ -107,6 +107,8 @@ div.canvas-id-label {
   top: 8px;
   left: 8px;
 
+  margin-bottom: -16px;
+
   width: fit-content;
   height: fit-content;
 
