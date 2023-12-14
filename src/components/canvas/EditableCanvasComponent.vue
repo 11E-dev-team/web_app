@@ -109,7 +109,11 @@ export default defineComponent({
                     const target = evt.target;
                     if (!target)
                         return;
-                    if (target instanceof fabric.Path && target.stroke === 'rgba(0, 0, 0, 0)') {
+                    if (
+                        target instanceof fabric.Path
+                        && (target.stroke === 'rgba(0, 0, 0, 0)'
+                        || target.stroke === 'transparent'
+                    )) {
                         this.fabricCanvas?.canvas?.remove(target);
                         this.fabricCanvas?.canvas?.requestRenderAll();
                     }
