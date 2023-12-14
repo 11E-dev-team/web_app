@@ -116,7 +116,7 @@ export default defineComponent({
                     this.fabricCanvas?.broadcast();
                 });
 
-                this.fabricCanvas.canvas.on('object:modified', () => {
+                this.fabricCanvas.canvas.on('after:render', () => {
                     this.fabricCanvas?.broadcast();
                 });
 
