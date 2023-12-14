@@ -1,7 +1,7 @@
 <template>
   <!-- static canvas -->
   <div class="container" ref="container">
-    <canvas id="canvas" ref="canvas"></canvas>
+    <canvas :id="canvasContainerId"></canvas>
   </div>
 </template>
 
@@ -43,7 +43,7 @@ export default defineComponent({
   methods: {
     updateCanvas() {
       if (this.$props.fabricCanvas && !(this.$props.fabricCanvas instanceof FabricCanvas && this.$props.fabricCanvas.canvas instanceof fabric.Canvas))
-        this.$props.fabricCanvas.canvas = new fabric.Canvas('canvas', {
+        this.$props.fabricCanvas.canvas = new fabric.Canvas(this.canvasContainerId, {
             width: this.stageConfig.width,
             height: this.stageConfig.height,
         });
@@ -52,6 +52,11 @@ export default defineComponent({
   watch: {
     fabricCanvas() {
       this.updateCanvas();
+    },
+  },
+  computed: {
+    canvasContainerId() {
+      return "static-canvas-" + this.$props.fabricCanvas?.id;
     },
   },
 });

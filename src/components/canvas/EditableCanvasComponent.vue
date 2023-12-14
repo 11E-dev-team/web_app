@@ -1,6 +1,6 @@
 <template>
   <div class="canvasContainer" ref="canvasContainer">
-    <canvas id="my-fabric-canvas"></canvas>
+    <canvas :id="canvasContainerId"></canvas>
   </div>
   <tool-kit :canvas="fabricCanvas" />
 </template>
@@ -61,7 +61,7 @@ export default defineComponent({
         },
         updateCanvas() {
             if (this.fabricCanvas && !(this.fabricCanvas instanceof FabricCanvas && this.fabricCanvas.canvas instanceof fabric.Canvas))
-                this.fabricCanvas.canvas = new fabric.Canvas('my-fabric-canvas', {
+                this.fabricCanvas.canvas = new fabric.Canvas(this.canvasContainerId, {
                     width: this.stageConfig.width,
                     height: this.stageConfig.height,
                 });
@@ -128,6 +128,11 @@ export default defineComponent({
         fabricCanvas() {
             console.log("watch", this.fabricCanvas);
             this.updateCanvas();
+        },
+    },
+    computed: {
+        canvasContainerId() {
+            return "editable-canvas-" + this.fabricCanvas?.id;
         },
     },
 });
