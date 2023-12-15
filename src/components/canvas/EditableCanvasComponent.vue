@@ -9,17 +9,17 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent, ref } from 'vue';
-import { fabric } from 'fabric';
+import { reactive, defineComponent, ref } from "vue";
+import { fabric } from "fabric";
 
-import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
-import ToolKit from './ToolKitComponent.vue';
-import { Shapes_, Tools_ } from '@/shared/interfaces';
+import { Shapes_, Tools_ } from "@/shared/interfaces";
+import { FabricCanvas } from "@/canvasLogic/FabricCanvas";
+import ToolKit from "./ToolKitComponent.vue";
 
 export default defineComponent({
-    name: 'EditableCanvasComponent',
+    name: "EditableCanvasComponent",
     components: {
-      ToolKit,
+        ToolKit,
     },
     props: {
         fabricCanvas: {type: Object, required: true},
@@ -40,7 +40,7 @@ export default defineComponent({
             canvasContainer,
             stageConfig,
             editableFabricCanvas
-        }
+        };
     },
     computed: {
         canvasContainerId() {
@@ -54,7 +54,7 @@ export default defineComponent({
         },
     },
     mounted() {
-        window.addEventListener('resize', () => {
+        window.addEventListener("resize", () => {
             this.stageConfig.width = this.canvasContainer ? this.canvasContainer.offsetWidth : window.innerWidth;
             this.stageConfig.height = this.canvasContainer ? this.canvasContainer.offsetHeight : window.innerHeight;
             if (this.editableFabricCanvas instanceof FabricCanvas) {
@@ -81,10 +81,10 @@ export default defineComponent({
                 x: (x - viewportTransform[4]) / zoom,
                 y: (y - viewportTransform[5]) / zoom,
             }
-            : {
-              x: x / zoom,
-              y: y / zoom,  
-            };
+                : {
+                    x: x / zoom,
+                    y: y / zoom,  
+                };
         },
         updateCanvas() {
             if (this.editableFabricCanvas && !(this.editableFabricCanvas instanceof FabricCanvas && this.editableFabricCanvas.canvas instanceof fabric.Canvas))
@@ -94,7 +94,7 @@ export default defineComponent({
                 });
 
             if (this.editableFabricCanvas instanceof FabricCanvas) {
-                this.editableFabricCanvas.canvas.on('mouse:down', (event: fabric.IEvent<MouseEvent>) => {
+                this.editableFabricCanvas.canvas.on("mouse:down", (event: fabric.IEvent<MouseEvent>) => {
                     if (!event.pointer)
                         return;
                     console.log(this.editableFabricCanvas.canvas.viewportTransform);
@@ -107,7 +107,7 @@ export default defineComponent({
                     );
                 });
 
-                this.editableFabricCanvas.canvas.on('mouse:move', (event: fabric.IEvent) => {
+                this.editableFabricCanvas.canvas.on("mouse:move", (event: fabric.IEvent) => {
                     if (!event.pointer)
                         return;
                     this.editableFabricCanvas?.mouseMove(
@@ -119,7 +119,7 @@ export default defineComponent({
                     );
                 });
 
-                this.editableFabricCanvas.canvas.on('mouse:up', (event: fabric.IEvent) => {
+                this.editableFabricCanvas.canvas.on("mouse:up", (event: fabric.IEvent) => {
                     if (!event.pointer)
                         return;
                     this.editableFabricCanvas?.mouseUp(
@@ -131,7 +131,7 @@ export default defineComponent({
                     );
                 });
 
-                this.editableFabricCanvas.canvas.on('mouse:wheel', (event: fabric.IEvent<WheelEvent>) => {
+                this.editableFabricCanvas.canvas.on("mouse:wheel", (event: fabric.IEvent<WheelEvent>) => {
                     let zoom: number = this.editableFabricCanvas.canvas.getZoom();
                     zoom *= 0.999 ** event.e.deltaY;
                     this.editableFabricCanvas.canvas.zoomToPoint({
@@ -141,22 +141,22 @@ export default defineComponent({
                     event.e.stopPropagation();
                 });
 
-                this.editableFabricCanvas.canvas.on('object:added', (evt: fabric.IEvent) => {
+                this.editableFabricCanvas.canvas.on("object:added", (evt: fabric.IEvent) => {
                     const target = evt.target;
                     if (!target)
                         return;
                     if (
                         target instanceof fabric.Path
-                        && (target.stroke === 'rgba(0, 0, 0, 0)'
-                        || target.stroke === 'transparent'
-                    )) {
+                        && (target.stroke === "rgba(0, 0, 0, 0)"
+                        || target.stroke === "transparent"
+                        )) {
                         this.editableFabricCanvas?.canvas?.remove(target);
                         this.editableFabricCanvas?.canvas?.requestRenderAll();
                     }
                     this.editableFabricCanvas?.broadcast();
                 });
 
-                this.editableFabricCanvas.canvas.on('after:render', () => {
+                this.editableFabricCanvas.canvas.on("after:render", () => {
                     this.editableFabricCanvas?.broadcast();
                 });
 

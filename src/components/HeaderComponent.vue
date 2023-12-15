@@ -9,23 +9,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
 
-import { storeToRefs } from 'pinia';
-import { useUserStore } from '@/store';
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/store";
 const userStore = useUserStore();
-const { user } = storeToRefs(userStore)
+const { user } = storeToRefs(userStore);
 
 export default defineComponent({
-  name: 'HeaderComponent',
-  computed: {
-    email() {
-      return user.value ? user.value.email.toString() : 'Not Logged In';
-    },
-    homePage() {
-      return user.value ? '/home' : '/';
-    },
-  }
+    name: "HeaderComponent",
+    computed: {
+        email() {
+            return user.value ? user.value.email.toString() : "Not Logged In";
+        },
+        homePage() {
+            return user.value ? "/home" : "/";
+        },
+    }
 });
 </script>
 

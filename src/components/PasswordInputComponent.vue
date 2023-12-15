@@ -29,57 +29,57 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, watch } from 'vue';
+import { defineProps, ref, watch } from "vue";
 
 const props = defineProps({
-  withRepeat: Boolean,
-})
+    withRepeat: Boolean,
+});
 
-import { ValueError } from '@/errors';
-import Password from '@/utils/password';
+import { ValueError } from "@/errors";
+import Password from "@/utils/password";
 
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from "pinia";
 
-import { useFormStateStore, useAuthorizationStore } from '@/store';
+import { useFormStateStore, useAuthorizationStore } from "@/store";
 const formStateStore = useFormStateStore();
 const authorizationStore = useAuthorizationStore();
 const {
-  isInteracted,
-  passwordIsGiven,
-  passwordIsRepeated,
+    isInteracted,
+    passwordIsGiven,
+    passwordIsRepeated,
 } = storeToRefs(formStateStore);
-const { password, passwordRepeat } = storeToRefs(authorizationStore)
+const { password, passwordRepeat } = storeToRefs(authorizationStore);
 
-const _password = ref<string>('');
-const _passwordRepeat = ref<string>('');
+const _password = ref<string>("");
+const _passwordRepeat = ref<string>("");
 
 watch(_password, ( newValue ) => {
-  try{
-    password.value = new Password(newValue);
-    passwordIsGiven.value = true;
-  } catch (e) {
-    password.value = null;
-    if (e instanceof ValueError) {
-      passwordIsGiven.value = false;
-      passwordIsRepeated.value = false;
-    } else {
-      throw e;
+    try{
+        password.value = new Password(newValue);
+        passwordIsGiven.value = true;
+    } catch (e) {
+        password.value = null;
+        if (e instanceof ValueError) {
+            passwordIsGiven.value = false;
+            passwordIsRepeated.value = false;
+        } else {
+            throw e;
+        }
     }
-  }
 });
 
 watch(_passwordRepeat, ( newValue ) => {
-  try{
-    passwordRepeat.value = new Password(newValue);
-    passwordIsRepeated.value = password.value == newValue;
-  } catch (e) {
-    passwordRepeat.value = null;
-    if (e instanceof ValueError) {
-      passwordIsRepeated.value = false;
-    } else {
-      throw e;
+    try{
+        passwordRepeat.value = new Password(newValue);
+        passwordIsRepeated.value = password.value == newValue;
+    } catch (e) {
+        passwordRepeat.value = null;
+        if (e instanceof ValueError) {
+            passwordIsRepeated.value = false;
+        } else {
+            throw e;
+        }
     }
-  }
 });
 </script>
 
