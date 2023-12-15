@@ -115,7 +115,7 @@ class ConferenceSubscribers {
 };
 
 export default class Conference {
-  private static _WEBSOCKET_URL = "ws://0.0.0.0:8179/ws/conference/";
+  private static _WEBSOCKET_URL = process.env.VUE_APP_WEBSOCKET_URL;
 
   private _webSocket: WebSocket | null = null;
 
