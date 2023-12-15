@@ -13,8 +13,9 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env",
-      "jest"
+      "node",
+      "vite/client",
+      "@types/jest",
     ],
     "paths": {
       "@/*": [
@@ -26,7 +27,7 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
   },
   "include": [
     "src/**/*.ts",

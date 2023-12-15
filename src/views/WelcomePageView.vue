@@ -1,11 +1,27 @@
 <template>
   <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
-    <button id="create-conference" class="cta-button" @click="createConference">Create Conference</button>
+    <button
+      id="create-conference"
+      class="cta-button"
+      @click="createConference"
+    >
+      Create Conference
+    </button>
   </main>
   <footer class="footer">
-    <RouterLink to="/register" class="cta-button">Register</RouterLink>
-    <RouterLink to="/log_in" class="cta-button">Log In</RouterLink>
+    <RouterLink
+      to="/register"
+      class="cta-button"
+    >
+      Register
+    </RouterLink>
+    <RouterLink
+      to="/log_in"
+      class="cta-button"
+    >
+      Log In
+    </RouterLink>
   </footer>
 </template>
 
@@ -39,7 +55,7 @@ export default defineComponent({
   padding: $common-padding;
   overflow-y: auto;
   overscroll-behavior: contain;
-  height: calc(100vh - ($header-height + $common-padding * 2) * 2); /* Subtract the header and footer heights from the viewport height */
+  height: calc(100vh - ($header-height + $common-padding * 2) * 2);
 }
 
 footer {

@@ -22,8 +22,8 @@ export default defineComponent({
         fabricCanvas: {type: Object, required: true},
     },
     setup() {
-        const canvasContainer: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
-        const stageConfig: {width: number, height: number} = reactive(canvasContainer.value ? {
+        const canvasContainer = ref<HTMLElement | undefined>(undefined);
+        const stageConfig = reactive<{width: number, height: number}>(canvasContainer.value ? {
             width: canvasContainer.value.offsetWidth,
             height: canvasContainer.value.offsetHeight,
         } : {
@@ -53,7 +53,7 @@ export default defineComponent({
         }
     },
     methods: {
-        toolUpdatingHandler(tool: Tools_) {
+        toolUpdatingHandler: function(tool: Tools_) {
             this.fabricCanvas?.changeTool(tool);
         },
         shapeUpdatingHandler(shape: Shapes_) {

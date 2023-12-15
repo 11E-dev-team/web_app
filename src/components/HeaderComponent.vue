@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <RouterLink :to="homePage">
-      <img src="@/assets/SpizdIconPack/Logo.svg" />
+      <img src="@/assets/SpizdIconPack/Logo.svg">
       <span>boardcast</span>
     </RouterLink>
     <span>{{ email }}</span>
@@ -18,14 +18,11 @@ const { user } = storeToRefs(userStore)
 
 export default defineComponent({
   name: 'HeaderComponent',
-  props: {
-    msg: String,
-  },
   computed: {
-    email(): string {
+    email() {
       return user.value ? user.value.email.toString() : 'Not Logged In';
     },
-    homePage(): string {
+    homePage() {
       return user.value ? '/home' : '/';
     },
   }
@@ -54,7 +51,7 @@ export default defineComponent({
     img {
       width: 2rem;
       height: 2rem;
-      margin-right: $common-padding/2;
+      margin-right: calc($common-padding / 2);
     }
     span {
       font-weight: 250;

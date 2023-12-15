@@ -1,7 +1,10 @@
 <template>
   <div class="navbar">
     <RouterLink to="/">
-      <img src="@/assets/SpizdIconPack/exit.svg" alt="logo">
+      <img
+        src="@/assets/SpizdIconPack/exit.svg"
+        alt="logo"
+      >
     </RouterLink> <!-- home -->
     <!-- <button> -->
     <!-- <img src="@/assets/SpizdIconPack/settingsIcon.svg" alt="logo"> -->
@@ -10,7 +13,10 @@
     <!-- <img src="@/assets/SpizdIconPack/groupIcon.svg" alt="logo"> -->
     <!-- </button> group preview -->
     <button>
-      <img src="@/assets/SpizdIconPack/desksIcon.svg" alt="logo">
+      <img
+        src="@/assets/SpizdIconPack/desksIcon.svg"
+        alt="logo"
+      >
     </button> <!-- change view -->
   </div>
 </template>

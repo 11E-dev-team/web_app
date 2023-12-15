@@ -115,7 +115,7 @@ class ConferenceSubscribers {
 };
 
 export default class Conference {
-  private static _WEBSOCKET_URL = process.env.VUE_APP_WEBSOCKET_URL;
+  private static _WEBSOCKET_URL = import.meta.env.VITE_WEBSOCKET_URL;
 
   private _webSocket: WebSocket | null = null;
 

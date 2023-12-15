@@ -1,15 +1,26 @@
 <template>
   <div>
     <label>Почта</label>
-    <input type="email" v-model="email" @input="isInteracted = true" required autofocus />
-    <span v-show="!emailIsGiven && isInteracted" class="invalidDataError">Введите почту</span>
-    <span v-show="!emailIsValid && isInteracted && emailIsGiven" class="invalidDataError">Почта введена некорректно</span>
+    <input
+      v-model="email"
+      type="email"
+      required
+      autofocus
+      @input="isInteracted = true"
+    >
+    <span
+      v-show="!emailIsGiven && isInteracted"
+      class="invalidDataError"
+    >Введите почту</span>
+    <span
+      v-show="!emailIsValid && isInteracted && emailIsGiven"
+      class="invalidDataError"
+    >Почта введена некорректно</span>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import type { Ref } from 'vue';
+import { ref, watch, Ref } from 'vue';
 
 import { ValueError, ValidationError } from '@/errors';
 import Email from '@/utils/email';
@@ -26,17 +37,17 @@ const {
 } = storeToRefs(formStateStore);
 const { newUser } = storeToRefs(userStore);
 
-const email: Ref<string> = ref('');
+const email = ref<string>('');
 
 watch(email, ( newValue ) => {
   try{
     newUser.value = {
-      email: new Email(newValue) as Email,
+      email: new Email(newValue),
     };
     emailIsGiven.value = true;
     emailIsValid.value = true;
   } catch (e) {
-    newUser.value = null;
+    newUser.value = undefined;
     if (e instanceof ValueError) {
       emailIsGiven.value = false;
     } else if (e instanceof ValidationError) {

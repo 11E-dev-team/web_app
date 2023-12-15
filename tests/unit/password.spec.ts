@@ -1,4 +1,4 @@
-import Password from "@/utils/password";
+import Password from "@/utils/password.ts";
 import { ValueError } from "@/errors";
 
 describe("Password", () => {

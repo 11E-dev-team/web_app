@@ -1,7 +1,12 @@
 <template>
   <div>
     <label class="title">Пароль</label>
-    <input v-model="_password" type="password" @input="isInteracted = true" required />
+    <input
+      v-model="_password"
+      type="password"
+      required
+      @input="isInteracted = true"
+    >
     <span
       v-show="!passwordIsGiven && isInteracted"
       class="invalidDataError"
@@ -10,7 +15,12 @@
   <!-- Drawing an additional input for repeated password if needed -->
   <div v-if="props.withRepeat">
     <label class="title">Повторите пароль</label>
-    <input v-model="_passwordRepeat" type="password" @input="isInteracted = true" required />
+    <input
+      v-model="_passwordRepeat"
+      type="password"
+      required
+      @input="isInteracted = true"
+    >
     <span
       v-show="!passwordIsRepeated && isInteracted"
       class="invalidDataError"
@@ -19,8 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, watch } from 'vue';
-import type { Ref } from 'vue';
+import { defineProps, ref, watch, Ref } from 'vue';
 
 const props = defineProps({
   withRepeat: Boolean,
@@ -41,8 +50,8 @@ const {
 } = storeToRefs(formStateStore);
 const { password, passwordRepeat } = storeToRefs(authorizationStore)
 
-const _password: Ref<string> = ref('');
-const _passwordRepeat: Ref<string> = ref('');
+const _password = ref<string>('');
+const _passwordRepeat = ref<string>('');
 
 watch(_password, ( newValue ) => {
   try{

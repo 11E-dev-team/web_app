@@ -1,10 +1,10 @@
 <template>
-    <div class="side">
-      <div class="student-canvas">
-        <static-canvas-component canvas-id="" />
-      </div>
+  <div class="side">
+    <div class="student-canvas">
+      <static-canvas-component canvas-id="" />
     </div>
-  </template>
+  </div>
+</template>
   
   <script lang="ts">
   import { defineComponent } from 'vue';
