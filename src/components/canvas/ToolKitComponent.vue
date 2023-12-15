@@ -1,34 +1,75 @@
 <template>
   <div class="toolkit">
-    <button id="cursor" @click="changeTool(Tools.Cursor)"><img src="@/assets/SpizdIconPack/Cursor.svg" /></button>
-    <button id="text" @click="changeTool(Tools.Text)"><img src="@/assets/SpizdIconPack/Text.svg" /></button>
-    <button id="shapes" @click="changeTool(Tools.Shapes)">
-      <button @click="displayShapesSelector = !displayShapesSelector" style="width: 100%; height: 100%; padding: 0;">
-        <img v-if="selectedShape === Shapes.Rectangle" src="@/assets/SpizdIconPack/Shapes/Rectangle.svg" />
-        <img v-else-if="selectedShape === Shapes.Arrow" src="@/assets/SpizdIconPack/Shapes/Arrow.svg" />
-        <img v-else-if="selectedShape === Shapes.Line" src="@/assets/SpizdIconPack/Shapes/Line.svg" />
-        <img v-else-if="selectedShape === Shapes.Ellipse" src="@/assets/SpizdIconPack/Shapes/Circle.svg" />
+    <button
+      id="cursor"
+      @click="changeTool(Tools.Cursor)"
+    >
+      <img src="@/assets/SpizdIconPack/Cursor.svg">
+    </button>
+    <button
+      id="text"
+      @click="changeTool(Tools.Text)"
+    >
+      <img src="@/assets/SpizdIconPack/Text.svg">
+    </button>
+    <button
+      id="shapes"
+      @click="changeTool(Tools.Shapes)"
+    >
+      <button
+        style="width: 100%; height: 100%; padding: 0;"
+        @click="displayShapesSelector = !displayShapesSelector"
+      >
+        <img
+          v-if="selectedShape === Shapes.Rectangle"
+          src="@/assets/SpizdIconPack/Shapes/Rectangle.svg"
+        >
+        <img
+          v-else-if="selectedShape === Shapes.Arrow"
+          src="@/assets/SpizdIconPack/Shapes/Arrow.svg"
+        >
+        <img
+          v-else-if="selectedShape === Shapes.Line"
+          src="@/assets/SpizdIconPack/Shapes/Line.svg"
+        >
+        <img
+          v-else-if="selectedShape === Shapes.Ellipse"
+          src="@/assets/SpizdIconPack/Shapes/Circle.svg"
+        >
       </button>
-      <div v-if="displayShapesSelector" class="shape-selector">
+      <div
+        v-if="displayShapesSelector"
+        class="shape-selector"
+      >
         <button @click="changeShape(Shapes.Rectangle); displayShapesSelector = false">
-          <img src="@/assets/SpizdIconPack/Shapes/Rectangle.svg" />
+          <img src="@/assets/SpizdIconPack/Shapes/Rectangle.svg">
         </button>
         <button @click="changeShape(Shapes.Arrow); displayShapesSelector = false">
-          <img src="@/assets/SpizdIconPack/Shapes/Arrow.svg" />
+          <img src="@/assets/SpizdIconPack/Shapes/Arrow.svg">
         </button>
         <button @click="changeShape(Shapes.Line); displayShapesSelector = false">
-          <img src="@/assets/SpizdIconPack/Shapes/Line.svg" />
+          <img src="@/assets/SpizdIconPack/Shapes/Line.svg">
         </button>
         <button @click="changeShape(Shapes.Ellipse); displayShapesSelector = false">
-          <img src="@/assets/SpizdIconPack/Shapes/Circle.svg" />
+          <img src="@/assets/SpizdIconPack/Shapes/Circle.svg">
         </button>
       </div>
     </button>
-    <button id="pen" @click="changeTool(Tools.Pen)"><img src="@/assets/SpizdIconPack/Pen.svg" /></button>
-    <button id="delete" @click="deleteSelected"><img src="@/assets/SpizdIconPack/Trash.svg" /></button>
+    <button
+      id="pen"
+      @click="changeTool(Tools.Pen)"
+    >
+      <img src="@/assets/SpizdIconPack/Pen.svg">
+    </button>
+    <button
+      id="delete"
+      @click="deleteSelected"
+    >
+      <img src="@/assets/SpizdIconPack/Trash.svg">
+    </button>
     <!-- <button @click="undo">Undo</button> -->
   </div>
-    <!-- TODO: Move to Shapes chooser -->
+  <!-- TODO: Move to Shapes chooser -->
 </template>
 
 <script lang="ts">

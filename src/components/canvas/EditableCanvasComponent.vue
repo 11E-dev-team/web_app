@@ -1,12 +1,15 @@
 <template>
-  <div class="canvasContainer" ref="canvasContainer">
-    <canvas :id="canvasContainerId"></canvas>
+  <div
+    ref="canvasContainer"
+    class="canvasContainer"
+  >
+    <canvas :id="canvasContainerId" />
   </div>
-  <tool-kit :canvas="fabricCanvas" />
+  <tool-kit :canvas="editableFabricCanvas" />
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent, ref, Ref } from 'vue';
+import { reactive, defineComponent, ref } from 'vue';
 import { fabric } from 'fabric';
 
 import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
@@ -21,7 +24,7 @@ export default defineComponent({
     props: {
         fabricCanvas: {type: Object, required: true},
     },
-    setup() {
+    setup(props) {
         const canvasContainer = ref<HTMLElement | undefined>(undefined);
         const stageConfig = reactive<{width: number, height: number}>(canvasContainer.value ? {
             width: canvasContainer.value.offsetWidth,
@@ -31,81 +34,114 @@ export default defineComponent({
             height: window.innerHeight
         });
 
+        const editableFabricCanvas: FabricCanvas = props.fabricCanvas as FabricCanvas;
+
         return {
             canvasContainer,
-            stageConfig
+            stageConfig,
+            editableFabricCanvas
         }
+    },
+    computed: {
+        canvasContainerId() {
+            return "editable-canvas-" + this.editableFabricCanvas?.id;
+        },
+    },
+    watch: {
+        editableFabricCanvas() {
+            console.log("watch", this.editableFabricCanvas);
+            this.updateCanvas();
+        },
     },
     mounted() {
         window.addEventListener('resize', () => {
             this.stageConfig.width = this.canvasContainer ? this.canvasContainer.offsetWidth : window.innerWidth;
             this.stageConfig.height = this.canvasContainer ? this.canvasContainer.offsetHeight : window.innerHeight;
-            if (this.fabricCanvas instanceof FabricCanvas) {
-                this.fabricCanvas.canvas.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
-            };
+            if (this.editableFabricCanvas instanceof FabricCanvas) {
+                this.editableFabricCanvas.canvas.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
+            }
         });
 
         this.updateCanvas();
     },
     beforeUnmount() {
-        if (this.fabricCanvas?.canvas instanceof fabric.Canvas) {
-            this.fabricCanvas?.canvas.dispose();
+        if (this.editableFabricCanvas?.canvas instanceof fabric.Canvas) {
+            this.editableFabricCanvas?.canvas.dispose();
         }
     },
     methods: {
         toolUpdatingHandler: function(tool: Tools_) {
-            this.fabricCanvas?.changeTool(tool);
+            this.editableFabricCanvas?.changeTool(tool);
         },
         shapeUpdatingHandler(shape: Shapes_) {
-            this.fabricCanvas?.changeShape(shape);
+            this.editableFabricCanvas?.changeShape(shape);
+        },
+        applyTransformations({x, y}: {x: number, y: number}, viewportTransform: number[] | undefined, zoom: number): {x: number, y: number} {
+            return viewportTransform ? {
+                x: (x - viewportTransform[4]) / zoom,
+                y: (y - viewportTransform[5]) / zoom,
+            }
+            : {
+              x: x / zoom,
+              y: y / zoom,  
+            };
         },
         updateCanvas() {
-            if (this.fabricCanvas && !(this.fabricCanvas instanceof FabricCanvas && this.fabricCanvas.canvas instanceof fabric.Canvas))
-                this.fabricCanvas.canvas = new fabric.Canvas(this.canvasContainerId, {
+            if (this.editableFabricCanvas && !(this.editableFabricCanvas instanceof FabricCanvas && this.editableFabricCanvas.canvas instanceof fabric.Canvas))
+                this.editableFabricCanvas.canvas = new fabric.Canvas(this.canvasContainerId, {
                     width: this.stageConfig.width,
                     height: this.stageConfig.height,
                 });
 
-            if (this.fabricCanvas instanceof FabricCanvas) {
-                this.fabricCanvas.canvas.on('mouse:down', (event: fabric.IEvent<MouseEvent>) => {
+            if (this.editableFabricCanvas instanceof FabricCanvas) {
+                this.editableFabricCanvas.canvas.on('mouse:down', (event: fabric.IEvent<MouseEvent>) => {
                     if (!event.pointer)
                         return;
-                    console.log(this.fabricCanvas.canvas.viewportTransform);
-                    this.fabricCanvas?.mouseDown({
-                        x: (event.pointer.x - this.fabricCanvas.canvas.viewportTransform[4]) / this.fabricCanvas.canvas.getZoom(),
-                        y: (event.pointer.y - this.fabricCanvas.canvas.viewportTransform[5]) / this.fabricCanvas.canvas.getZoom(),
-                    });
+                    console.log(this.editableFabricCanvas.canvas.viewportTransform);
+                    this.editableFabricCanvas?.mouseDown(
+                        this.applyTransformations(
+                            {x : event.pointer.x, y: event.pointer.y},
+                            this.editableFabricCanvas.canvas.viewportTransform,
+                            this.editableFabricCanvas.canvas.getZoom()
+                        )
+                    );
                 });
 
-                this.fabricCanvas.canvas.on('mouse:move', (event: fabric.IEvent) => {
+                this.editableFabricCanvas.canvas.on('mouse:move', (event: fabric.IEvent) => {
                     if (!event.pointer)
                         return;
-                    this.fabricCanvas?.mouseMove({
-                        x: (event.pointer.x - this.fabricCanvas.canvas.viewportTransform[4]) / this.fabricCanvas.canvas.getZoom(),
-                        y: (event.pointer.y - this.fabricCanvas.canvas.viewportTransform[5]) / this.fabricCanvas.canvas.getZoom(),
-                    });
+                    this.editableFabricCanvas?.mouseMove(
+                        this.applyTransformations(
+                            {x : event.pointer.x, y: event.pointer.y},
+                            this.editableFabricCanvas.canvas.viewportTransform,
+                            this.editableFabricCanvas.canvas.getZoom()
+                        )
+                    );
                 });
 
-                this.fabricCanvas.canvas.on('mouse:up', (event: fabric.IEvent) => {
+                this.editableFabricCanvas.canvas.on('mouse:up', (event: fabric.IEvent) => {
                     if (!event.pointer)
                         return;
-                    this.fabricCanvas?.mouseUp({
-                        x: (event.pointer.x - this.fabricCanvas.canvas.viewportTransform[4]) / this.fabricCanvas.canvas.getZoom(),
-                        y: (event.pointer.y - this.fabricCanvas.canvas.viewportTransform[5]) / this.fabricCanvas.canvas.getZoom(),
-                    });
+                    this.editableFabricCanvas?.mouseUp(
+                        this.applyTransformations(
+                            {x : event.pointer.x, y: event.pointer.y},
+                            this.editableFabricCanvas.canvas.viewportTransform,
+                            this.editableFabricCanvas.canvas.getZoom()
+                        )
+                    );
                 });
 
-                this.fabricCanvas.canvas.on('mouse:wheel', (event: fabric.IEvent<WheelEvent>) => {
-                    let zoom: number = this.fabricCanvas.canvas.getZoom();
+                this.editableFabricCanvas.canvas.on('mouse:wheel', (event: fabric.IEvent<WheelEvent>) => {
+                    let zoom: number = this.editableFabricCanvas.canvas.getZoom();
                     zoom *= 0.999 ** event.e.deltaY;
-                    this.fabricCanvas.canvas.zoomToPoint({
+                    this.editableFabricCanvas.canvas.zoomToPoint({
                         x: event.e.offsetX, y: event.e.offsetY
                     }, zoom);
                     event.e.preventDefault();
                     event.e.stopPropagation();
                 });
 
-                this.fabricCanvas.canvas.on('object:added', (evt: fabric.IEvent) => {
+                this.editableFabricCanvas.canvas.on('object:added', (evt: fabric.IEvent) => {
                     const target = evt.target;
                     if (!target)
                         return;
@@ -114,29 +150,18 @@ export default defineComponent({
                         && (target.stroke === 'rgba(0, 0, 0, 0)'
                         || target.stroke === 'transparent'
                     )) {
-                        this.fabricCanvas?.canvas?.remove(target);
-                        this.fabricCanvas?.canvas?.requestRenderAll();
+                        this.editableFabricCanvas?.canvas?.remove(target);
+                        this.editableFabricCanvas?.canvas?.requestRenderAll();
                     }
-                    this.fabricCanvas?.broadcast();
+                    this.editableFabricCanvas?.broadcast();
                 });
 
-                this.fabricCanvas.canvas.on('after:render', () => {
-                    this.fabricCanvas?.broadcast();
+                this.editableFabricCanvas.canvas.on('after:render', () => {
+                    this.editableFabricCanvas?.broadcast();
                 });
 
-                this.fabricCanvas.updateSettings();  
-            };
-        },
-    },
-    watch: {
-        fabricCanvas() {
-            console.log("watch", this.fabricCanvas);
-            this.updateCanvas();
-        },
-    },
-    computed: {
-        canvasContainerId() {
-            return "editable-canvas-" + this.fabricCanvas?.id;
+                this.editableFabricCanvas.updateSettings();  
+            }
         },
     },
 });

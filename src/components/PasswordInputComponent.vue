@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, watch, Ref } from 'vue';
+import { defineProps, ref, watch } from 'vue';
 
 const props = defineProps({
   withRepeat: Boolean,
@@ -64,8 +64,8 @@ watch(_password, ( newValue ) => {
       passwordIsRepeated.value = false;
     } else {
       throw e;
-    };
-  };
+    }
+  }
 });
 
 watch(_passwordRepeat, ( newValue ) => {
@@ -78,8 +78,8 @@ watch(_passwordRepeat, ( newValue ) => {
       passwordIsRepeated.value = false;
     } else {
       throw e;
-    };
-  };
+    }
+  }
 });
 </script>
 

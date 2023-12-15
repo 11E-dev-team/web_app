@@ -1,48 +1,82 @@
 <template>
   <!-- TeachersView -->
-  <div v-if="conference?.userData?.role === 4" id="teacher-view">
-    <div v-for="editableFabricCanvas in editableFabricCanvasArray" class="teacher-canvas" :key="editableFabricCanvas.id" >
-      <div class="canvas-id-label" >{{ editableFabricCanvas.id }}</div>
-      <editable-canvas-component :fabricCanvas="editableFabricCanvas" />
+  <div
+    v-if="conference?.userData?.role === 4"
+    id="teacher-view"
+  >
+    <div
+      v-for="editableFabricCanvas in editableFabricCanvasArray"
+      :key="editableFabricCanvas.id"
+      class="teacher-canvas"
+    >
+      <div class="canvas-id-label">
+        {{ editableFabricCanvas.id }}
+      </div>
+      <editable-canvas-component :fabric-canvas="editableFabricCanvas" />
     </div>
     <div class="side">
-      <div v-for="staticFabricCanvas in staticFabricCanvasArray" class="student-canvas" :key="staticFabricCanvas.id">
-        <div class="canvas-id-label" >{{ staticFabricCanvas.id }}</div>
-        <static-canvas-component :fabricCanvas="staticFabricCanvas" />
+      <div
+        v-for="staticFabricCanvas in staticFabricCanvasArray"
+        :key="staticFabricCanvas.id"
+        class="student-canvas"
+      >
+        <div class="canvas-id-label">
+          {{ staticFabricCanvas.id }}
+        </div>
+        <static-canvas-component :fabric-canvas="staticFabricCanvas" />
       </div>
     </div>
   </div>
 
   <!-- StudentsView -->
-  <div v-else id="student-view">
-    <div v-for="editableFabricCanvas in editableFabricCanvasArray" :key="editableFabricCanvas.id">
-      <div class="canvas-id-label" >{{ editableFabricCanvas.id }}</div>
-      <editable-canvas-component :fabricCanvas="editableFabricCanvas" />
+  <div
+    v-else
+    id="student-view"
+  >
+    <div
+      v-for="editableFabricCanvas in editableFabricCanvasArray"
+      :key="editableFabricCanvas.id"
+    >
+      <div class="canvas-id-label">
+        {{ editableFabricCanvas.id }}
+      </div>
+      <editable-canvas-component :fabric-canvas="editableFabricCanvas" />
     </div>
 
     <div class="teacher-canvas">
-      <div v-for="staticFabricCanvas in staticFabricCanvasArray" :key="staticFabricCanvas.id" style="width: 100%; height: 100%;">
-        <div class="canvas-id-label" >{{ staticFabricCanvas.id }}</div>
-        <static-canvas-component :fabricCanvas="staticFabricCanvas" />
+      <div
+        v-for="staticFabricCanvas in staticFabricCanvasArray"
+        :key="staticFabricCanvas.id"
+        style="width: 100%; height: 100%;"
+      >
+        <div class="canvas-id-label">
+          {{ staticFabricCanvas.id }}
+        </div>
+        <static-canvas-component :fabric-canvas="staticFabricCanvas" />
       </div>
     </div>
   </div>
 
   <div class="navbar">
     <RouterLink to="/">
-      <img src="@/assets/SpizdIconPack/exit.svg" alt="logo">
+      <img
+        src="@/assets/SpizdIconPack/exit.svg"
+        alt="logo"
+      >
     </RouterLink> <!-- home -->
     <!-- <button> -->
     <!-- <img src="@/assets/SpizdIconPack/settingsIcon.svg" alt="logo"> -->
     <!-- </button> settings -->
     <button @click="invite">
-      <img src="@/assets/SpizdIconPack/Invite.svg" alt="invite">
+      <img
+        src="@/assets/SpizdIconPack/Invite.svg"
+        alt="invite"
+      >
     </button> <!-- invite -->
     <!-- <button>
       <img src="@/assets/SpizdIconPack/desksIcon.svg" alt="logo">
     </button> change view -->
   </div>
-
 </template>
 
 <script lang="ts">
@@ -87,12 +121,12 @@ export default defineComponent({
         this.editableFabricCanvasArray.push(fabricCanvas);
       } else {
         this.staticFabricCanvasArray.push(fabricCanvas);
-      };
+      }
     },
     update(data: IClientConferenceEvent) {
       if (data.type === ClientConferenceEventTypes.CreateCanvas) {
         this.createCanvas(data);
-      };
+      }
     },
     invite() {
       navigator.clipboard.writeText("http://91.142.79.111:8080/#/conference/" + this.conferenceId);

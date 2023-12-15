@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, Ref } from 'vue';
+import { ref, watch } from 'vue';
 
 import { ValueError, ValidationError } from '@/errors';
 import Email from '@/utils/email';
@@ -55,8 +55,8 @@ watch(email, ( newValue ) => {
       emailIsValid.value = false;
     } else {
       throw e;
-    };
-  };
+    }
+  }
 });
 </script>
 

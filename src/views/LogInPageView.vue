@@ -6,11 +6,18 @@
     <PasswordComponent />
 
     <div class="custom">
-      <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Войти</button>
+      <button
+        :class="{ 'button-disabled': !allDataIsValid }"
+        @click="register()"
+      >
+        Войти
+      </button>
     </div>
 
     <div class="custom">
-      <RouterLink to="/register">У меня нет аккаунта</RouterLink>
+      <RouterLink to="/register">
+        У меня нет аккаунта
+      </RouterLink>
     </div>
   </main>
 </template>
@@ -46,12 +53,12 @@ const allDataIsValid: WritableComputedRef<boolean> = computed((): boolean => {
 });
 
 function register(): void {
-  if (allDataIsValid) {
+  if (allDataIsValid.value) {
     user.value = newUser.value
     // TODO: connect to backend server
     router.push('/home')
-  };
-};
+  }
+}
 </script>
 
 

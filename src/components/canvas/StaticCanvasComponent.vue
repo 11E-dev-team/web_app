@@ -1,7 +1,10 @@
 <template>
   <!-- static canvas -->
-  <div class="container" ref="container">
-    <canvas :id="canvasContainerId"></canvas>
+  <div
+    ref="container"
+    class="container"
+  >
+    <canvas :id="canvasContainerId" />
   </div>
 </template>
 
@@ -14,7 +17,7 @@ import { FabricCanvas } from '@/canvasLogic/FabricCanvas';
 export default defineComponent({
   name: 'StaticCanvasComponent',
   props: {
-      fabricCanvas: Object,
+      fabricCanvas: {type: Object, required: true},
   },
   setup() {
     const container: Ref<HTMLElement | undefined> = ref<HTMLElement | undefined>(undefined);
@@ -29,13 +32,23 @@ export default defineComponent({
       stageConfig,
     };
   },
+  computed: {
+    canvasContainerId() {
+      return "static-canvas-" + this.$props.fabricCanvas?.id;
+    },
+  },
+  watch: {
+    fabricCanvas() {
+      this.updateCanvas();
+    },
+  },
   mounted() {
     window.addEventListener('resize', () => {
         this.stageConfig.width = this.container ? this.container.offsetWidth : window.innerWidth;
         this.stageConfig.height = this.container ? this.container.offsetHeight : window.innerHeight;
         if (this.$props.fabricCanvas instanceof FabricCanvas) {
             this.$props.fabricCanvas.canvas.setDimensions({ width: this.stageConfig.width, height: this.stageConfig.height });
-        };
+        }
     });
 
     this.updateCanvas();
@@ -56,16 +69,6 @@ export default defineComponent({
         this.$props.fabricCanvas.canvas.skipTargetFind = true;
       }
         
-    },
-  },
-  watch: {
-    fabricCanvas() {
-      this.updateCanvas();
-    },
-  },
-  computed: {
-    canvasContainerId() {
-      return "static-canvas-" + this.$props.fabricCanvas?.id;
     },
   },
 });
