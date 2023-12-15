@@ -1,5 +1,5 @@
-import { setActivePinia, createPinia, storeToRefs } from 'pinia';
-setActivePinia(createPinia())
+import { setActivePinia, createPinia, storeToRefs } from "pinia";
+setActivePinia(createPinia());
 import { useUserStore } from "@/store";
 
 const userStore = useUserStore();
@@ -10,47 +10,47 @@ import Email from "@/utils/email";
 import { ValidationError, ValueError } from "@/errors";
 
 beforeEach(() => {
-  user.value = undefined;
-})
+    user.value = undefined;
+});
 
 describe("User", () => {
-  it("can be set", () => {
-    expect(user.value).toBe(undefined);
-    user.value = {
-      email: new Email("firstname@domain.com"),
-    };
-    expect(user.value.email.toString()).toBe("firstname@domain.com");
-  });
-
-  describe("Email", () => {
-    it("requires a value", () => {
-      try {
-        expect(user.value = {
-          email: new Email(),
-        }).toThrow(ValueError);
-      } catch (e) {
-        expect(e).toBeInstanceOf(ValueError);
-      };
+    it("can be set", () => {
+        expect(user.value).toBe(undefined);
+        user.value = {
+            email: new Email("firstname@domain.com"),
+        };
+        expect(user.value.email.toString()).toBe("firstname@domain.com");
     });
 
-    it("can't be empty", () => {
-      try {
-        expect(user.value = {
-          email: new Email(""),
-        }).toThrow(ValueError);
-      } catch (e) {
-        expect(e).toBeInstanceOf(ValueError);
-      };
-    });
+    describe("Email", () => {
+        it("requires a value", () => {
+            try {
+                expect(user.value = {
+                    email: new Email(),
+                }).toThrow(ValueError);
+            } catch (e) {
+                expect(e).toBeInstanceOf(ValueError);
+            }
+        });
 
-    it("is validated", () => {
-      try {
-        expect(user.value = {
-          email: new Email("a"),
-        }).toThrow(ValidationError);
-      } catch (e) {
-        expect(e).toBeInstanceOf(ValidationError);
-      };
-    })
-  });
+        it("can't be empty", () => {
+            try {
+                expect(user.value = {
+                    email: new Email(""),
+                }).toThrow(ValueError);
+            } catch (e) {
+                expect(e).toBeInstanceOf(ValueError);
+            }
+        });
+
+        it("is validated", () => {
+            try {
+                expect(user.value = {
+                    email: new Email("a"),
+                }).toThrow(ValidationError);
+            } catch (e) {
+                expect(e).toBeInstanceOf(ValidationError);
+            }
+        });
+    });
 });

@@ -1,90 +1,75 @@
-import { setActivePinia, createPinia } from 'pinia'
+import { setActivePinia, createPinia } from "pinia";
 import { mount } from "@vue/test-utils";
-import { createTestingPinia } from '@pinia/testing';
+import { createTestingPinia } from "@pinia/testing";
 
 import Toolkit from "@/components/ToolKitComponent.vue";
-import { useCanvasStateStore } from '@/store';
-import { Tools, Shapes } from '@/shared/interfaces';
 
 beforeEach(() => {
-  setActivePinia(createPinia());
+    setActivePinia(createPinia());
 });
 
 describe("Toolkit", () => {
-  it("mount component", async () => {
-    const wrapper = mount(Toolkit);
-  });
-
-  it("contains buttons", async () => {
-    const wrapper = mount(Toolkit);
-    expect (wrapper.html()).toContain("button");
-  });
-
-  it("selects cursor",async () => {
-    const wrapper = mount(Toolkit, {
-      global: {
-        plugins: [createTestingPinia()],
-      },
+    it("mount component", async () => {
+        mount(Toolkit);
     });
-    const canvasStore = useCanvasStateStore();
 
-    const cursorButton = wrapper.find("button#cursor");
-    cursorButton.trigger("click");
-
-    // expect(canvasStore.selectedTool).toBe(Tools.Cursor);
-  });
-
-  it("selects text",async () => {
-    const wrapper = mount(Toolkit, {
-      global: {
-        plugins: [createTestingPinia()],
-      },
+    it("contains buttons", async () => {
+        const wrapper = mount(Toolkit);
+        expect (wrapper.html()).toContain("button");
     });
-    const canvasStore = useCanvasStateStore();
 
-    const textButton = wrapper.find("button#text");
-    textButton.trigger("click");
+    it("has cursor button",async () => {
+        const wrapper = mount(Toolkit, {
+            global: {
+                plugins: [createTestingPinia()],
+            },
+        });
 
-    // expect(canvasStore.selectedTool).toBe(Tools.Text);
-  });
-
-  it("selects shapes", async () => {
-    const wrapper = mount(Toolkit, {
-      global: {
-        plugins: [createTestingPinia()],
-      },
+        const cursorButton = wrapper.find("button#cursor");
+        cursorButton.trigger("click");
     });
-    const canvasStore = useCanvasStateStore();
 
-    const shapeButton = wrapper.find("button#shapes");
-    shapeButton.trigger("click");
+    it("has text button",async () => {
+        const wrapper = mount(Toolkit, {
+            global: {
+                plugins: [createTestingPinia()],
+            },
+        });
 
-    // expect(canvasStore.selectedTool).toBe(Tools.Shapes);
-  });
+        const textButton = wrapper.find("button#text");
+        textButton.trigger("click");
+    });
 
-  it("selects pen", async () => {
-    const wrapper = mount(Toolkit, {
-      global: {
-        plugins: [createTestingPinia()],
-      },
-    })
-    const canvasStore = useCanvasStateStore();
+    it("has shapes button", async () => {
+        const wrapper = mount(Toolkit, {
+            global: {
+                plugins: [createTestingPinia()],
+            },
+        });
 
-    const penButton = wrapper.find("button#pen");
-    penButton.trigger("click");
+        const shapeButton = wrapper.find("button#shapes");
+        shapeButton.trigger("click");
+    });
 
-    // expect(canvasStore.selectedTool).toBe(Tools.Pen);
-  });
+    it("has pen button", async () => {
+        const wrapper = mount(Toolkit, {
+            global: {
+                plugins: [createTestingPinia()],
+            },
+        });
 
-  it("has delete button", async () => {
-    const wrapper = mount(Toolkit, {
-      global: {
-        plugins: [createTestingPinia()],
-      },
-    })
-    const canvasStore = useCanvasStateStore();
+        const penButton = wrapper.find("button#pen");
+        penButton.trigger("click");
+    });
 
-    const deleteButton = wrapper.find("button#delete");
-    deleteButton.trigger("click");
-  });
+    it("has delete button", async () => {
+        const wrapper = mount(Toolkit, {
+            global: {
+                plugins: [createTestingPinia()],
+            },
+        });
+
+        const deleteButton = wrapper.find("button#delete");
+        deleteButton.trigger("click");
+    });
 });

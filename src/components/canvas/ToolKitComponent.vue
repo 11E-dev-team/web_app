@@ -73,41 +73,41 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from 'vue';
+import { defineComponent, ref, Ref } from "vue";
 
-import { Tools, Tools_, Shapes, Shapes_ } from '@/shared/interfaces';
+import { Tools, Tools_, Shapes, Shapes_ } from "@/shared/interfaces";
 
 export default defineComponent({
-  name: 'ToolKitComponent',
-  props: {
-    canvas: {
-      type: Object,
-      required: true,
+    name: "ToolKitComponent",
+    props: {
+        canvas: {
+            type: Object,
+            required: true,
+        },
     },
-  },
-  data() {
-    const displayShapesSelector: Ref<boolean> = ref(false);
-    const selectedShape: Ref<Shapes_> = ref(Shapes.Rectangle);
-    return {
-      Tools,
-      Shapes,
-      displayShapesSelector,
-      selectedShape,
-    }
-  },
-  methods: {
-    changeTool(tool: Tools_) {
-      this.canvas.changeTool(tool);
+    data() {
+        const displayShapesSelector: Ref<boolean> = ref(false);
+        const selectedShape: Ref<Shapes_> = ref(Shapes.Rectangle);
+        return {
+            Tools,
+            Shapes,
+            displayShapesSelector,
+            selectedShape,
+        };
     },
-    changeShape(shape: Shapes_) {
-      this.canvas.changeShape(shape);
-      this.selectedShape = shape;
+    methods: {
+        changeTool(tool: Tools_) {
+            this.canvas.changeTool(tool);
+        },
+        changeShape(shape: Shapes_) {
+            this.canvas.changeShape(shape);
+            this.selectedShape = shape;
+        },
+        deleteSelected() {
+            this.canvas.deleteSelected();
+        },
     },
-    deleteSelected() {
-      this.canvas.deleteSelected();
-    },
-  },
-})
+});
 </script>
 
 <style scoped lang="scss">

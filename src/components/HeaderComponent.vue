@@ -10,11 +10,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
 import { storeToRefs } from "pinia";
+
 import { useUserStore } from "@/store";
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
+
+
+const { user } = storeToRefs(useUserStore());
 
 export default defineComponent({
     name: "HeaderComponent",

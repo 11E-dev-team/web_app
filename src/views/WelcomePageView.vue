@@ -26,24 +26,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import axios from 'axios';
+import { defineComponent } from "vue";
+import axios from "axios";
 
-import HeaderComponent from '@/components/HeaderComponent.vue';
-import router from '@/router';
+import router from "@/router";
+
+import HeaderComponent from "@/components/HeaderComponent.vue";
 
 export default defineComponent({
-  components: {
-    HeaderComponent,
-  },
-  methods: {
-    createConference() {
-      axios.post('http://0.0.0.0:8179/conference').then((response) => {
-        const { conference_id } = response.data;
-        router.push(`/conference/${conference_id}`);
-      });
+    components: {
+        HeaderComponent,
     },
-  },
+    methods: {
+        createConference() {
+            axios.post("http://0.0.0.0:8179/conference").then((response) => {
+                const { conference_id } = response.data;
+                router.push(`/conference/${conference_id}`);
+            });
+        },
+    },
 });
 </script>
 

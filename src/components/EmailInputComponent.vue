@@ -21,21 +21,20 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
+import { storeToRefs } from "pinia";
+
+import { useFormStateStore, useUserStore } from "@/store";
 
 import { ValueError, ValidationError } from "@/errors";
 import Email from "@/utils/email";
 
-import { storeToRefs } from "pinia";
 
-import { useFormStateStore, useUserStore } from "@/store";
-const formStateStore = useFormStateStore();
-const userStore = useUserStore();
 const {
     isInteracted,
     emailIsGiven,
     emailIsValid,
-} = storeToRefs(formStateStore);
-const { newUser } = storeToRefs(userStore);
+} = storeToRefs(useFormStateStore());
+const { newUser } = storeToRefs(useUserStore());
 
 const email = ref<string>("");
 

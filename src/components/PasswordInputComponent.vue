@@ -29,26 +29,26 @@
 </template>
 
 <script lang="ts" setup>
+// TODO: rewrite to defineComponent syntax
 import { defineProps, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
+
+import { useFormStateStore, useAuthorizationStore } from "@/store";
+
+import { ValueError } from "@/errors";
+import Password from "@/utils/password";
+
 
 const props = defineProps({
     withRepeat: Boolean,
 });
 
-import { ValueError } from "@/errors";
-import Password from "@/utils/password";
-
-import { storeToRefs } from "pinia";
-
-import { useFormStateStore, useAuthorizationStore } from "@/store";
-const formStateStore = useFormStateStore();
-const authorizationStore = useAuthorizationStore();
 const {
     isInteracted,
     passwordIsGiven,
     passwordIsRepeated,
-} = storeToRefs(formStateStore);
-const { password, passwordRepeat } = storeToRefs(authorizationStore);
+} = storeToRefs(useFormStateStore());
+const { password, passwordRepeat } = storeToRefs(useAuthorizationStore());
 
 const _password = ref<string>("");
 const _passwordRepeat = ref<string>("");
