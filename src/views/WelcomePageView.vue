@@ -39,7 +39,7 @@ export default defineComponent({
     },
     methods: {
         createConference() {
-            axios.post("http://0.0.0.0:8179/conference").then((response) => {
+            axios.post(import.meta.env.VITE_API_URL + "/conference").then((response) => {
                 const { conference_id } = response.data;
                 router.push(`/conference/${conference_id}`);
             });
