@@ -16,7 +16,11 @@ export default defineConfig(({ mode }) => {
             },
         },
         server: {
-            port: Number(env.VITE_PORT),
+            port: Number(env.VITE_FRONTEND_SERVER_PORT),
         },
+        preview: {
+            port: Number(env.VITE_FRONTEND_SERVER_PORT),
+            host: env.VITE_FRONTEND_SERVER_HOST,
+        }
     };
 });
