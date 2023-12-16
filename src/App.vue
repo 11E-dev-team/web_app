@@ -1,5 +1,5 @@
 <template>
-  <router-view/>
+  <router-view />
 </template>
 
 <style lang="scss">
@@ -11,6 +11,10 @@
   min-height: 100vh;
   overflow: hidden;
   background-color: var(--background, #e5e6f5);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 a {

@@ -1,0 +1,7 @@
+::root {
+  --default-border-style: solid;
+  --internal-border-radius: 8px;
+  --external-border-radius: 16px;
+  --default-border-color: var(--accent);
+  --default-border-width: 1px;
+}

@@ -1,51 +1,61 @@
 <template>
   <div>
     <label>Почта</label>
-    <input type="email" v-model="email" @input="isInteracted = true" required autofocus />
-    <span v-show="!emailIsGiven && isInteracted" class="invalidDataError">Введите почту</span>
-    <span v-show="!emailIsValid && isInteracted && emailIsGiven" class="invalidDataError">Почта введена некорректно</span>
+    <input
+      v-model="email"
+      type="email"
+      required
+      autofocus
+      @input="isInteracted = true"
+    >
+    <span
+      v-show="!emailIsGiven && isInteracted"
+      class="invalidDataError"
+    >Введите почту</span>
+    <span
+      v-show="!emailIsValid && isInteracted && emailIsGiven"
+      class="invalidDataError"
+    >Почта введена некорректно</span>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import type { Ref } from 'vue';
+import { ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 
-import { ValueError, ValidationError } from '@/errors';
-import Email from '@/utils/email';
+import { useFormStateStore, useUserStore } from "@/store";
 
-import { storeToRefs } from 'pinia';
+import { ValueError, ValidationError } from "@/shared/errors";
+import Email from "@/utils/email";
 
-import { useFormStateStore, useUserStore } from '@/store';
-const formStateStore = useFormStateStore();
-const userStore = useUserStore();
+
 const {
-  isInteracted,
-  emailIsGiven,
-  emailIsValid,
-} = storeToRefs(formStateStore);
-const { newUser } = storeToRefs(userStore);
+    isInteracted,
+    emailIsGiven,
+    emailIsValid,
+} = storeToRefs(useFormStateStore());
+const { newUser } = storeToRefs(useUserStore());
 
-const email: Ref<string> = ref('');
+const email = ref<string>("");
 
 watch(email, ( newValue ) => {
-  try{
-    newUser.value = {
-      email: new Email(newValue) as Email,
-    };
-    emailIsGiven.value = true;
-    emailIsValid.value = true;
-  } catch (e) {
-    newUser.value = null;
-    if (e instanceof ValueError) {
-      emailIsGiven.value = false;
-    } else if (e instanceof ValidationError) {
-      emailIsGiven.value = true;
-      emailIsValid.value = false;
-    } else {
-      throw e;
-    };
-  };
+    try{
+        newUser.value = {
+            email: new Email(newValue),
+        };
+        emailIsGiven.value = true;
+        emailIsValid.value = true;
+    } catch (e) {
+        newUser.value = undefined;
+        if (e instanceof ValueError) {
+            emailIsGiven.value = false;
+        } else if (e instanceof ValidationError) {
+            emailIsGiven.value = true;
+            emailIsValid.value = false;
+        } else {
+            throw e;
+        }
+    }
 });
 </script>
 

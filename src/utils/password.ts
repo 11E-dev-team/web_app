@@ -1,16 +1,16 @@
-import { ValueError } from '@/errors';
+import { ValueError } from "@/shared/errors";
 
 export default class Password {
-  private value: string;
+    private value: string;
 
-  constructor(value: string | null = null) {
-    if (value === null || value === '') {
-      throw new ValueError('Password must be non-empty string');
-    };
-    this.value = value;
-  };
+    constructor(value: string | null = null) {
+        if (value === null || value === "") {
+            throw new ValueError("Password must be non-empty string");
+        }
+        this.value = value;
+    }
 
-  toString(): string {
-    return this.value;
-  };
+    toString(): string {
+        return this.value;
+    }
 }

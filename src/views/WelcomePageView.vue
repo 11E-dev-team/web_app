@@ -1,26 +1,50 @@
 <template>
   <HeaderComponent msg="КРОК ШИР 179dev" />
   <main class="main-content">
-    <div class="scrollable-container">
-      <p>This is the body of the home screen.</p>
-      <p>Feel free to add any content you want here!</p>
-    </div>
+    <button
+      id="create-conference"
+      class="cta-button"
+      @click="createConference"
+    >
+      Create Conference
+    </button>
   </main>
   <footer class="footer">
-    <RouterLink to="/register" class="cta-button">Register</RouterLink>
-    <RouterLink to="/log_in" class="cta-button">Log In</RouterLink>
+    <RouterLink
+      to="/register"
+      class="cta-button"
+    >
+      Register
+    </RouterLink>
+    <RouterLink
+      to="/log_in"
+      class="cta-button"
+    >
+      Log In
+    </RouterLink>
   </footer>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
+import axios from "axios";
 
-import HeaderComponent from '@/components/HeaderComponent.vue';
+import router from "@/router";
+
+import HeaderComponent from "@/components/HeaderComponent.vue";
 
 export default defineComponent({
-  components: {
-    HeaderComponent,
-  },
+    components: {
+        HeaderComponent,
+    },
+    methods: {
+        createConference() {
+            axios.post(import.meta.env.VITE_API_URL + "/conference").then((response) => {
+                const { conference_id } = response.data;
+                router.push(`/conference/${conference_id}`);
+            });
+        },
+    },
 });
 </script>
 
@@ -32,11 +56,7 @@ export default defineComponent({
   padding: $common-padding;
   overflow-y: auto;
   overscroll-behavior: contain;
-  height: calc(100vh - ($header-height + $common-padding * 2) * 2); /* Subtract the header and footer heights from the viewport height */
-}
-
-.scrollable-container {
-  /* Add styles for the scrollable container */
+  height: calc(100vh - ($header-height + $common-padding * 2) * 2);
 }
 
 footer {
@@ -45,11 +65,11 @@ footer {
   justify-content: center;
   align-items: center;
   padding: $common-padding;
-  background-color: #f2f2f2;
 }
 
 .cta-button {
   color: coral;
+  background-color: transparent;
 }
 
 footer a + a {
