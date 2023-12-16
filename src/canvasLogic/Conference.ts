@@ -28,8 +28,15 @@ abstract class ConferenceEvent {
 
 interface IConferenceWelcomingEvent extends IConferenceEvent {
     type: "welcome";
-    id: string;
+    id: number;
     role: number;
+}
+
+function isIConferenceWelcomingEvent(data: object): data is IConferenceWelcomingEvent {
+    return (
+        typeof (data as IConferenceWelcomingEvent).id === "number"
+        && typeof (data as IConferenceWelcomingEvent).role === "number"
+    );
 }
 
 class ConferenceWelcomingEvent extends ConferenceEvent {
@@ -51,7 +58,7 @@ class ConferenceWelcomingEvent extends ConferenceEvent {
 
         idInConference.value.push({
             conferenceId: this._conferenceId,
-            id: this._data.id,
+            id: String(this._data.id),
             role: this._data.role,
         });
         update("update_user_data", userData);
@@ -62,6 +69,13 @@ interface IConferenceBroadcastingEvent {
     type: "broadcast";
     target: CanvasId;
     drawing: string;
+}
+
+function isIConferenceBroadcastingEvent(data: object): data is IConferenceBroadcastingEvent {
+    return (
+        typeof (data as IConferenceBroadcastingEvent).target === "number"
+        && typeof (data as IConferenceBroadcastingEvent).drawing === "string"
+    );
 }
 
 class ConferenceBroadcastingEvent extends ConferenceEvent {
@@ -157,7 +171,7 @@ export default class Conference {
 
     private _controller: Controller;
 
-    private _userData: {id: string, role: number} | null = null;
+    private _userData: {id: number, role: number} | null = null;
 
     constructor(controller: Controller, conferenceId: string) {
         this.join(conferenceId);
@@ -193,13 +207,32 @@ export default class Conference {
     }
 
     private handleMessage(event: MessageEvent, conferenceId: string): void {
-        const { type, ...data } = JSON.parse(event.data);
-        this.getConferenceEvent(conferenceId, type, data).handle(this.updateUserData.bind(this));
+        const { type, ...restData } = JSON.parse(event.data);
+        if (isIConferenceWelcomingEvent(restData)) {
+            const data: IConferenceWelcomingEvent = {
+                // @ts-expect-error: ts(2783)
+                type: "welcome",
+                ...restData
+            };
+            this.getConferenceEvent(conferenceId, type, data).handle(this.updateUserData.bind(this));
+        } else if (isIConferenceBroadcastingEvent(restData)) {
+            const data: IConferenceBroadcastingEvent = {
+                // @ts-expect-error: ts(2783)
+                type: "broadcast",
+                ...restData
+            };
+            this.getConferenceEvent(conferenceId, type, data).handle();
+        } else if (restData) {
+            throw new IncorrectConferenceEventInterfaceError(`Incorrect interface for conference event interface for ${restData}`);
+        }
     }
 
-    private updateUserData(type: string, userData: {id: string, role: number}): void {
+    private updateUserData(type: string, userData: IConferenceWelcomingEvent): void {
         if (type !== "update_user_data") return;
-        this._userData = userData;
+        this._userData = {
+            id: userData.id,
+            role: userData.role,   
+        };
     }
 
     private getConferenceEvent(conferenceId: string, type: ConferenceEventType_, data: IConferenceWelcomingEvent | IConferenceBroadcastingEvent): ConferenceEvent {
@@ -208,17 +241,17 @@ export default class Conference {
             console.log("Got a user id");
             
             if (data.type === "welcome") return new ConferenceWelcomingEvent(data, conferenceId);
-            throw new IncorrectConferenceEventInterfaceError(`Incorrect interface for conference event type: ${type}`);
+            throw new IncorrectConferenceEventInterfaceError(`Incorrect interface for conference event type ${type}: ${data.type}`);
         case ConferenceEventType.Broadcast:
             console.log("Got a broadcast");
             if (data.type === "broadcast") return new ConferenceBroadcastingEvent(data, conferenceId, this._subscribers.notify.bind(this._subscribers));
-            throw new IncorrectConferenceEventInterfaceError(`Incorrect interface for conference event type: ${type}`);
+            throw new IncorrectConferenceEventInterfaceError(`Incorrect interface for conference event type ${type}: ${data.type}`);
         default:
             throw new IncorrectConferenceEventTypeError(`Unknown conference event type: ${type}`);
         }
     }
 
-    public get userData(): {id: string, role: number} | null {
+    public get userData(): {id: number, role: number} | null {
         return this._userData;
     }
 }
