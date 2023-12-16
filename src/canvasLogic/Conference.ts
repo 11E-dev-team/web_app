@@ -93,6 +93,12 @@ class IncorrectConferenceEventTypeError extends Error {
     }
 }
 
+class IncorrectConferenceEventInterfaceError extends Error {
+    constructor(message: string) {
+        super(message);
+    }
+}
+
 type Subscriber = Required<{
   update: (data: string) => void,
   id: CanvasId,
@@ -202,11 +208,11 @@ export default class Conference {
             console.log("Got a user id");
             
             if (data.type === "welcome") return new ConferenceWelcomingEvent(data, conferenceId);
-            throw new IncorrectConferenceEventTypeError(`Incorrect interface for conference event type: ${type}`);
+            throw new IncorrectConferenceEventInterfaceError(`Incorrect interface for conference event type: ${type}`);
         case ConferenceEventType.Broadcast:
             console.log("Got a broadcast");
             if (data.type === "broadcast") return new ConferenceBroadcastingEvent(data, conferenceId, this._subscribers.notify.bind(this._subscribers));
-            throw new IncorrectConferenceEventTypeError(`Incorrect interface for conference event type: ${type}`);
+            throw new IncorrectConferenceEventInterfaceError(`Incorrect interface for conference event type: ${type}`);
         default:
             throw new IncorrectConferenceEventTypeError(`Unknown conference event type: ${type}`);
         }
