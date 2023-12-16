@@ -1,4 +1,4 @@
-import { ValueError, ValidationError } from "@/errors";
+import { ValueError, ValidationError } from "@/shared/errors";
 
 export default class Email {
     private value: string;

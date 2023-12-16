@@ -1,5 +1,5 @@
 import Email from "@/utils/email";
-import { ValueError, ValidationError } from "@/errors";
+import { ValueError, ValidationError } from "@/shared/errors";
 
 describe("Email", () => {
     it("can be set", () => {

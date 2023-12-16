@@ -35,7 +35,7 @@ import { storeToRefs } from "pinia";
 
 import { useFormStateStore, useAuthorizationStore } from "@/store";
 
-import { ValueError } from "@/errors";
+import { ValueError } from "@/shared/errors";
 import Password from "@/utils/password";
 
 

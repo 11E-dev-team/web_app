@@ -25,7 +25,7 @@ import { storeToRefs } from "pinia";
 
 import { useFormStateStore, useUserStore } from "@/store";
 
-import { ValueError, ValidationError } from "@/errors";
+import { ValueError, ValidationError } from "@/shared/errors";
 import Email from "@/utils/email";
 
 

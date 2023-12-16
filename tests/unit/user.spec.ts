@@ -7,7 +7,7 @@ const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 
 import Email from "@/utils/email";
-import { ValidationError, ValueError } from "@/errors";
+import { ValidationError, ValueError } from "@/shared/errors";
 
 beforeEach(() => {
     user.value = undefined;

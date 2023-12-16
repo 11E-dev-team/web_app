@@ -1,4 +1,4 @@
-import { ValueError } from "@/errors";
+import { ValueError } from "@/shared/errors";
 
 export default class Password {
     private value: string;

@@ -1,5 +1,5 @@
 import Password from "@/utils/password";
-import { ValueError } from "@/errors";
+import { ValueError } from "@/shared/errors";
 
 describe("Password", () => {
     it("can be set", () => {
