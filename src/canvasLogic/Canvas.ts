@@ -7,7 +7,7 @@ import Conference from "./Conference";
 export interface IMouseEvent {
   x: number;
   y: number;
-};
+}
 
 export interface IWheelEvent {
   deltaY: number;
@@ -17,159 +17,159 @@ export interface IWheelEvent {
     preventDefault: () => void;
     stopPropagation: () => void;
   }>;
-};
+}
 
 export class CanvasMouse {
-  private selectedTool: Tools_ = Tools.Cursor;
-  private selectedShape: Shapes_ = Shapes.Rectangle;
-  private currentModifiedObject: CanvasObject | null = null;
+    private selectedTool: Tools_ = Tools.Cursor;
+    private selectedShape: Shapes_ = Shapes.Rectangle;
+    private currentModifiedObject: CanvasObject | null = null;
 
-  public currentColor: string = [
-    '#',
-    Math.floor(9 * Math.random()),
-    Math.floor(9 * Math.random()),
-    Math.floor(9 * Math.random()),
-    Math.floor(9 * Math.random()),
-    Math.floor(9 * Math.random()),
-    Math.floor(9 * Math.random()),
-  ].join("");
+    public currentColor: string = [
+        "#",
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+        Math.floor(9 * Math.random()),
+    ].join("");
 
-  constructor() {};
+    constructor() {}
 
-  public changeTool(tool: Tools_): void {
-    this.selectedTool = tool;
-  };
-
-  public changeShape(shape: Shapes_): void {
-    this.selectedShape = shape;
-  };
-
-  public down(event: IMouseEvent): void {
-    console.log(this.currentTool);
-    switch (this.selectedTool) {
-      case Tools.Shapes:
-        switch (this.selectedShape) {
-          case Shapes.Rectangle:
-            this.currentModifiedObject = new Rectangle(event.x, event.y);
-            break;
-          case Shapes.Ellipse:
-            this.currentModifiedObject = new Ellipse(event.x, event.y);
-            break;
-          case Shapes.Line:
-            this.currentModifiedObject = new Line(event.x, event.y);
-            break;
-          case Shapes.Arrow:
-            this.currentModifiedObject = new Arrow(event.x, event.y);
-            break;
-          default:
-            throw new IncorrectShapeError(this.selectedShape);
-        }
-        break;
-      case Tools.Text:
-        this.currentModifiedObject = new Text(event.x, event.y);
-        break;
-      default:
-        this.currentModifiedObject = null;
-        if (
-          this.selectedTool !== Tools.Cursor
-          && this.selectedTool !== Tools.Pen
-          ) {
-          throw new IncorrectToolError(this.selectedTool);
-        };
+    public changeTool(tool: Tools_): void {
+        this.selectedTool = tool;
     }
-  };
 
-  public move(event: IMouseEvent): void {
-    if (!this.currentModifiedObject) return;
+    public changeShape(shape: Shapes_): void {
+        this.selectedShape = shape;
+    }
 
-    switch (this.selectedTool) {
-      case Tools.Shapes:
-        if (!(this.currentModifiedObject instanceof Shape)) return;
-        this.currentModifiedObject.change(event.x, event.y);
-        break;
-      default:
-        this.currentModifiedObject = null;
-        if (
-          this.selectedTool !== Tools.Cursor
+    public down(event: IMouseEvent): void {
+        console.log(this.currentTool);
+        switch (this.selectedTool) {
+        case Tools.Shapes:
+            switch (this.selectedShape) {
+            case Shapes.Rectangle:
+                this.currentModifiedObject = new Rectangle(event.x, event.y);
+                break;
+            case Shapes.Ellipse:
+                this.currentModifiedObject = new Ellipse(event.x, event.y);
+                break;
+            case Shapes.Line:
+                this.currentModifiedObject = new Line(event.x, event.y);
+                break;
+            case Shapes.Arrow:
+                this.currentModifiedObject = new Arrow(event.x, event.y);
+                break;
+            default:
+                throw new IncorrectShapeError(this.selectedShape);
+            }
+            break;
+        case Tools.Text:
+            this.currentModifiedObject = new Text(event.x, event.y);
+            break;
+        default:
+            this.currentModifiedObject = null;
+            if (
+                this.selectedTool !== Tools.Cursor
+          && this.selectedTool !== Tools.Pen
+            ) {
+                throw new IncorrectToolError(this.selectedTool);
+            }
+        }
+    }
+
+    public move(event: IMouseEvent): void {
+        if (!this.currentModifiedObject) return;
+
+        switch (this.selectedTool) {
+        case Tools.Shapes:
+            if (!(this.currentModifiedObject instanceof Shape)) return;
+            this.currentModifiedObject.change(event.x, event.y);
+            break;
+        default:
+            this.currentModifiedObject = null;
+            if (
+                this.selectedTool !== Tools.Cursor
           && this.selectedTool !== Tools.Text
           && this.selectedTool !== Tools.Pen
-          ) {
-          throw new IncorrectToolError(this.selectedTool);
-        };
-    };
-  };
+            ) {
+                throw new IncorrectToolError(this.selectedTool);
+            }
+        }
+    }
 
-  public up(event: IMouseEvent): void {
-    if (!this.currentModifiedObject) return;
+    public up(event: IMouseEvent): void {
+        if (!this.currentModifiedObject) return;
 
-    switch (this.selectedTool) {
-      case Tools.Shapes:
-        if (!(this.currentModifiedObject instanceof Shape)) return;
-        this.currentModifiedObject.end(event.x, event.y);
-        break;
-      default:
-        this.currentModifiedObject = null;
-        if (
-          this.selectedTool !== Tools.Cursor
+        switch (this.selectedTool) {
+        case Tools.Shapes:
+            if (!(this.currentModifiedObject instanceof Shape)) return;
+            this.currentModifiedObject.end(event.x, event.y);
+            break;
+        default:
+            this.currentModifiedObject = null;
+            if (
+                this.selectedTool !== Tools.Cursor
           && this.selectedTool !== Tools.Text
           && this.selectedTool !== Tools.Pen
-        ) {
-          throw new IncorrectToolError(this.selectedTool);
-        };
-    };
+            ) {
+                throw new IncorrectToolError(this.selectedTool);
+            }
+        }
     // TODO: Make it work (send an event to the parent)
     // if ( this.selectedTool !== Tools.Pen ) this.changeTool(Tools.Cursor);
-  };
+    }
 
-  public get currentObject(): CanvasObject | null {
-    return this.currentModifiedObject;
-  };
+    public get currentObject(): CanvasObject | null {
+        return this.currentModifiedObject;
+    }
 
-  public get currentTool(): Tools_ {
-    return this.selectedTool;
-  };
-};
+    public get currentTool(): Tools_ {
+        return this.selectedTool;
+    }
+}
 
 export abstract class Canvas {
-  public id: CanvasId;
+    public id: CanvasId;
 
-  protected _canvasMouse: CanvasMouse;
+    protected _canvasMouse: CanvasMouse;
 
-  protected _conference: Conference | undefined;
+    protected _conference: Conference | undefined;
 
-  constructor(id: CanvasId, conference?: Conference) {
-    this.id = id;
+    constructor(id: CanvasId, conference?: Conference) {
+        this.id = id;
 
-    this._canvasMouse = new CanvasMouse();
-    this._conference = conference;
-  };
+        this._canvasMouse = new CanvasMouse();
+        this._conference = conference;
+    }
 
-  public update(data: string): void {};
+    abstract update(data: string): void
 
-  public set canvasMouse(canvasMouse: CanvasMouse) {
-    this._canvasMouse = canvasMouse;
-  };
+    public set canvasMouse(canvasMouse: CanvasMouse) {
+        this._canvasMouse = canvasMouse;
+    }
 
-  public set conference(conference: Conference) {
-    this._conference = conference;
-  };
+    public set conference(conference: Conference) {
+        this._conference = conference;
+    }
 
-  public sendToConference(data: any): void {
-    console.log("Sending to conference", {"target": this.id, ...data});
-    this._conference?.send({"target": this.id, ...data});
-  };
+    public sendToConference(data: object): void {
+        console.log("Sending to conference", {"target": this.id, ...data});
+        this._conference?.send({"target": this.id, ...data});
+    }
 
-  public changeTool(tool: Tools_): void {
-    this._canvasMouse.changeTool(tool);
-  };
+    public changeTool(tool: Tools_): void {
+        this._canvasMouse.changeTool(tool);
+    }
 
-  public changeShape(shape: Shapes_): void {
-    this._canvasMouse.changeShape(shape);
-  };
+    public changeShape(shape: Shapes_): void {
+        this._canvasMouse.changeShape(shape);
+    }
 
   abstract mouseDown(event: IMouseEvent): void;
 
   abstract mouseMove(event: IMouseEvent): void;
 
   abstract mouseUp(event: IMouseEvent): void;
-};
+}
