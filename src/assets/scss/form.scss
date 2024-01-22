@@ -1,4 +1,4 @@
-@import '@/assets/scss/main.scss';
+@import "@/assets/scss/main.scss";
 
 .main-content {
   display: flex;
@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   overflow-y: scroll;
-  height: calc(100vh - ($header-height + $common-padding * 2)); /* Subtract the header and footer heights from the viewport height */
+  height: calc(100vh - ($header-height + $common-padding * 2));
 
   * {
     display: flex;

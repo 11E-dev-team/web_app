@@ -6,52 +6,60 @@
     <PasswordComponent />
 
     <div class="custom">
-      <button @click="register()" :class="{ 'button-disabled': !allDataIsValid }">Войти</button>
+      <button
+        :class="{ 'button-disabled': !allDataIsValid }"
+        @click="register()"
+      >
+        Войти
+      </button>
     </div>
 
     <div class="custom">
-      <RouterLink to="/register">У меня нет аккаунта</RouterLink>
+      <RouterLink to="/register">
+        У меня нет аккаунта
+      </RouterLink>
     </div>
   </main>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import type { WritableComputedRef } from 'vue';
-import HeaderComponent from '@/components/HeaderComponent.vue';
-import EmailInputComponent from '@/components/EmailInputComponent.vue';
-import PasswordComponent from '@/components/PasswordInputComponent.vue';
+// TODO: rewrite to defineComponent syntax
+import { computed } from "vue";
+import type { WritableComputedRef } from "vue";
+import { storeToRefs } from "pinia";
 
-import router from '@/router';
+import router from "@/router";
+import { useUserStore, useFormStateStore } from "@/store";
+
+import HeaderComponent from "@/components/HeaderComponent.vue";
+import EmailInputComponent from "@/components/EmailInputComponent.vue";
+import PasswordComponent from "@/components/PasswordInputComponent.vue";
 
 
-import { storeToRefs } from 'pinia';
-import { useUserStore, useFormStateStore } from '@/store';
-const userStore = useUserStore();
-const formStateStore = useFormStateStore();
-const { user, newUser } = storeToRefs(userStore);
+const { user, newUser } = storeToRefs(useUserStore());
 const {
-  isInteracted,
-  emailIsGiven,
-  emailIsValid,
-  passwordIsGiven
-} = storeToRefs(formStateStore);
+    isInteracted,
+    emailIsGiven,
+    emailIsValid,
+    passwordIsGiven
+} = storeToRefs(useFormStateStore());
+
 isInteracted.value = false;
 emailIsGiven.value = false;
 emailIsValid.value = false;
 passwordIsGiven.value = false;
 
 const allDataIsValid: WritableComputedRef<boolean> = computed((): boolean => {
-  return emailIsGiven.value && passwordIsGiven.value && emailIsValid.value;
+    return emailIsGiven.value && passwordIsGiven.value && emailIsValid.value;
 });
 
 function register(): void {
-  if (allDataIsValid) {
-    user.value = newUser.value
-    // TODO: connect to backend server
-    router.push('/home')
-  };
-};
+    if (allDataIsValid.value) {
+        user.value = newUser.value;
+        // TODO: connect to backend server
+        router.push("/home");
+    }
+}
 </script>
 
 
